@@ -1,1 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    /* 🎨 Primary Colors */
+    --color-primary: #E30613; /* ITI Red */
+    --color-primary-dark: #B2050F;
+    --color-primary-light: #FF4C5A;
+  
+    /* 🌈 Secondary Colors */
+    --color-secondary: #007BFF; /* MaharaTech Blue */
+    --color-secondary-dark: #0056b3;
+    --color-secondary-light: #4DA6FF;
+  
+    /* 🎭 Background Colors */
+    --color-background: #FFFFFF;
+    --color-surface: #F5F5F5;
+    --color-text: #333333;
+    --color-text-light: #666666;
+  
+    /* 🌙 Dark Mode Colors */
+    --color-background-dark: #1A1A1A;
+    --color-surface-dark: #2D2D2D;
+    --color-text-dark: #E0E0E0;
+    --color-text-light-dark: #A0A0A0;
+  
+    /* ✅ Status Colors */
+    --color-success: #28A745;
+    --color-error: #DC3545;
+    --color-warning: #FFC107;
+  
+    /* 🖋 Font */
+    --font-primary: 'Roboto', sans-serif;
+    --font-secondary: 'Poppins', sans-serif;
+    
+    /* 📏 Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* 🟦 Border Radius */
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  
+    /* 🌟 Shadows */
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
