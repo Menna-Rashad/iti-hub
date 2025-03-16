@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms'; // <-- Import FormsModule here
+import { MentorshipComponent } from './mentorship/mentorship.component'; 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  // Import the LoginComponent so you can use its selector in your template.
-  imports: [LoginComponent],
-  template: '<app-login></app-login>',
-  styles: []
+  imports: [RouterOutlet,LoginComponent, FormsModule, MentorshipComponent], // <-- Add the components you need
+  template: '<app-login></app-login>',  // Use the login component in the template
+  styles: [],
+   templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
 })
-export class AppComponent {}
+export class AppComponent {
+  title = 'iti-hub';
+}
