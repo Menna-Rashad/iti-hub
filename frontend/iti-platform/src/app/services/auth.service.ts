@@ -1,18 +1,28 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // URL of your Laravel backend
-  private baseUrl = 'http://localhost:8000';
+  private apiUrl = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
-  // Login method that sends credentials and receives a token
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/login`, credentials);
+  login(data: { email: string, password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem('auth_token', response.token); // ✅ Store token correctly
+        }
+      })
+    );
+  }
+
+  getUserProfile(): Observable<any> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.apiUrl}/user`, { headers });
   }
 }
