@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MentorshipController; // ✅ أضف هذا السطر
+use App\Http\Controllers\JobListingController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,3 +26,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']); // 🟠 إلغاء الجلسة
     Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']); // 🔴 تقييم الجلسة
 });
+
+Route::apiResource('jobs', JobListingController::class);
