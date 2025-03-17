@@ -29,9 +29,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']); // 🔵 استعراض الجلسات الخاصة بالمستخدم
     Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']); // 🟠 إلغاء الجلسة
     Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']); // 🔴 تقييم الجلسة
+
+    // ✅ مسارات الوظائف (Jobs)
+    Route::apiResource('jobs', JobListingController::class);
+    Route::get('/jobs', [JobListingController::class, 'index']);
+    Route::post('/jobs', [JobListingController::class, 'store']);
+    Route::put('/jobs/{id}', [JobListingController::class, 'update']);
+    Route::delete('/jobs/{id}', [JobListingController::class, 'destroy']);
 });
 
-Route::apiResource('jobs', JobListingController::class);
 
 // 🔴 Admin Dashboard (Protect Without Kernel.php)
 Route::get('/admin/dashboard', function (Request $request) {
