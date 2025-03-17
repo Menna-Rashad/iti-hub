@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MentorshipController; // ✅ أضف هذا السطر
 use App\Http\Controllers\JobListingController;
+use App\Http\Controllers\AdminController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,3 +32,17 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::apiResource('jobs', JobListingController::class);
+
+// 🔴 Admin Dashboard (Protect Without Kernel.php)
+Route::get('/admin/dashboard', function (Request $request) {
+    $user = Auth::user();
+
+    if (!$user || $user->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized - You are not an admin'], 403);
+    }
+
+    return response()->json([
+        'message' => 'Welcome to the Admin Dashboard!',
+        'users' => User::all()
+    ]);
+})->middleware('auth:sanctum');
