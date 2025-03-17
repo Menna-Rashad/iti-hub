@@ -19,7 +19,10 @@ export class AuthService {
       })
     );
   }
-
+  resetPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/password-reset`, { email });
+  }
+  
   getUserProfile(): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
