@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 :root {
     /* 🎨 Primary Colors */
     --color-primary: #E30613; /* ITI Red */
