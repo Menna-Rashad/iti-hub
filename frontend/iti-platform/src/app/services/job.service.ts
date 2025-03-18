@@ -3,16 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobService {
-
-  private apiUrl = 'http://127.0.0.1:8000/api/jobs'; // API URL
+  private apiUrl = 'http://localhost:8000/api/jobs';
 
   constructor(private http: HttpClient) {}
 
-   // Get All Jobs
-   getJobs(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  // جلب الوظائف
+  getJobs(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  // إضافة وظيفة جديدة
+  createJob(jobData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, jobData);
   }
 }
