@@ -21,6 +21,9 @@ return new class extends Migration
             $table->integer('downvotes')->default(0); // عدد عدم الإعجابات
             $table->boolean('is_flagged')->default(false); // إذا كان التعليق مرفوضًا
             $table->timestamps(); // لتخزين تاريخ الإنشاء والتحديث
+                // إضافة الفهرس
+            $table->index('post_id');
+            $table->index('parent_comment_id');
         });
     }
 
