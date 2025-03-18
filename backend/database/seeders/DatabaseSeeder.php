@@ -9,9 +9,12 @@ class DatabaseSeeder extends Seeder
     /**
      * تشغيل Seeders لإضافة بيانات إلى قاعدة البيانات.
      */
-    public function run(): void
+    public function run()
     {
-        // استدعاء Seeder لإدخال المستخدمين
-        $this->call(UsersSeeder::class);
+        \App\Models\Category::create(['name' => 'General']);
+        \App\Models\User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }
