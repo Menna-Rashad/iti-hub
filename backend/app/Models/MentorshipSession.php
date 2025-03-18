@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\ForumPost;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

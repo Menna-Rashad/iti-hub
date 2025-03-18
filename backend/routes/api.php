@@ -3,28 +3,37 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\MentorshipController; // ✅ أضف هذا السطر
 use App\Http\Controllers\JobListingController;
 use App\Http\Controllers\AdminController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ForumPostController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\VoteController;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
 // 🟢 تسجيل المستخدم
 Route::post('/register', [AuthController::class, 'register']);
 // 🟢 تسجيل الدخول
 Route::post('/login', [AuthController::class, 'login']);
 
-// 🟢 تسجيل الخروج واسترجاع المستخدم محميان بـ Sanctum
+Route::get('test', function () {
+    return response()->json(['message' => 'Test route is working']);
+});
+
+// 🟢 مجموعة الروابط المحمية بـ Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'getUser']);
 
-    // ✅ مسارات الجلسات المهنية (Mentorship)
+
     Route::post('/mentorship/book', [MentorshipController::class, 'bookSession']); // 🟢 حجز جلسة
     Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']); // 🔵 استعراض الجلسات الخاصة بالمستخدم
     Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']); // 🟠 إلغاء الجلسة
@@ -39,6 +48,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/jobs/{id}', [JobListingController::class, 'destroy']);
 });
 
+    Route::prefix('forum')->group(function () {
+        Route::get('posts/search', [ForumPostController::class, 'search']); // <-- أضف هذا السطر داخل المجموعة
+        // المواضيع
+        Route::apiResource('posts', ForumPostController::class);
+        Route::get('posts/{post}/comments', [CommentController::class, 'index']);
+        // Route::get('posts/search', [ForumPostController::class, 'search']);
+        // التعليقات
+        Route::apiResource('comments', CommentController::class)->except(['index']);
+        Route::post('forum/comments', [CommentController::class, 'store']);
+        // التصويت
+        Route::post('vote', [VoteController::class, 'handleVote']);
+    });
 
 // 🔴 Admin Dashboard (Protect Without Kernel.php)
 Route::get('/admin/dashboard', function (Request $request) {
@@ -53,3 +74,4 @@ Route::get('/admin/dashboard', function (Request $request) {
         'users' => User::all()
     ]);
 })->middleware('auth:sanctum');
+
