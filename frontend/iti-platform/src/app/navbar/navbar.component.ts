@@ -12,8 +12,8 @@ import { RouterModule } from '@angular/router'; // To use routerLink for navigat
     <mat-toolbar color="primary">
       <span class="logo" routerLink="/">ITI HUB</span> <!-- إضافة الرابط -->
       <span class="spacer"></span>
-      <button mat-button routerLink="/jobs">Jobs</button>
-      <button mat-button routerLink="/login">Login</button>
+      <button mat-button routerLink="/api/jobs">Jobs</button>
+      <button mat-button routerLink="/api/login">Login</button>
       <button mat-button routerLink="/register" class="register-btn">Register</button>
     </mat-toolbar>
   `,
