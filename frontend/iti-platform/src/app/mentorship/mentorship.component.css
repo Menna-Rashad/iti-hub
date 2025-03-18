@@ -1,0 +1,47 @@
+.container {
+  max-width: 700px;
+  margin: auto;
+}
+
+.card {
+  border-radius: 12px;
+  border: none;
+  background: #f8f9fa;
+}
+
+h2, h3 {
+  color: #343a40;
+  font-weight: bold;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.sessions-section {
+  max-width: 700px;
+  margin: auto;
+}
+
+.list-group-item {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+.list-group-item:hover {
+  background: #f1f1f1;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 14px;
+}

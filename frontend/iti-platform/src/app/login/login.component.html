@@ -1,13 +1,48 @@
-<p>login works!</p>
-<form (submit)="login()">
-    <div>
-      <label>Email:</label>
-      <input type="email" [(ngModel)]="email" name="email" required>
+<div class="login-container">
+  <h2>Login</h2>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="login()">
+    <div class="input-group">
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        [(ngModel)]="email"
+        name="email"
+        required
+        placeholder="Email"
+      />
     </div>
-    <div>
-      <label>Password:</label>
-      <input type="password" [(ngModel)]="password" name="password" required>
+
+    <div class="input-group">
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        [(ngModel)]="password"
+        name="password"
+        required
+        placeholder="Password"
+      />
     </div>
-    <button type="submit">Login</button>
+
+    <button type="submit" [disabled]="isLoading">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+      <span *ngIf="!isLoading">LOGIN</span>
+    </button>
   </form>
-  
+
+  <div class="forgot-password">
+    <a href="#" (click)="navigateToResetPassword($event)">Forgot Username / Password?</a>
+  </div>
+</div>

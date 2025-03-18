@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <div class="card shadow-lg p-4">
+    <h2 class="text-center mb-4">📚 Book a Mentorship Session</h2>
+
+    <form class="needs-validation">
+      <div class="mb-3">
+        <label for="mentor_id" class="form-label fw-bold">Mentor ID</label>
+        <input type="number" id="mentor_id" #mentorId class="form-control" placeholder="Enter Mentor ID" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="session_date" class="form-label fw-bold">Session Date</label>
+        <input type="datetime-local" id="session_date" #sessionDate class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="platform" class="form-label fw-bold">Platform</label>
+        <select id="platform" #platform class="form-select" required>
+          <option value="Zoom">Zoom</option>
+          <option value="Google Meet">Google Meet</option>
+          <option value="Teams">Teams</option>
+        </select>
+      </div>
+
+      <div class="text-center">
+        <button type="button" (click)="bookSession()" class="btn btn-primary w-100">
+          📅 Book Session
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <hr class="my-5">
+
+  <div class="sessions-section">
+    <h3 class="text-center mb-4">🎯 Your Scheduled Sessions</h3>
+
+    <ul class="list-group">
+      <li *ngFor="let session of sessions" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <p class="mb-1"><strong>👨‍🏫 Mentor ID:</strong> {{ session.mentor_id }}</p>
+          <p class="mb-1"><strong>📅 Date:</strong> {{ session.session_date }}</p>
+          <p class="mb-1"><strong>💻 Platform:</strong> {{ session.platform }}</p>
+        </div>
+        <div class="d-flex">
+          <button (click)="cancelSession(session.id)" class="btn btn-danger btn-sm me-2">❌ Cancel</button>
+          <button (click)="rateSession(session.id)" class="btn btn-success btn-sm">⭐ Rate</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
