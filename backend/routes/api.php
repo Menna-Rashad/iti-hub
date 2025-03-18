@@ -31,9 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']); // 🔴 تقييم الجلسة
 
     // ✅ مسارات الوظائف (Jobs)
-    Route::apiResource('jobs', JobListingController::class);
+    // Route::apiResource('jobs', JobListingController::class);
     Route::get('/jobs', [JobListingController::class, 'index']);
     Route::post('/jobs', [JobListingController::class, 'store']);
+    Route::get('/jobs/{id}', [JobListingController::class, 'show']);
     Route::put('/jobs/{id}', [JobListingController::class, 'update']);
     Route::delete('/jobs/{id}', [JobListingController::class, 'destroy']);
 });
