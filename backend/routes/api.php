@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']); // 🔵 استعراض الجلسات الخاصة بالمستخدم
     Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']); // 🟠 إلغاء الجلسة
     Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']); // 🔴 تقييم الجلسة
+    Route::delete('/mentorship/delete/{id}', [MentorshipController::class, 'deleteSession'])->middleware('auth:sanctum');
+
 });
 
 Route::apiResource('jobs', JobListingController::class);
