@@ -1,0 +1,71 @@
+<div class="container mt-5">
+    <h2 class="text-center text-primary">🎓 Mentor Dashboard</h2>
+
+    <!-- ✅ Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+        <strong>✅ Success!</strong> {{ successMessage }}
+    </div>
+
+    <!-- ❌ Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        <strong>❌ Error!</strong> {{ errorMessage }}
+    </div>
+
+    <!-- ➕ Create a New Session -->
+    <div class="card shadow-lg p-4 mt-4">
+        <h3>➕ Create a New Session</h3>
+        <form (ngSubmit)="createSession()">
+            <div class="mb-3">
+                <label class="form-label">📌 Session Title</label>
+                <input type="text" class="form-control" #sessionTitle required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">📅 Date</label>
+                <input type="datetime-local" class="form-control" #sessionDate required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">💻 Platform</label>
+                <select class="form-select" #platform required>
+                    <option value="Zoom">Zoom</option>
+                    <option value="Google Meet">Google Meet</option>
+                    <option value="Teams">Microsoft Teams</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary w-100" (click)="createSession()">Create Session 📅</button>
+
+        </form>
+        
+    </div>
+
+    <hr class="my-5">
+
+    <!-- 📋 Mentor Sessions -->
+    <div class="sessions-section">
+        <h3 class="text-center">📋 Upcoming Sessions</h3>
+
+        <!-- Show Loading Spinner -->
+        <div *ngIf="isLoading" class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Loading sessions...</p>
+        </div>
+
+        <!-- 📜 Show Sessions List -->
+        <ul *ngIf="sessions.length" class="list-group mt-3">
+            <li *ngFor="let session of sessions" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <p><strong>📌 Title:</strong> {{ session.session_title }}</p>
+                    <p><strong>📅 Date:</strong> {{ session.session_date | date:'short' }}</p>
+                    <p><strong>💻 Platform:</strong> {{ session.platform }}</p>
+                </div>
+                <button (click)="deleteSession(session.id)" class="btn btn-danger">🗑 Delete</button>
+                <button (click)="cancelSession(session.id)" class="btn btn-warning ms-2">⏸ Cancel</button> <!-- Cancel button -->
+            </li>
+        </ul>
+
+        <!-- 🚀 No Sessions Found -->
+        <div *ngIf="!sessions.length" class="text-center text-muted mt-4">
+            <p>🚀 No sessions available.</p>
+        </div>
+    </div>
+</div>
