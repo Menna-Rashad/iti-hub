@@ -6,123 +6,246 @@ use Illuminate\Http\Request;
 use App\Models\MentorshipSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\MentorshipMaterial;
+use Illuminate\Support\Facades\Storage;
 class MentorshipController extends Controller
 {
-    // 🟢 Book a new session
-    public function bookSession(Request $request)
+    // دالة لإنشاء الجلسة بواسطة الموجه
+    public function createMentorship(Request $request)
     {
-        // Validate input data
         $validated = $request->validate([
             'mentor_id' => 'required|exists:users,id',
+            'session_title' => 'required|string',
             'session_date' => 'required|date_format:Y-m-d H:i:s',
             'platform' => 'required|in:Zoom,Google Meet,Teams',
         ]);
 
-        // Ensure that the mentee is not booking a session with themselves
-        if ($request->mentor_id == Auth::id()) {
-            return response()->json(['message' => 'You cannot book a session with yourself!'], 400);
+        if ($request->mentor_id != Auth::id()) {
+            return response()->json(['message' => 'Only the mentor can create the mentorship.'], 403);
         }
 
-        // Create the session
         try {
-            $session = MentorshipSession::create([
+            $mentorship = MentorshipSession::create([
                 'mentor_id' => $request->mentor_id,
-                'mentee_id' => Auth::id(),
+                'mentee_id' => null,
+                'session_title' => $request->session_title,
                 'session_date' => $request->session_date,
                 'platform' => $request->platform,
+                'session_status' => 'scheduled',
             ]);
 
-            // Log the session booking
-            Log::info('Session booked', ['session' => $session]);
-
-            return response()->json([
-                'message' => 'Session booked successfully!',
-                'session' => $session
-            ], 201);
-
+            return response()->json(['message' => 'Mentorship created successfully!', 'mentorship' => $mentorship], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to book the session. Please try again later.'], 500);
+            Log::error("Error creating mentorship: " . $e->getMessage());
+            return response()->json(['message' => 'Failed to create the mentorship. Please try again later.'], 500);
         }
     }
 
-    // 🟢 Get user sessions
-    public function getUserSessions()
+    // دالة لعرض الجلسات المتاحة للمستخدمين
+    public function getAvailableMentorships()
     {
-        $sessions = MentorshipSession::where('mentee_id', Auth::id())
-            ->orWhere('mentor_id', Auth::id())
-            ->get();
-
-        return response()->json($sessions);
+        $mentorships = MentorshipSession::whereNull('mentee_id')->get();
+        return response()->json($mentorships);
     }
 
-    // 🟢 Cancel the session
-    public function cancelSession($id)
-    {
-        try {
-            $session = MentorshipSession::findOrFail($id);
-
-            // Validate that the session is in 'scheduled' status
-            if ($session->session_status !== 'scheduled') {
-                return response()->json(['message' => 'This session cannot be canceled because it is not scheduled.'], 400);
-            }
-
-            $session->update(['session_status' => 'cancelled']);
-
-            // Log the cancellation
-            Log::info('Session cancelled', ['session_id' => $id]);
-
-            return response()->json(['message' => 'Session cancelled successfully']);
-
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to cancel the session. Please try again later.'], 500);
-        }
-    }
-// 🟠 Delete a mentorship session
-public function deleteSession($id)
+    // دالة لتحديد اهتمام المستخدم بالجلسة
+    public function setInterestStatus(Request $request, $mentorship_id)
 {
-    $session = MentorshipSession::findOrFail($id);
+    // تحقق من صحة البيانات المدخلة
+    $validated = $request->validate([
+        'interest_status' => 'required|in:interested,attending,not_interested',
+    ]);
     
-    // Check if the session belongs to the current user (either mentee or mentor)
-    if ($session->mentee_id != Auth::id() && $session->mentor_id != Auth::id()) {
-        return response()->json(['message' => 'Unauthorized action'], 403);
+    try {
+        // العثور على الجلسة
+        $mentorship = MentorshipSession::findOrFail($mentorship_id);
+
+        // التحقق مما إذا كان المستخدم قد حجز الجلسة مسبقًا
+        $userExists = $mentorship->users()->where('user_id', Auth::id())->exists();
+
+        // إذا كان المستخدم قد حجز الجلسة مسبقًا، لا نسمح بتحديث الاهتمام
+        if ($userExists) {
+            return response()->json(['message' => 'You have already booked this mentorship.'], 400);
+        }
+
+        // إضافة المستخدم إلى الجلسة مع تحديد حالة الاهتمام
+        $mentorship->users()->attach(Auth::id(), ['interest_status' => $request->interest_status]);
+
+        return response()->json(['message' => 'Interest status updated successfully!', 'mentorship' => $mentorship], 200);
+    } catch (\Exception $e) {
+        // تسجيل الخطأ في السجلات
+        Log::error("Error updating interest status: " . $e->getMessage());
+        return response()->json(['message' => 'Failed to update interest status.'], 500);
     }
-
-    $session->delete();  // Delete the session
-
-    return response()->json(['message' => 'Session deleted successfully']);
 }
 
-    // 🟢 Rate the session
-    public function rateSession(Request $request, $id)
+
+    // دالة لانضمام المستخدم إلى الجلسة
+    public function markAsAttending($mentorship_id)
     {
-        // Validate rating and feedback
-        $validated = $request->validate([
-            'mentor_rating' => 'required|integer|min:1|max:5',
-            'mentee_feedback' => 'nullable|string',
-        ]);
-
         try {
-            $session = MentorshipSession::findOrFail($id);
-
-            // Check if the session status is 'completed' before rating
-            if ($session->session_status !== 'completed') {
-                return response()->json(['message' => 'You can only rate completed sessions.'], 400);
+            // البحث عن الجلسة
+            $mentorship = MentorshipSession::findOrFail($mentorship_id);
+    
+            // تحقق من أن المستخدم قد قام بتحديد الجلسة على أنه "مهتم" أولاً
+            $userInterest = $mentorship->users()->where('user_id', Auth::id())->first();
+    
+            if (!$userInterest || $userInterest->pivot->interest_status !== 'interested') {
+                return response()->json(['message' => 'You must mark the mentorship as interested first.'], 400);
             }
-
-            // Update the session with the rating and feedback
-            $session->update([
-                'mentor_rating' => $request->mentor_rating,
-                'mentee_feedback' => $request->mentee_feedback,
-            ]);
-
-            // Log the rating
-            Log::info('Session rated', ['session_id' => $id, 'rating' => $request->mentor_rating]);
-
-            return response()->json(['message' => 'Session rated successfully']);
-
+    
+            // تحديث interest_status في mentorship_user ليكون "attending"
+            $mentorship->users()->updateExistingPivot(Auth::id(), ['interest_status' => 'attending']);
+    
+            // تحديث mentee_id في mentorship_sessions لتحديد أن المستخدم قد أصبح الحاضر
+            $mentorship->update(['mentee_id' => Auth::id()]);
+    
+            return response()->json(['message' => 'Mentorship marked as attending successfully!', 'mentorship' => $mentorship], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to rate the session. Please try again later.'], 500);
+            return response()->json(['message' => 'Failed to mark as attending.'], 500);
         }
     }
+    
+    
+    
+    
+    
+
+    // دالة لإلغاء الجلسة
+    public function cancelMentorship($mentorship_id)
+    {
+        try {
+            // العثور على الجلسة
+            $mentorship = MentorshipSession::findOrFail($mentorship_id);
+    
+            // التحقق من أن المستخدم هو الموجه
+            if ($mentorship->mentor_id != Auth::id()) {
+                return response()->json(['message' => 'Only the mentor can cancel the mentorship.'], 403);
+            }
+    
+            // تحديث حالة الجلسة إلى ملغاة
+            $mentorship->update(['session_status' => 'cancelled']);
+    
+            // تحديث حالة المستخدم في الجلسة إلى ملغاة
+            $mentorship->users()->updateExistingPivot(Auth::id(), ['interest_status' => 'cancelled']);
+    
+            return response()->json(['message' => 'Mentorship cancelled successfully!'], 200);
+        } catch (\Exception $e) {
+            Log::error("Error cancelling mentorship: " . $e->getMessage());
+            return response()->json(['message' => 'Failed to cancel the mentorship.'], 500);
+        }
+    }
+    
+    
+
+    // دالة لتقييم الجلسة
+    public function rateMentorship(Request $request, $mentorship_id)
+{
+    // تحقق من البيانات المدخلة وتأكد من صحة التقييم
+    $validated = $request->validate([
+        'mentor_rating' => 'required|integer|min:1|max:5', // يجب أن يكون التقييم بين 1 و 5
+        'mentee_feedback' => 'nullable|string', // التعليقات يمكن أن تكون فارغة
+    ]);
+
+    try {
+        // البحث عن الجلسة باستخدام ID الجلسة
+        $mentorship = MentorshipSession::findOrFail($mentorship_id);
+
+        // التأكد من أن المستخدم قد حضر الجلسة لكي يتمكن من التقييم
+        $userInterestStatus = $mentorship->users()->where('user_id', Auth::id())->first()->pivot->interest_status;
+
+        if ($userInterestStatus != 'attending') {
+            return response()->json(['message' => 'You can only rate mentorships you have attended.'], 400);
+        }
+
+        // تحديث تقييم الموجه وتعليقات المتدرب
+        $mentorship->update([
+            'mentor_rating' => $request->mentor_rating, // تحديث التقييم
+            'mentee_feedback' => $request->mentee_feedback, // تحديث الملاحظات
+        ]);
+
+        return response()->json(['message' => 'Mentorship rated successfully!'], 200);
+    } catch (\Exception $e) {
+        // تسجيل الخطأ في السجلات إذا حدث
+        Log::error("Error rating mentorship: " . $e->getMessage());
+        return response()->json(['message' => 'Failed to rate the mentorship.'], 500);
+    }
+}
+public function giveFeedback(Request $request, $mentorship_id)
+{
+    // Validate input data
+    $validated = $request->validate([
+        'feedback' => 'nullable|string',
+        'rating' => 'nullable|integer|min:1|max:5',
+    ]);
+
+    try {
+        // Find the mentorship session and the authenticated user
+        $mentorship = MentorshipSession::findOrFail($mentorship_id);
+        $user = Auth::user();
+
+        // Check if the user is associated with this mentorship session
+        $userSession = $mentorship->users()->where('user_id', $user->id)->first();
+
+        if (!$userSession) {
+            return response()->json(['message' => 'User is not associated with this session.'], 400);
+        }
+
+        // Update the feedback and rating
+        $userSession->pivot->update([
+            'feedback' => $request->feedback,
+            'rating' => $request->rating,
+        ]);
+
+        return response()->json(['message' => 'Feedback and rating successfully submitted!'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to submit feedback.'], 500);
+    }
+}
+public function uploadMaterial(Request $request, $mentorship_id)
+{
+    // Validate the file
+    $request->validate([
+        'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:10240', // Adjust max file size as needed
+    ]);
+
+    try {
+        // Handle file upload
+        $file = $request->file('file');
+
+        // Store the file in the public directory (you can also create a 'materials' folder if needed)
+        $filePath = $file->storeAs('public/mentorship_materials', $file->getClientOriginalName());
+
+        // Save file information to the database
+        $material = new MentorshipMaterial();
+        $material->mentorship_session_id = $mentorship_id;
+        $material->file_name = $file->getClientOriginalName();
+        $material->file_path = $filePath;  // Store the path in the database
+        $material->save();
+
+        return response()->json(['message' => 'Material uploaded successfully!'], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to upload material. Please try again later.'], 500);
+    }
+}
+
+public function downloadMaterial($material_id)
+{
+    try {
+        $material = MentorshipMaterial::findOrFail($material_id);
+
+        // Check if the file exists
+        if (!Storage::disk('public')->exists($material->file_path)) {
+            return response()->json(['message' => 'File not found.'], 404);
+        }
+
+        // Return the file for download
+        return response()->download(storage_path('app/public/' . $material->file_path), $material->file_name);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to download material.'], 500);
+    }
+}
+
+    
 }
