@@ -4,17 +4,17 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-mentorship',
-  imports: [CommonModule],
+  imports:[CommonModule],
   templateUrl: './mentorship.component.html',
   styleUrls: ['./mentorship.component.css'],
 })
 export class MentorshipComponent implements OnInit {
   sessions: any[] = [];
-  isLoading: boolean = false;  // For loading spinner
-  errorMessage: string = '';  // For error message
-  successMessage: string = '';  // For success message
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  successMessage: string = '';
 
-  @ViewChild('mentorId') mentorId!: ElementRef;
+  @ViewChild('sessionTitle') sessionTitle!: ElementRef;
   @ViewChild('sessionDate') sessionDate!: ElementRef;
   @ViewChild('platform') platform!: ElementRef;
 
@@ -24,53 +24,46 @@ export class MentorshipComponent implements OnInit {
     this.getUserSessions();
   }
 
-  // 🟢 Book a mentorship session
+  // Create a mentorship session
   async bookSession() {
-    const mentorId = this.mentorId.nativeElement.value;
+    const title = this.sessionTitle.nativeElement.value;
     let sessionDate = this.sessionDate.nativeElement.value;
     const platform = this.platform.nativeElement.value;
 
-    // Validation
-    if (!mentorId || !sessionDate || !platform) {
+    if (!title || !sessionDate || !platform) {
       alert('⚠️ Please fill all fields!');
       return;
     }
 
-    sessionDate = sessionDate.replace("T", " ") + ":00";  // Convert 'T' to ' ' and append ":00"
+    sessionDate = sessionDate.replace("T", " ") + ":00";
 
-    const data = { mentor_id: mentorId, session_date: sessionDate, platform };
+    const data = { session_title: title, session_date: sessionDate, platform };
 
-    this.isLoading = true;  // Start loading spinner
+    this.isLoading = true;
 
     try {
-      console.log('🟢 Sending session data:', data);
       const response = await this.mentorshipService.bookSession(data).toPromise();
-      console.log('✅ Session booked successfully:', response);
-      this.successMessage = 'Session booked successfully!';  // Show success message
-      this.getUserSessions();  // Refresh sessions
+      this.successMessage = 'Session booked successfully!';
+      this.getUserSessions();
     } catch (error) {
-      console.error('🔴 Error booking session:', error);
-      this.errorMessage = 'Error booking session. Please try again later.';  // Show error message
+      this.errorMessage = 'Error booking session. Please try again later.';
     } finally {
-      this.isLoading = false;  // Stop loading spinner
+      this.isLoading = false;
     }
   }
 
-  // 🟢 Get the user's scheduled sessions
+  // Get user's scheduled sessions
   getUserSessions() {
-    this.isLoading = true;  // Show loading spinner
-
+    this.isLoading = true;
     this.mentorshipService.getUserSessions().subscribe(
       (sessions) => {
         this.sessions = sessions;
-        console.log('📌 Fetched user sessions:', sessions);
       },
       (error) => {
-        console.error('🔴 Error fetching sessions:', error);
         this.errorMessage = 'Error fetching sessions. Please try again later.';
       },
       () => {
-        this.isLoading = false;  // Hide loading spinner
+        this.isLoading = false;
       }
     );
   }

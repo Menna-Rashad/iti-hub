@@ -34,12 +34,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'getUser']);
 
 
-    Route::post('/mentorship/book', [MentorshipController::class, 'bookSession']); // 🟢 حجز جلسة
-    Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']); // 🔵 استعراض الجلسات الخاصة بالمستخدم
-    Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']); // 🟠 إلغاء الجلسة
-    Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']); // 🔴 تقييم الجلسة
-    Route::delete('/mentorship/delete/{id}', [MentorshipController::class, 'deleteSession'])->middleware('auth:sanctum');
-
+ // لإنشاء الجلسة بواسطة الموجه
+// إنشاء الجلسة بواسطة الموجه
+Route::post('/mentorship', [MentorshipController::class, 'createMentorship']);
+    Route::get('/mentorship', [MentorshipController::class, 'getAvailableMentorships']);
+    Route::post('/mentorship/{id}/interest', [MentorshipController::class, 'setInterestStatus']);
+    Route::put('/mentorship/{id}/attend', [MentorshipController::class, 'markAsAttending']);
+    Route::put('/mentorship/{id}/cancel', [MentorshipController::class, 'cancelMentorship']);
+    Route::post('/mentorship/{id}/rate', [MentorshipController::class, 'rateMentorship']);
+    Route::put('/mentorship/{mentorship_id}/feedback', [MentorshipController::class, 'giveFeedback']);
+    Route::put('/mentorship/{mentorship_id}/material', [MentorshipController::class, 'uploadMaterial']);
+    Route::get('/material/{material_id}/download', [MentorshipController::class, 'downloadMaterial']);
 
 
     // ✅ مسارات الوظائف (Jobs)

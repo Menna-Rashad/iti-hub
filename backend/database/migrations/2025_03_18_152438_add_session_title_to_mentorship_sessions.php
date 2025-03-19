@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['student', 'graduate', 'mentor', 'admin'])->default('student'); // Default role is "student"
+        Schema::table('mentorship_sessions', function (Blueprint $table) {
+            //
+            $table->string('session_title');  // عنوان الجلسة
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('mentorship_sessions', function (Blueprint $table) {
             //
+            $table->dropColumn('session_title');
         });
     }
 };
