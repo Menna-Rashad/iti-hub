@@ -33,6 +33,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'getUser']);
 
+    Route::get('/mentor/dashboard', function () {
+        $user = Auth::user();
+        
+        // تحقق إذا كان المستخدم موجه (mentor)
+        if ($user->role !== 'mentor') {
+            return response()->json(['message' => 'Unauthorized. You are not a mentor.'], 403);
+        }
+
+        return view('mentor.dashboard');  // أو الرد مع البيانات الخاصة بالموجه
+    });
 
  // لإنشاء الجلسة بواسطة الموجه
 // إنشاء الجلسة بواسطة الموجه
@@ -40,11 +50,18 @@ Route::post('/mentorship', [MentorshipController::class, 'createMentorship']);
     Route::get('/mentorship', [MentorshipController::class, 'getAvailableMentorships']);
     Route::post('/mentorship/{id}/interest', [MentorshipController::class, 'setInterestStatus']);
     Route::put('/mentorship/{id}/attend', [MentorshipController::class, 'markAsAttending']);
-    Route::put('/mentorship/{id}/cancel', [MentorshipController::class, 'cancelMentorship']);
+    Route::post('/mentorship/{id}/cancel', [MentorshipController::class, 'cancelMentorship']);
     Route::post('/mentorship/{id}/rate', [MentorshipController::class, 'rateMentorship']);
     Route::put('/mentorship/{mentorship_id}/feedback', [MentorshipController::class, 'giveFeedback']);
     Route::put('/mentorship/{mentorship_id}/material', [MentorshipController::class, 'uploadMaterial']);
     Route::get('/material/{material_id}/download', [MentorshipController::class, 'downloadMaterial']);
+    // 🟢 Get all available mentorship sessions
+    Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']);
+
+    // 🟢 Get all mentorship sessions for a mentor
+    Route::get('/mentorship/mentor-sessions', [MentorshipController::class, 'getMentorSessions']);
+    Route::delete('/mentorship/{id}/delete', [MentorshipController::class, 'deleteSession']);
+
 
 
     // ✅ مسارات الوظائف (Jobs)
