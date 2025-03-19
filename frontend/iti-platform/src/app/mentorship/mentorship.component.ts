@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-mentorship',
-  imports:[CommonModule],
+  imports: [CommonModule],
   templateUrl: './mentorship.component.html',
   styleUrls: ['./mentorship.component.css'],
 })
 export class MentorshipComponent implements OnInit {
-  sessions: any[] = [];
+  sessions: any[] = [];  // ✅ Ensures `sessions` is always an array
+
   isLoading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
@@ -24,96 +25,123 @@ export class MentorshipComponent implements OnInit {
     this.getUserSessions();
   }
 
-  // Create a mentorship session
+  /** ✅ Create a mentorship session */
   async bookSession() {
-    const title = this.sessionTitle.nativeElement.value;
-    let sessionDate = this.sessionDate.nativeElement.value;
-    const platform = this.platform.nativeElement.value;
+    const title = this.sessionTitle.nativeElement.value.trim();
+    let sessionDate = this.sessionDate.nativeElement.value.trim();
+    const platform = this.platform.nativeElement.value.trim();
 
     if (!title || !sessionDate || !platform) {
-      alert('⚠️ Please fill all fields!');
+      this.errorMessage = '⚠️ Please fill all fields!';
       return;
     }
 
-    sessionDate = sessionDate.replace("T", " ") + ":00";
+    sessionDate = sessionDate.replace('T', ' ') + ':00'; // Format datetime
 
     const data = { session_title: title, session_date: sessionDate, platform };
-
     this.isLoading = true;
+    this.errorMessage = ''; // Clear errors
+    this.successMessage = ''; // Clear previous success message
 
     try {
-      const response = await this.mentorshipService.bookSession(data).toPromise();
-      this.successMessage = 'Session booked successfully!';
-      this.getUserSessions();
+      await this.mentorshipService.bookSession(data).toPromise();
+      this.successMessage = '✅ Session booked successfully!';
+      this.getUserSessions(); // Refresh sessions
     } catch (error) {
-      this.errorMessage = 'Error booking session. Please try again later.';
+      this.errorMessage = '❌ Error booking session. Please try again later.';
+      console.error('🔴 Booking Error:', error);
     } finally {
       this.isLoading = false;
     }
   }
 
-  // Get user's scheduled sessions
-  getUserSessions() {
+  /** ✅ Get user's scheduled mentorship sessions */
+  async getUserSessions() {
     this.isLoading = true;
-    this.mentorshipService.getUserSessions().subscribe(
-      (sessions) => {
-        this.sessions = sessions;
-      },
-      (error) => {
-        this.errorMessage = 'Error fetching sessions. Please try again later.';
-      },
-      () => {
-        this.isLoading = false;
-      }
-    );
+    this.errorMessage = '';
+    this.successMessage = '';
+  
+    try {
+      const result = await this.mentorshipService.getUserSessions().toPromise();
+      this.sessions = result || [];  // ✅ Default to an empty array if undefined
+    } catch (error) {
+      this.errorMessage = '❌ Error fetching sessions. Please try again later.';
+      console.error('🔴 Fetch Sessions Error:', error);
+      this.sessions = [];  // ✅ Ensures it's always an array
+    } finally {
+      this.isLoading = false;
+    }
   }
+  
 
-  // 🟠 Cancel a mentorship session
-  cancelSession(id: number) {
-    const confirmCancel = confirm('Are you sure you want to cancel this session?');
-    if (confirmCancel) {
-      this.mentorshipService.cancelSession(id).subscribe(() => {
-        console.log('🗑 Session cancelled');
-        this.getUserSessions();  // Refresh sessions
-      });
+  /** ❌ Cancel a mentorship session */
+  async cancelSession(id: number) {
+    if (!confirm('⚠️ Are you sure you want to cancel this session?')) return;
+
+    this.isLoading = true;
+    try {
+      await this.mentorshipService.cancelSession(id).toPromise();
+      this.successMessage = '✅ Session cancelled successfully!';
+      this.getUserSessions(); // Refresh
+    } catch (error) {
+      this.errorMessage = '❌ Failed to cancel session.';
+      console.error('🔴 Cancel Error:', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
-  // 🗑 Delete a mentorship session
-  deleteSession(id: number) {
-    const confirmDelete = confirm('Are you sure you want to delete this session?');
-    if (confirmDelete) {
-      this.mentorshipService.deleteSession(id).subscribe(
-        (response) => {
-          console.log('🗑 Session deleted successfully');
-          this.getUserSessions();  // Refresh sessions after deletion
-        },
-        (error) => {
-          console.error('🔴 Error deleting session:', error);
-          alert('Failed to delete session. Please try again later.');
-        }
-      );
+  /** 🗑 Delete a mentorship session */
+  deleteSession(sessionId?: number): void {
+    if (!sessionId) {
+        console.error("❌ sessionId is undefined!");
+        return;
     }
-  }
 
-  // ⭐ Rate a mentorship session
-  rateSession(id: number) {
-    const rating = prompt('Enter rating (1-5):');
-    const feedback = prompt('Enter feedback:');
+    if (confirm('⚠️ Are you sure you want to delete this session?')) {
+        this.mentorshipService.cancelMentorship(sessionId).subscribe(
+            () => {
+                console.log("✅ Session deleted:", sessionId);
+                this.successMessage = '✅ Session deleted successfully!';
+                
+                // 🔥 إزالة الجلسة من القائمة بدون إعادة تحميل الصفحة
+                this.sessions = this.sessions.filter(session => session.id !== sessionId);
+            },
+            (error) => {
+                console.error("❌ Failed to delete session:", error);
+                this.errorMessage = '❌ Failed to delete session.';
+            }
+        );
+    }
+}
+
+
+  /** ⭐ Rate a mentorship session */
+  async rateSession(id: number) {
+    const rating = prompt('🌟 Enter rating (1-5):');
+    const feedback = prompt('📝 Enter feedback:');
 
     if (!rating || !feedback) {
       alert('⚠️ Rating and feedback are required.');
       return;
     }
 
-    if (parseInt(rating) < 1 || parseInt(rating) > 5) {
+    const parsedRating = parseInt(rating);
+    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
       alert('⚠️ Rating must be between 1 and 5.');
       return;
     }
 
-    this.mentorshipService.rateSession(id, parseInt(rating), feedback).subscribe(() => {
-      console.log('🌟 Session rated');
-      this.getUserSessions();  // Refresh sessions
-    });
+    this.isLoading = true;
+    try {
+      await this.mentorshipService.rateSession(id, parsedRating, feedback).toPromise();
+      this.successMessage = '✅ Session rated successfully!';
+      this.getUserSessions();
+    } catch (error) {
+      this.errorMessage = '❌ Failed to rate session.';
+      console.error('🔴 Rating Error:', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
