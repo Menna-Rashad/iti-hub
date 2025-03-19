@@ -8,39 +8,37 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\MentorshipMaterial;
 use Illuminate\Support\Facades\Storage;
+use Firebase\JWT\JWT;
 class MentorshipController extends Controller
 {
     // دالة لإنشاء الجلسة بواسطة الموجه
     public function createMentorship(Request $request)
     {
-        $validated = $request->validate([
-            'mentor_id' => 'required|exists:users,id',
-            'session_title' => 'required|string',
-            'session_date' => 'required|date_format:Y-m-d H:i:s',
-            'platform' => 'required|in:Zoom,Google Meet,Teams',
-        ]);
-
-        if ($request->mentor_id != Auth::id()) {
-            return response()->json(['message' => 'Only the mentor can create the mentorship.'], 403);
-        }
-
         try {
+            $validated = $request->validate([
+                'mentor_id' => 'required|exists:users,id',
+                'session_title' => 'required|string',
+                'session_date' => 'required|date_format:Y-m-d H:i:s',
+                'platform' => 'required|in:Zoom,Google Meet,Teams',
+            ]);
+    
+            // Creating the session in the database
             $mentorship = MentorshipSession::create([
                 'mentor_id' => $request->mentor_id,
-                'mentee_id' => null,
                 'session_title' => $request->session_title,
                 'session_date' => $request->session_date,
                 'platform' => $request->platform,
                 'session_status' => 'scheduled',
             ]);
-
-            return response()->json(['message' => 'Mentorship created successfully!', 'mentorship' => $mentorship], 201);
+    
+            return response()->json(['message' => 'Mentorship session created successfully!', 'mentorship' => $mentorship], 201);
+    
         } catch (\Exception $e) {
-            Log::error("Error creating mentorship: " . $e->getMessage());
-            return response()->json(['message' => 'Failed to create the mentorship. Please try again later.'], 500);
+            return response()->json(['message' => 'Failed to create mentorship session.', 'error' => $e->getMessage()], 500);
         }
     }
-
+    
+    
     // دالة لعرض الجلسات المتاحة للمستخدمين
     public function getAvailableMentorships()
     {
@@ -106,37 +104,71 @@ class MentorshipController extends Controller
         }
     }
     
-    
+    public function deleteSession($mentorship_id)
+{
+    try {
+        $mentorship = MentorshipSession::findOrFail($mentorship_id);
+
+        // Ensure that only the mentor who created the session can delete it
+        if ($mentorship->mentor_id != Auth::id()) {
+            return response()->json(['message' => 'Only the mentor can delete this session.'], 403);
+        }
+
+        // Hard delete from database
+        $mentorship->delete();
+
+        return response()->json(['message' => 'Session deleted successfully!'], 200);
+    } catch (\Exception $e) {
+        Log::error("Error deleting mentorship session: " . $e->getMessage());
+        return response()->json(['message' => 'Failed to delete the session.'], 500);
+    }
+}
+
     
     
     
 
     // دالة لإلغاء الجلسة
     public function cancelMentorship($mentorship_id)
-    {
-        try {
-            // العثور على الجلسة
-            $mentorship = MentorshipSession::findOrFail($mentorship_id);
+{
+    try {
+        // Find the mentorship session
+        $mentorship = MentorshipSession::findOrFail($mentorship_id);
+
+        // Check if the current user is the mentor
+        if ($mentorship->mentor_id != Auth::id()) {
+            return response()->json(['message' => 'Only the mentor can cancel the mentorship.'], 403);
+        }
+
+        // Change the session status to 'cancelled'
+        $mentorship->update(['session_status' => 'cancelled']);
+        return response()->json(['message' => 'Mentorship cancelled successfully!'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to cancel the mentorship.'], 500);
+    }
+}
+
     
-            // التحقق من أن المستخدم هو الموجه
-            if ($mentorship->mentor_id != Auth::id()) {
-                return response()->json(['message' => 'Only the mentor can cancel the mentorship.'], 403);
+    public function getMentorSessions()
+    {
+        $mentorId = Auth::id(); // Get logged-in mentor
+        Log::info("📡 Fetching sessions for mentor ID:", [$mentorId]);
+    
+        try {
+            $sessions = MentorshipSession::where('mentor_id', $mentorId)->get();
+    
+            if ($sessions->isEmpty()) {
+                return response()->json(["message" => "No sessions found.", "data" => []], 200);
             }
     
-            // تحديث حالة الجلسة إلى ملغاة
-            $mentorship->update(['session_status' => 'cancelled']);
-    
-            // تحديث حالة المستخدم في الجلسة إلى ملغاة
-            $mentorship->users()->updateExistingPivot(Auth::id(), ['interest_status' => 'cancelled']);
-    
-            return response()->json(['message' => 'Mentorship cancelled successfully!'], 200);
+            return response()->json($sessions, 200);
         } catch (\Exception $e) {
-            Log::error("Error cancelling mentorship: " . $e->getMessage());
-            return response()->json(['message' => 'Failed to cancel the mentorship.'], 500);
+            Log::error("❌ Error fetching mentor sessions: " . $e->getMessage());
+            return response()->json(["message" => "Failed to fetch sessions."], 500);
         }
     }
     
-    
+
 
     // دالة لتقييم الجلسة
     public function rateMentorship(Request $request, $mentorship_id)
@@ -202,50 +234,50 @@ public function giveFeedback(Request $request, $mentorship_id)
         return response()->json(['message' => 'Failed to submit feedback.'], 500);
     }
 }
-public function uploadMaterial(Request $request, $mentorship_id)
-{
-    // Validate the file
-    $request->validate([
-        'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:10240', // Adjust max file size as needed
-    ]);
+// public function uploadMaterial(Request $request, $mentorship_id)
+// {
+//     // Validate the file
+//     $request->validate([
+//         'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:10240', // Adjust max file size as needed
+//     ]);
 
-    try {
-        // Handle file upload
-        $file = $request->file('file');
+//     try {
+//         // Handle file upload
+//         $file = $request->file('file');
 
-        // Store the file in the public directory (you can also create a 'materials' folder if needed)
-        $filePath = $file->storeAs('public/mentorship_materials', $file->getClientOriginalName());
+//         // Store the file in the public directory (you can also create a 'materials' folder if needed)
+//         $filePath = $file->storeAs('public/mentorship_materials', $file->getClientOriginalName());
 
-        // Save file information to the database
-        $material = new MentorshipMaterial();
-        $material->mentorship_session_id = $mentorship_id;
-        $material->file_name = $file->getClientOriginalName();
-        $material->file_path = $filePath;  // Store the path in the database
-        $material->save();
+//         // Save file information to the database
+//         $material = new MentorshipMaterial();
+//         $material->mentorship_session_id = $mentorship_id;
+//         $material->file_name = $file->getClientOriginalName();
+//         $material->file_path = $filePath;  // Store the path in the database
+//         $material->save();
 
-        return response()->json(['message' => 'Material uploaded successfully!'], 200);
+//         return response()->json(['message' => 'Material uploaded successfully!'], 200);
 
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Failed to upload material. Please try again later.'], 500);
-    }
-}
+//     } catch (\Exception $e) {
+//         return response()->json(['message' => 'Failed to upload material. Please try again later.'], 500);
+//     }
+// }
 
-public function downloadMaterial($material_id)
-{
-    try {
-        $material = MentorshipMaterial::findOrFail($material_id);
+// public function downloadMaterial($material_id)
+// {
+//     try {
+//         $material = MentorshipMaterial::findOrFail($material_id);
 
-        // Check if the file exists
-        if (!Storage::disk('public')->exists($material->file_path)) {
-            return response()->json(['message' => 'File not found.'], 404);
-        }
+//         // Check if the file exists
+//         if (!Storage::disk('public')->exists($material->file_path)) {
+//             return response()->json(['message' => 'File not found.'], 404);
+//         }
 
-        // Return the file for download
-        return response()->download(storage_path('app/public/' . $material->file_path), $material->file_name);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Failed to download material.'], 500);
-    }
-}
+//         // Return the file for download
+//         return response()->download(storage_path('app/public/' . $material->file_path), $material->file_name);
+//     } catch (\Exception $e) {
+//         return response()->json(['message' => 'Failed to download material.'], 500);
+//     }
+// }
 
     
 }
