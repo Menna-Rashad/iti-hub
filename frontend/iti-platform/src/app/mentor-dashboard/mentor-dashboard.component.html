@@ -33,9 +33,7 @@
                 </select>
             </div>
             <button type="button" class="btn btn-primary w-100" (click)="createSession()">Create Session 📅</button>
-
         </form>
-        
     </div>
 
     <hr class="my-5">
@@ -59,7 +57,7 @@
                     <p><strong>💻 Platform:</strong> {{ session.platform }}</p>
                 </div>
                 <button (click)="deleteSession(session.id)" class="btn btn-danger">🗑 Delete</button>
-                <button (click)="cancelSession(session.id)" class="btn btn-warning ms-2">⏸ Cancel</button> <!-- Cancel button -->
+                <button (click)="cancelSession(session.id)" class="btn btn-warning ms-2">⏸ Cancel</button> 
             </li>
         </ul>
 
