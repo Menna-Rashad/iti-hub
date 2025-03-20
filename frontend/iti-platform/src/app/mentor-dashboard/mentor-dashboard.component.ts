@@ -10,16 +10,15 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./mentor-dashboard.component.css']
 })
 export class MentorDashboardComponent implements OnInit {
-  sessions: any[] = [];  // ✅ تأكيد أن `sessions` هو Array دائمًا
+  sessions: any[] = [];  // ✅ Array for mentor sessions
   isLoading = false;
   errorMessage = '';
   successMessage = '';
 
-  // ✅ تأكيد وجود المدخلات باستخدام ViewChild
+  // ✅ Input fields
   @ViewChild('sessionTitle') sessionTitle?: ElementRef<HTMLInputElement>;
   @ViewChild('sessionDate') sessionDate?: ElementRef<HTMLInputElement>;
   @ViewChild('platform') platform?: ElementRef<HTMLSelectElement>;
-  @ViewChild('mentorId') mentorId?: ElementRef<HTMLInputElement>;
 
   constructor(private mentorshipService: MentorshipService) {}
 
@@ -27,12 +26,12 @@ export class MentorDashboardComponent implements OnInit {
     this.loadMentorSessions();
   }
 
-  // ✅ تحميل جلسات الموجه
+  // ✅ Load mentor sessions
   loadMentorSessions(): void {
     this.isLoading = true;
     this.mentorshipService.getMentorSessions().subscribe(
       (data) => {
-        console.log("📌 API Response:", data);  // ✅ طباعة الاستجابة في الـ console للتحقق من البيانات
+        console.log("📌 API Response:", data);
         this.sessions = Array.isArray(data) ? data : [];
         this.isLoading = false;
       },
@@ -44,64 +43,57 @@ export class MentorDashboardComponent implements OnInit {
     );
   }
 
-  // ✅ إنشاء جلسة جديدة
+  // ✅ Create a new session
   createSession(): void {
-    // التحقق من وجود المدخلات المطلوبة
     if (!this.sessionTitle || !this.sessionDate || !this.platform) {
-      console.error("❌ One or more form fields are not properly bound!");
+      console.error("❌ Missing input fields!");
       return;
     }
-  
-    // جلب البيانات من المدخلات
+
     const sessionTitle = this.sessionTitle.nativeElement.value.trim();
     let sessionDate = this.sessionDate.nativeElement.value.trim();
     const platform = this.platform.nativeElement.value.trim();
-  
-    // جلب الـ mentorId من localStorage
-    const mentorId = localStorage.getItem('user_id');  // استخدام الـ mentorId المخزن في الـ localStorage
-  
+
+    const mentorId = localStorage.getItem('user_id');
+
     if (!mentorId) {
       this.errorMessage = "⚠️ Missing mentorId in localStorage!";
       console.error("⚠️ mentorId is missing in localStorage.");
       return;
     }
-  
-    // التحقق من أن جميع الحقول ليست فارغة
+
     if (!sessionTitle || !sessionDate || !platform) {
-      this.errorMessage = "⚠️ جميع الحقول مطلوبة!";
+      this.errorMessage = "⚠️ All fields are required!";
       console.error("⚠️ Missing required fields:", { sessionTitle, sessionDate, platform });
       return;
     }
-  
-    // تنسيق التاريخ ليكون متوافقًا مع الـ API
-    sessionDate = sessionDate.replace("T", " ") + ":00";
-  
-    // إعداد البيانات لإرسالها
+
+    // ✅ Format session date correctly
+    const formattedDate = new Date(sessionDate).toISOString().slice(0, 19).replace("T", " ");
+
     const sessionData = {
-      mentor_id: mentorId,  // استخدام mentorId الذي جلبناه من الـ localStorage
+      mentor_id: mentorId,
       session_title: sessionTitle,
-      session_date: sessionDate,
+      session_date: formattedDate,  // ✅ Use formatted date
       platform: platform
     };
-  
+
     console.log("📡 Sending session data to backend:", sessionData);
-  
-    // إرسال البيانات إلى الـ API
+
     this.mentorshipService.createMentorship(sessionData).subscribe(
       (response) => {
-        console.log("✅ Backend Response:", response);
+        console.log("✅ Session created:", response);
         this.successMessage = "✅ Session created successfully!";
-        this.loadMentorSessions();  // تحديث الجلسات بعد إنشاء الجلسة
+        this.loadMentorSessions();
       },
       (error) => {
-        console.error("❌ Error Creating Session:", error);
-        this.errorMessage = "❌ Failed to create session.";
+        console.error("❌ API Error:", error);
+        this.errorMessage = error.error?.message || "❌ Failed to create session.";
       }
     );
   }
-  
-  
-  // ✅ حذف جلسة
+
+  // ✅ Delete a session
   deleteSession(sessionId?: number): void {
     if (!sessionId) {
       console.error("❌ sessionId is undefined!");
@@ -113,8 +105,6 @@ export class MentorDashboardComponent implements OnInit {
         () => {
           console.log("✅ Session deleted:", sessionId);
           this.successMessage = "✅ Session deleted successfully!";
-
-          // 🔥 إزالة الجلسة من القائمة مباشرة بدون إعادة تحميل الجلسات من الخادم
           this.sessions = this.sessions.filter(session => session.id !== sessionId);
         },
         (error) => {
@@ -125,6 +115,7 @@ export class MentorDashboardComponent implements OnInit {
     }
   }
 
+  // ✅ Cancel a session
   cancelSession(sessionId: number): void {
     if (!sessionId) {
         console.error("❌ sessionId is undefined!");
@@ -136,7 +127,6 @@ export class MentorDashboardComponent implements OnInit {
             () => {
                 console.log("✅ Session cancelled:", sessionId);
                 this.successMessage = "✅ Session cancelled successfully!";
-                // 🔥 Remove the session from the list without reloading the page
                 this.sessions = this.sessions.filter(session => session.id !== sessionId);
             },
             (error) => {
