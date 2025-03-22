@@ -13,5 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         // استدعاء Seeder لإدخال المستخدمين
         $this->call(UsersSeeder::class);
+        // استدعاء Seeder لإدخال الوظائف
+        $this->call(JobSeeder::class);
     }
 }
