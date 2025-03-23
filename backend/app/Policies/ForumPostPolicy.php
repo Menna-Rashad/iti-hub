@@ -8,12 +8,12 @@ use Illuminate\Auth\Access\Response;
 
 class ForumPostPolicy
 {
-    public function update(User $user, ForumPost $post)
+    public function update(User $user, ForumPost $post): bool
     {
         return $user->id === $post->user_id;
     }
 
-    public function delete(User $user, ForumPost $post)
+    public function delete(User $user, ForumPost $post): bool
     {
         return $user->id === $post->user_id || $user->isAdmin();
     }
