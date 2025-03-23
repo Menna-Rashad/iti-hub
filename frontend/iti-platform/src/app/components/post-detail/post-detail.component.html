@@ -1,0 +1,62 @@
+<div class="post-wrapper" *ngIf="post">
+  <mat-card class="post-card">
+    <mat-card-header>
+      <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+      <mat-card-subtitle class="post-meta">
+        <span>{{ post.user?.name }}</span> · 
+        <span>{{ post.created_at | date:'medium' }}</span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="post-content">{{ post.content }}</p>
+
+      <div class="vote-section">
+        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')">
+          <mat-icon>thumb_up</mat-icon>
+        </button>
+        <span>{{ post.upvotes }}</span>
+        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')">
+          <mat-icon>thumb_down</mat-icon>
+        </button>
+        <span>{{ post.downvotes }}</span>
+
+        <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
+          ✏️ Edit Post
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Comments -->
+  <div class="comments-container">
+    <h3>💬 Comments ({{ post.comments?.length }})</h3>
+
+    <div class="comment-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <textarea matInput [(ngModel)]="newComment" placeholder="Write a comment..."></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addComment()">Add Comment</button>
+    </div>
+
+    <mat-card *ngFor="let comment of post.comments" class="comment-card">
+      <mat-card-content>
+        <p>{{ comment.content }}</p>
+        <div class="comment-meta">
+          <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
+        </div>
+      </mat-card-content>
+
+      <div class="vote-section">
+        <button mat-icon-button color="primary" (click)="handleVote('comment', comment.id, 'upvote')">
+          <mat-icon>thumb_up</mat-icon>
+        </button>
+        <span>{{ comment.upvotes }}</span>
+        <button mat-icon-button color="warn" (click)="handleVote('comment', comment.id, 'downvote')">
+          <mat-icon>thumb_down</mat-icon>
+        </button>
+        <span>{{ comment.downvotes }}</span>
+      </div>
+    </mat-card>
+  </div>
+</div>
