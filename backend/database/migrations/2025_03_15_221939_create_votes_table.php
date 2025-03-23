@@ -9,17 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('forum_post_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('comment_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('votable_id');
+            $table->string('votable_type');
             $table->enum('vote_type', ['upvote', 'downvote']);
             $table->timestamps();
         });
     }
+    
 
     /**
      * Reverse the migrations.
