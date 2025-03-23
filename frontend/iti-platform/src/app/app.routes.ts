@@ -5,10 +5,14 @@ import { MentorshipComponent } from './mentorship/mentorship.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.component';  // ✅ Import Mentor Dashboard
 import { MentorGuard } from './auth/mentor.guard';
+import { ProfileComponent } from './pages/profile/profile.component';
+
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent, title: 'Register' },
   { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: '', redirectTo: 'profile', pathMatch: 'full' },
+  { path: 'profile', component: ProfileComponent },
   { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
   { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
   {
