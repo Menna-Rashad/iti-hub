@@ -11,6 +11,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Http\Controllers\Api\ProfileController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'getUser']);
 
+    //profile page route
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile/update', [ProfileController::class, 'update']);
     // ==========================
     // 🔵 Mentor Dashboard Route (Only accessible by mentors)
     // ==========================
