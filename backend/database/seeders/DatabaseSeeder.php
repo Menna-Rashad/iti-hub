@@ -3,12 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+// use App\Models\User;
+// use App\Models\Category;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * تشغيل Seeders لإضافة بيانات إلى قاعدة البيانات.
-     */
     public function run()
     {
         \App\Models\Category::create(['name' => 'General']);
