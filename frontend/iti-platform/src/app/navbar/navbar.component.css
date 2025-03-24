@@ -1,0 +1,13 @@
+.logo {
+  font-weight: bold;
+  color: rgb(170, 10, 10);
+  cursor: pointer; /* لتغيير شكل المؤشر عند المرور على النص */
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.register-btn {
+  margin-left: 10px;
+}

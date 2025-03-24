@@ -10,10 +10,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        \App\Models\Category::firstOrCreate(['name' => 'General']);
-        \App\Models\User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // استدعاء Seeder لإدخال المستخدمين
+        $this->call(UsersSeeder::class);
+        // استدعاء Seeder لإدخال الوظائف
+        $this->call(JobSeeder::class);
     }
 }
