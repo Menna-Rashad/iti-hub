@@ -72,6 +72,15 @@ export class LoginComponent {
         if (response.token) {
           console.log('🔑 Received Token:', response.token); // ✅ Log the token
           localStorage.setItem('api_token', response.token);
+
+          // Store mentorId and role in localStorage
+          if (response.user?.id) {
+            localStorage.setItem('user_id', response.user.id); // Store mentorId
+          }
+          if (response.user?.role) {
+            localStorage.setItem('role', response.user.role); // Store user role
+          }
+
           this.showNotification('🎉 Login successful! Redirecting...', 'success');
 
           // Clear email and password fields after successful login
@@ -80,7 +89,7 @@ export class LoginComponent {
 
           // Redirect based on user role
           const userRole = response.user?.role; // Assuming API returns user role
-          const redirectPath = userRole === 'admin' ? '/admin/dashboard' : '/dashboard';
+          const redirectPath = userRole === 'admin' ? '/admin/dashboard' : '/mentor/dashboard'; // Redirect to Mentor dashboard
 
           // Redirect with a slight delay to give feedback to the user
           setTimeout(() => {

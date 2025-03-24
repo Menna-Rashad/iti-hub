@@ -1,19 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../services/admin.service';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
+  imports: [CommonModule, MatTableModule, MatButtonModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
   private users: any[] = [];
-  
-  constructor(private adminService: AdminService) {}
+  posts: any[] = [];
+
+  constructor(private adminService: AdminService,
+    private http: HttpClient) {}
 
   ngOnInit(): void {
     this.fetchUsers();
+    this.loadPosts();
   }
 
   fetchUsers(): void {
@@ -38,6 +46,20 @@ export class AdminDashboardComponent implements OnInit {
       error: () => {
         console.error('Error fetching admin data.');
       }
+    });
+  }
+
+  loadPosts(): void {
+    this.http.get<any[]>('http://localhost:8000/api/admin/posts').subscribe({
+      next: (posts) => this.posts = posts,
+      error: (err) => console.error(err)
+    });
+  }
+
+  deletePost(postId: number): void {
+    this.http.delete(`http://localhost:8000/api/admin/posts/${postId}`).subscribe({
+      next: () => this.loadPosts(),
+      error: (err) => alert('فشل الحذف!')
     });
   }
 

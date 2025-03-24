@@ -1,0 +1,79 @@
+<div class="container mt-4">
+  <div class="card shadow-sm p-4">
+    <h4 class="mb-4 text-center">Profile</h4>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="profile-grid">
+        <!-- Form Inputs -->
+        <div class="form-left">
+          <div class="mb-3">
+            <label class="form-label">Name:</label>
+            <input type="text" class="form-control" formControlName="name" />
+            <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="text-danger">
+              Name is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email:</label>
+            <input type="email" class="form-control" formControlName="email" />
+            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-danger">
+              Valid email is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">National ID:</label>
+            <input type="text" class="form-control" formControlName="national_id" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Role:</label>
+            <select class="form-select" formControlName="role">
+              <option value="">Select role</option>
+              <option value="student">Student</option>
+              <option value="graduate">Graduate</option>
+              <!-- <option value="mentor">Mentor</option>
+              <option value="admin">Admin</option> -->
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Bio:</label>
+            <textarea class="form-control" formControlName="bio"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">LinkedIn:</label>
+            <input type="url" class="form-control" formControlName="linkedin" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">GitHub:</label>
+            <input type="url" class="form-control" formControlName="github" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Profile Picture:</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)" />
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </div>
+
+        <!-- Profile Picture Preview -->
+        <div class="form-right text-center">
+          <div class="profile-preview">
+            <img
+              *ngIf="previewUrl"
+              [src]="previewUrl"
+              alt="Profile"
+              class="profile-image"
+            />
+            <div *ngIf="!previewUrl" class="text-muted mt-4">No profile picture</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

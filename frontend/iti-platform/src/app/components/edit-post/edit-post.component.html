@@ -1,0 +1,19 @@
+<form [formGroup]="postForm" (ngSubmit)="updatePost()">
+  <mat-form-field>
+    <input matInput placeholder="Title" formControlName="title">
+  </mat-form-field>
+
+  <mat-form-field>
+    <textarea matInput placeholder="Content" formControlName="content"></textarea>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Tags" formControlName="tags">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Category ID" formControlName="category_id">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Update</button>
+</form>

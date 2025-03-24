@@ -1,0 +1,34 @@
+.post-list-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+.post-card {
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.post-actions button {
+  margin-right: 10px;
+}
+
+.no-posts {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-posts mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #888;
+}

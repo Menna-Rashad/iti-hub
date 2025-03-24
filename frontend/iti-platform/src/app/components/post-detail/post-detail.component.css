@@ -1,0 +1,87 @@
+.post-wrapper {
+    max-width: 750px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.post-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+}
+
+.post-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+.post-meta {
+    font-size: 14px;
+    color: #777;
+}
+
+.post-content {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #333;
+}
+
+.vote-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.edit-btn {
+    margin-left: auto;
+    font-weight: bold;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.comments-container {
+    margin-top: 30px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.comment-card {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    border-left: 5px solid #007bff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.comment-meta {
+    font-size: 12px;
+    color: #777;
+}
+
+.full-width {
+    width: 100%;
+}
+
+button.mat-raised-button {
+    border-radius: 50px;
+}

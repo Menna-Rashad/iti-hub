@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\ForumPost;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,12 +23,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'national_id',
         'role',
         'profile_picture',
         'bio',
         'linkedin',
         'github',
         'is_verified',
+        'email_verified_at',
     ];
 
     /**
@@ -49,7 +52,23 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_verified' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    public function forumPosts()
+    {
+        return $this->hasMany(ForumPost::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
