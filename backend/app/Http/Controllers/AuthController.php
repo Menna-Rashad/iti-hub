@@ -15,6 +15,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
+            'national_id'  => 'required|digits:14|unique:users,national_id', 
         ]);
 
         $user = User::create([
@@ -22,6 +23,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user', 
+            'national_id'  => $request->national_id 
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

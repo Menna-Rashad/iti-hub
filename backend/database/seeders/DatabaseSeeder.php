@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        \App\Models\Category::create(['name' => 'General']);
+        \App\Models\Category::firstOrCreate(['name' => 'General']);
         \App\Models\User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

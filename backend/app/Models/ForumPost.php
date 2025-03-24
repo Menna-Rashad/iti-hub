@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+
 use App\Models\ForumPost;
+
 use App\Models\Comment;
 use App\Models\Vote;
 use Illuminate\Database\Eloquent\Model;

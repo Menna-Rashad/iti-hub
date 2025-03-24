@@ -9,45 +9,104 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForumPostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\VoteController;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Controllers\Api\ProfileController;
 
+// ==========================
+// 🔹 Public Routes (No Authentication Required)
+// ==========================
+
+// ✅ User Authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('test', function () {
+// ✅ Test Route (For Debugging)
+Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
 
+
+// ==========================
+// 🔹 Protected Routes (Require Sanctum Authentication)
+// ==========================
 Route::middleware('auth:sanctum')->group(function () {
+
+    // ✅ Authentication Routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'getUser']);
 
-    Route::post('/mentorship/book', [MentorshipController::class, 'bookSession']);
-    Route::get('/mentorship/sessions', [MentorshipController::class, 'getUserSessions']);
-    Route::post('/mentorship/cancel/{id}', [MentorshipController::class, 'cancelSession']);
-    Route::post('/mentorship/rate/{id}', [MentorshipController::class, 'rateSession']);
+    //profile page route
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile/update', [ProfileController::class, 'update']);
+    // ==========================
+    // 🔵 Mentor Dashboard Route (Only accessible by mentors)
+    // ==========================
+    Route::get('/mentor/dashboard', function () {
+        $user = Auth::user();
 
-    Route::get('/jobs', [JobListingController::class, 'index']);
-    Route::post('/jobs', [JobListingController::class, 'store']);
-    Route::get('/jobs/{id}', [JobListingController::class, 'show']);
-    Route::put('/jobs/{id}', [JobListingController::class, 'update']);
-    Route::delete('/jobs/{id}', [JobListingController::class, 'destroy']);
+        if ($user->role !== 'mentor') {
+            return response()->json(['message' => 'Unauthorized. You are not a mentor.'], 403);
+        }
 
+        return response()->json(['message' => 'Welcome to Mentor Dashboard!']);
+    });
+
+    // ==========================
+    // 🔵 Mentorship API Routes (Grouped)
+    // ==========================
+    Route::prefix('mentorship')->group(function () {
+        
+        // 📌 General Routes (Both mentors & users)
+        Route::get('/', [MentorshipController::class, 'getAvailableMentorships']);
+        Route::get('/sessions', [MentorshipController::class, 'getUserSessions']);
+
+        // 🟢 User Actions
+        Route::post('/{id}/interest', [MentorshipController::class, 'setInterestStatus']);
+        Route::put('/{id}/attend', [MentorshipController::class, 'markAsAttending']);
+        Route::put('/{id}/feedback', [MentorshipController::class, 'giveFeedback']);
+        Route::post('/{id}/rate', [MentorshipController::class, 'rateMentorship']);
+
+        // 🔵 Mentor Actions
+        Route::post('/', [MentorshipController::class, 'createMentorship']); // Create session
+        Route::get('/mentor-sessions', [MentorshipController::class, 'getMentorSessions']); // Get all mentor sessions
+        Route::post('/{id}/cancel', [MentorshipController::class, 'cancelMentorship']); // Cancel session
+        Route::delete('/{id}/delete', [MentorshipController::class, 'deleteSession']); // Delete session
+
+        // 📝 Materials Upload & Download
+        Route::put('/{mentorship_id}/material', [MentorshipController::class, 'uploadMaterial']);
+        Route::get('/material/{material_id}/download', [MentorshipController::class, 'downloadMaterial']);
+    });
+
+    // ==========================
+    // 🏢 Job Listings Routes
+    // ==========================
+    Route::prefix('jobs')->group(function () {
+        Route::get('/', [JobListingController::class, 'index']);
+        Route::post('/', [JobListingController::class, 'store']);
+        Route::get('/{id}', [JobListingController::class, 'show']);
+        Route::put('/{id}', [JobListingController::class, 'update']);
+        Route::delete('/{id}', [JobListingController::class, 'destroy']);
+    });
+
+    // ==========================
+    // 📝 Forum Routes
+    // ==========================
     Route::prefix('forum')->group(function () {
         Route::get('/forum/posts/{id}', [ForumPostController::class, 'show']);
         Route::get('posts/search', [ForumPostController::class, 'search']);
-
         Route::post('posts/{post}/comments', [CommentController::class, 'store']);
         Route::apiResource('posts', ForumPostController::class);
-
         Route::get('posts/{post}/comments', [CommentController::class, 'index']);
         Route::apiResource('comments', CommentController::class)->except(['index']);
-
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
 
-    Route::get('/admin/dashboard', function (Request $request) {
+
+    // ==========================
+    // 🔴 Admin Dashboard (Protected)
+    // ==========================
+    Route::get('/admin/dashboard', function () {
         $user = Auth::user();
 
         if (!$user || $user->role !== 'admin') {

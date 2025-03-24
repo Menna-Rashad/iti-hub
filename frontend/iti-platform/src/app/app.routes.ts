@@ -8,19 +8,31 @@ import { PostDetailComponent } from './components/post-detail/post-detail.compon
 import { CreatePostComponent } from './components/create-post/create-post.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EditPostComponent } from './components/edit-post/edit-post.component';
+import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.component'; 
+import { MentorGuard } from './auth/mentor.guard';
+import { ProfileComponent } from './pages/profile/profile.component';
 const isAdmin = () => localStorage.getItem('user_role') === 'admin';
+
 
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent, title: 'Register' },
-  { path: 'api/login', component: LoginComponent, title: 'Login' },
-  { path: 'api/mentorship', component: MentorshipComponent, title: 'Mentorship' },
-  { path: 'admin/dashboard', component: AdminDashboardComponent },
-  { path: '', redirectTo: '/posts', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: '', redirectTo: 'profile', pathMatch: 'full' },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
+  {
+    path: 'mentor/dashboard',
+    component: MentorDashboardComponent,
+    canActivate: [MentorGuard],  
+    title: 'Mentor Dashboard'  
+  },
   { path: 'posts', component: PostListComponent },
   { path: 'posts/create', component: CreatePostComponent },
   { path: 'posts/:id', component: PostDetailComponent },
   { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
   { path: 'posts/:id/edit', component: EditPostComponent },
-  { path: '**', redirectTo: '/posts' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },  
+  { path: '**', redirectTo: 'login', pathMatch: 'full' }  
 ];

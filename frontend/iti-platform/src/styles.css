@@ -2,6 +2,7 @@
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+@import 'ngx-toastr/toastr';
 
 :root {
     /* 🎨 Primary Colors */
@@ -50,5 +51,8 @@
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,52 +1,60 @@
 <div class="container mt-5">
+  <!-- 💡 Available Sessions -->
   <div class="card shadow-lg p-4">
-    <h2 class="text-center mb-4">📚 Book a Mentorship Session</h2>
+    <h2 class="text-center mb-4">📚 Available Mentorship Sessions</h2>
 
-    <form class="needs-validation">
-      <div class="mb-3">
-        <label for="mentor_id" class="form-label fw-bold">Mentor ID</label>
-        <input type="number" id="mentor_id" #mentorId class="form-control" placeholder="Enter Mentor ID" required />
+    <div *ngIf="isLoading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+    </div>
 
-      <div class="mb-3">
-        <label for="session_date" class="form-label fw-bold">Session Date</label>
-        <input type="datetime-local" id="session_date" #sessionDate class="form-control" required />
-      </div>
+    <ul *ngIf="!isLoading && availableSessions.length" class="list-group">
+      <li *ngFor="let session of availableSessions" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <p><strong>📌 Title:</strong> {{ session.session_title }}</p>
+          <p><strong>📅 Date:</strong> {{ session.session_date | date: 'short' }}</p>
+          <p><strong>💻 Platform:</strong> {{ session.platform }}</p>
+        </div>
+        <div class="d-flex">
+          <button (click)="setInterest(session.id, 'interested')" class="btn btn-primary btn-sm me-2">✅ Interested</button>
+          <button (click)="setInterest(session.id, 'not_interested')" class="btn btn-warning btn-sm">🚫 Not Interested</button>
+        </div>
+      </li>
+    </ul>
 
-      <div class="mb-3">
-        <label for="platform" class="form-label fw-bold">Platform</label>
-        <select id="platform" #platform class="form-select" required>
-          <option value="Zoom">Zoom</option>
-          <option value="Google Meet">Google Meet</option>
-          <option value="Teams">Teams</option>
-        </select>
-      </div>
-
-      <div class="text-center">
-        <button type="button" (click)="bookSession()" class="btn btn-primary w-100">
-          📅 Book Session
-        </button>
-      </div>
-    </form>
+    <div *ngIf="!isLoading && !availableSessions.length" class="text-muted text-center">
+      🚀 No available mentorship sessions.
+    </div>
   </div>
 
   <hr class="my-5">
 
+  <!-- 🎯 User's Scheduled Sessions -->
   <div class="sessions-section">
     <h3 class="text-center mb-4">🎯 Your Scheduled Sessions</h3>
 
     <ul class="list-group">
-      <li *ngFor="let session of sessions" class="list-group-item d-flex justify-content-between align-items-center">
+      <li *ngFor="let session of userSessions" class="list-group-item d-flex justify-content-between align-items-center">
         <div>
-          <p class="mb-1"><strong>👨‍🏫 Mentor ID:</strong> {{ session.mentor_id }}</p>
-          <p class="mb-1"><strong>📅 Date:</strong> {{ session.session_date }}</p>
-          <p class="mb-1"><strong>💻 Platform:</strong> {{ session.platform }}</p>
+          <p><strong>📌 Title:</strong> {{ session.session_title }}</p>
+          <p><strong>📅 Date:</strong> {{ session.session_date | date: 'short' }}</p>
+          <p><strong>💻 Platform:</strong> {{ session.platform }}</p>
         </div>
         <div class="d-flex">
-          <button (click)="cancelSession(session.id)" class="btn btn-danger btn-sm me-2">❌ Cancel</button>
+          <button (click)="markAsAttending(session.id)" class="btn btn-info btn-sm me-2">🎟️ Attend</button>
+          <!-- <button (click)="cancelSession(session.id)" class="btn btn-danger btn-sm me-2">❌ Cancel</button> -->
           <button (click)="rateSession(session.id)" class="btn btn-success btn-sm">⭐ Rate</button>
         </div>
       </li>
     </ul>
+
+    <div *ngIf="!isLoading && !userSessions.length" class="text-muted text-center">
+      🚀 You haven't booked any sessions yet.
+    </div>
   </div>
+
+  <!-- ⚠️ Messages -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success mt-3">{{ successMessage }}</div>
 </div>

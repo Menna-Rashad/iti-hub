@@ -1,90 +1,161 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MentorshipService } from '../services/mentorship.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-mentorship',
-  standalone: true,
+  imports: [CommonModule],
   templateUrl: './mentorship.component.html',
   styleUrls: ['./mentorship.component.css'],
-  imports: [CommonModule], // ✅ Required for *ngFor
 })
 export class MentorshipComponent implements OnInit {
-  sessions: any[] = [];
-
-  @ViewChild('mentorId') mentorId!: ElementRef;
-  @ViewChild('sessionDate') sessionDate!: ElementRef;
-  @ViewChild('platform') platform!: ElementRef;
+  availableSessions: any[] = []; // ✅ List of available sessions
+  userSessions: any[] = []; // ✅ Sessions the user is attending
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  successMessage: string = '';
 
   constructor(private mentorshipService: MentorshipService) {}
 
   ngOnInit(): void {
-    this.getUserSessions();
+    this.loadSessions();
   }
 
-  bookSession() {
-    const mentor_id = this.mentorId.nativeElement.value;
-    let session_date = this.sessionDate.nativeElement.value;
-    const platform = this.platform.nativeElement.value;
-  
-    if (!mentor_id || !session_date || !platform) {
-      console.error('⚠️ Missing data! Please fill all fields.');
-      return;
+  /** ✅ Load all sessions */
+  async loadSessions() {
+    this.isLoading = true;
+    await Promise.all([this.getAvailableSessions(), this.getUserSessions()]);
+    this.isLoading = false;
+  }
+
+  /** ✅ Get available mentorship sessions */
+  async getAvailableSessions() {
+    try {
+      const result = await this.mentorshipService.getAvailableMentorships().toPromise();
+      this.availableSessions = result || [];
+    } catch (error) {
+      this.errorMessage = '❌ Failed to fetch available sessions.';
+      console.error('🔴 Fetch Available Sessions Error:', error);
     }
-  
-    // ✅ Convert datetime-local (YYYY-MM-DDTHH:mm) to Laravel's expected format (Y-m-d H:i:s)
-    session_date = session_date.replace("T", " ") + ":00"; // Convert 'T' to ' ' and append ":00"
-  
-    const data = {
-      mentor_id: mentor_id,
-      session_date: session_date,
-      platform: platform
-    };
-  
-    console.log('🟢 Sending formatted session data:', data);
-  
-    this.mentorshipService.bookSession(data).subscribe(
-      response => {
-        console.log('✅ Session booked successfully:', response);
-        this.getUserSessions();
-      },
-      error => {
-        console.error('🔴 Error booking session:', error);
+  }
+
+  /** ✅ Get sessions the user is attending */
+  /** ✅ Mark interest in a session */
+async setInterest(sessionId: number, status: string) {
+  this.isLoading = true;
+  try {
+      await this.mentorshipService.setInterestStatus(sessionId, status).toPromise();
+
+      if (status === 'interested') {
+          // Move session to userSessions only if it's updated in the backend
+          const session = this.availableSessions.find(s => s.id === sessionId);
+          if (session) {
+              this.userSessions.push(session); // ✅ Move session to userSessions (Scheduled Sessions)
+              this.availableSessions = this.availableSessions.filter(s => s.id !== sessionId);
+          }
+      } else {
+          this.availableSessions = this.availableSessions.filter(s => s.id !== sessionId);
       }
-    );
+
+      // ✅ After the update, re-fetch user sessions from API to persist changes
+      this.getUserSessions(); 
+
+      this.showSuccess(`✅ Session marked as "${status.replace('_', ' ')}"!`);
+  } catch (error) {
+      this.showError('❌ Failed to update interest status.');
+      console.error('🔴 Interest Error:', error);
+  } finally {
+      this.isLoading = false;
+  }
+}
+
+/** ✅ Load sessions */
+async getUserSessions() {
+  this.isLoading = true;
+  try {
+      const result = await this.mentorshipService.getUserSessions().toPromise();
+      this.userSessions = result || []; // Re-fetch user sessions from the API
+  } catch (error) {
+      this.showError('❌ Failed to fetch user sessions.');
+      console.error('🔴 Fetch User Sessions Error:', error);
+  } finally {
+      this.isLoading = false;
+  }
+}
+
+  /** ✅ Mark session as attending */
+async markAsAttending(sessionId: number) {
+  this.isLoading = true;
+  try {
+      // إرسال الطلب إلى الـ API لتحديث الحضور
+      await this.mentorshipService.markAsAttending(sessionId).toPromise();
+      this.showSuccess('✅ Marked as attending successfully!');
+      this.getUserSessions();  // إعادة تحميل الجلسات المحجوزة للمستخدم
+  } catch (error) {
+      this.showError('❌ Failed to mark as attending.');
+      console.error('🔴 Attendance Error:', error);
+  } finally {
+      this.isLoading = false;
+  }
+}
+
+  /** ✅ Cancel session */
+async cancelSession(sessionId: number) {
+  if (!confirm('⚠️ Are you sure you want to cancel this session?')) return;
+
+  this.isLoading = true;
+  try {
+      // إرسال طلب الإلغاء إلى الـ API
+      await this.mentorshipService.cancelSession(sessionId).toPromise();
+      this.userSessions = this.userSessions.filter(s => s.id !== sessionId);  // إزالة الجلسة من قائمة الجلسات المحجوزة
+      this.showSuccess('✅ Session cancelled successfully!');
+  } catch (error) {
+      this.showError('❌ Failed to cancel session.');
+      console.error('🔴 Cancel Error:', error);
+  } finally {
+      this.isLoading = false;
+  }
+}
+
+  /** ✅ Rate session */
+async rateSession(sessionId: number) {
+  const rating = prompt('🌟 Enter rating (1-5):');
+  const feedback = prompt('📝 Enter feedback:');
+
+  if (!rating || !feedback) {
+    alert('⚠️ Rating and feedback are required.');
+    return;
   }
 
-  getUserSessions() {
-    this.mentorshipService.getUserSessions().subscribe(
-      sessions => {
-        this.sessions = sessions;
-        console.log('📌 Fetched user sessions:', sessions);
-      },
-      error => {
-        console.error('🔴 Error fetching sessions:', error);
-      }
-    );
+  const parsedRating = parseInt(rating);
+  if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+    alert('⚠️ Rating must be between 1 and 5.');
+    return;
   }
 
-  cancelSession(id: number) {
-    this.mentorshipService.cancelSession(id).subscribe(() => {
-      console.log('🗑 Session cancelled');
-      this.getUserSessions();
-    });
+  this.isLoading = true;
+  try {
+      // إرسال التقييم إلى الـ API
+      await this.mentorshipService.rateSession(sessionId, parsedRating, feedback).toPromise();
+      this.showSuccess('✅ Session rated successfully!');
+      this.getUserSessions();  // إعادة تحميل الجلسات المحجوزة
+  } catch (error) {
+      this.showError('❌ Failed to rate session.');
+      console.error('🔴 Rating Error:', error);
+  } finally {
+      this.isLoading = false;
+  }
+}
+
+  /** ✅ Show success messages */
+  private showSuccess(message: string) {
+    this.successMessage = message;
+    setTimeout(() => (this.successMessage = ''), 3000);
   }
 
-  rateSession(id: number) {
-    const rating = prompt('Enter rating (1-5):');
-    const feedback = prompt('Enter feedback:');
-
-    if (!rating || !feedback) {
-      console.error('⚠️ Rating and feedback are required.');
-      return;
-    }
-
-    this.mentorshipService.rateSession(id, parseInt(rating), feedback).subscribe(() => {
-      console.log('🌟 Session rated');
-      this.getUserSessions();
-    });
+  /** ❌ Show error messages */
+  private showError(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => (this.errorMessage = ''), 3000);
   }
 }

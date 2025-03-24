@@ -23,12 +23,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'national_id',
         'role',
         'profile_picture',
         'bio',
         'linkedin',
         'github',
         'is_verified',
+        'email_verified_at',
     ];
 
     /**
@@ -50,6 +52,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_verified' => 'boolean',
             'password' => 'hashed',
         ];
     }
