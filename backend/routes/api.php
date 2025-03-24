@@ -26,6 +26,7 @@ Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
 
+
 // ==========================
 // 🔹 Protected Routes (Require Sanctum Authentication)
 // ==========================
@@ -92,13 +93,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // 📝 Forum Routes
     // ==========================
     Route::prefix('forum')->group(function () {
+        Route::get('/forum/posts/{id}', [ForumPostController::class, 'show']);
         Route::get('posts/search', [ForumPostController::class, 'search']);
+        Route::post('posts/{post}/comments', [CommentController::class, 'store']);
         Route::apiResource('posts', ForumPostController::class);
         Route::get('posts/{post}/comments', [CommentController::class, 'index']);
         Route::apiResource('comments', CommentController::class)->except(['index']);
-        Route::post('comments', [CommentController::class, 'store']);
-        Route::post('vote', [VoteController::class, 'handleVote']);
+        Route::post('/vote', [VoteController::class, 'handleVote']);
     });
+
 
     // ==========================
     // 🔴 Admin Dashboard (Protected)
@@ -115,5 +118,4 @@ Route::middleware('auth:sanctum')->group(function () {
             'users' => User::all()
         ]);
     });
-
 });

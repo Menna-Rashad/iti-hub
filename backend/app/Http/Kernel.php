@@ -12,6 +12,7 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
+        \Fruitcake\Cors\HandleCors::class,
         \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         // \App\Http\Middleware\TrustProxies::class,  // Unused middleware, remove or keep depending on need

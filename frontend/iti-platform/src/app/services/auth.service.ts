@@ -13,8 +13,10 @@ export class AuthService {
   login(data: { email: string, password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
       tap((response: any) => {
-        if (response.token) {
-          localStorage.setItem('auth_token', response.token); // ✅ Store token correctly
+        if (response.token) {          
+          localStorage.setItem('auth_token', response.token); 
+          localStorage.setItem('user_role', response.user.role); 
+          localStorage.setItem('user_id', response.user.id);
         }
       })
     );

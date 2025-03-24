@@ -1,0 +1,36 @@
+<div class="container">
+  <mat-toolbar>
+    <span>Forum</span>
+    <span class="spacer"></span>
+    <div style="text-align: end; margin-bottom: 10px;">
+      <button class="btn btn-primary" (click)="goToCreate()">Create New Post</button>
+    </div>
+  </mat-toolbar>
+
+  <mat-form-field appearance="outline" class="search-bar">
+    <mat-label>Search</mat-label>
+    <input matInput [(ngModel)]="searchQuery">
+    <button matSuffix mat-icon-button (click)="search()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div *ngFor="let post of posts">
+    <mat-card>
+      <mat-card-title>{{ post.title }}</mat-card-title>
+      <mat-card-content>{{ post.body }}</mat-card-content>
+
+      <mat-card-content>
+        <p>{{ post.content }}</p>
+        <div class="post-stats">
+          <span>Comments: {{ post.comments?.length }}</span>
+          <span>Votes: {{ post.upvotes - post.downvotes }}</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button [routerLink]="['/posts', post.id]">View Details</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

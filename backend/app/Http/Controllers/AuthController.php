@@ -15,14 +15,15 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'national_id'  => 'required|digits:14|unique:users,national_id', // ✅ Add national_id validation
+            'national_id'  => 'required|digits:14|unique:users,national_id', 
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'national_id'  => $request->national_id // ✅ Save national_id
+            'role' => 'user', 
+            'national_id'  => $request->national_id 
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -58,7 +59,7 @@ class AuthController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'role' => $user->role, // ✅ Include role
+            'role' => $user->role, 
         ]
         ], 200);
     }

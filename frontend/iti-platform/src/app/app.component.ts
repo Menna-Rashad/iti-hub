@@ -10,11 +10,16 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
+
   imports: [RouterOutlet, LoginComponent, FormsModule,CommonModule,
     
     MatProgressSpinnerModule],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: '<app-login></app-login>',  
+  styles: [],
+   templateUrl: './app.component.html',
+   styleUrls: ['./app.component.css'],
+
+
 })
 export class AppComponent {
   title = 'iti-hub';
