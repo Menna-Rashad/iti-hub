@@ -1,11 +1,11 @@
 <div class="container mt-4">
   <div class="card shadow-sm p-4">
-    <h4 class="mb-4 text-center">Profile</h4>
+    <h4 class="mb-4 text-center">Update Profile</h4>
 
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-      <div class="profile-grid">
-        <!-- Form Inputs -->
-        <div class="form-left">
+      <div class="row g-4">
+        <!-- Left Side: Inputs -->
+        <div class="col-md-8">
           <div class="mb-3">
             <label class="form-label">Name:</label>
             <input type="text" class="form-control" formControlName="name" />
@@ -33,14 +33,14 @@
               <option value="">Select role</option>
               <option value="student">Student</option>
               <option value="graduate">Graduate</option>
-              <!-- <option value="mentor">Mentor</option>
-              <option value="admin">Admin</option> -->
+              <option value="mentor">Mentor</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Bio:</label>
-            <textarea class="form-control" formControlName="bio"></textarea>
+            <textarea class="form-control" formControlName="bio" rows="3"></textarea>
           </div>
 
           <div class="mb-3">
@@ -58,20 +58,22 @@
             <input type="file" class="form-control" (change)="onFileSelected($event)" />
           </div>
 
-          <button type="submit" class="btn btn-primary">Update Profile</button>
+          <button type="submit" class="btn btn-primary w-100">Update Profile</button>
         </div>
 
-        <!-- Profile Picture Preview -->
-        <div class="form-right text-center">
-          <div class="profile-preview">
+        <!-- Right Side: Image Preview -->
+        <div class="col-md-4 d-flex flex-column align-items-center justify-content-start">
+          <div class="preview-wrapper mb-3">
             <img
               *ngIf="previewUrl"
               [src]="previewUrl"
-              alt="Profile"
-              class="profile-image"
+              alt="Profile Picture"
+              class="rounded-circle shadow-sm preview-img"
+              style="width: 150px; height: 150px; object-fit: cover;"
             />
-            <div *ngIf="!previewUrl" class="text-muted mt-4">No profile picture</div>
+            <div *ngIf="!previewUrl" class="text-muted text-center mt-3">No profile picture</div>
           </div>
+          <small class="text-secondary">Preview</small>
         </div>
       </div>
     </form>

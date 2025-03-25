@@ -11,22 +11,24 @@ export class ProfileService {
   constructor(private http: HttpClient) {}
 
   getProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}`, {
-      headers: this.getHeaders()
+    return this.http.get(this.apiUrl, {
+      headers: this.getAuthHeaders()
     });
   }
 
-  updateProfile(data: any): Observable<any> {
-    // We do not need to set 'Content-Type' for 'multipart/form-data' because 
-    // the browser will automatically set it when using FormData
+  updateProfile(data: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/update`, data, {
-      headers: this.getHeaders()
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+        // لا تضيف Content-Type، الـ browser بيحطها تلقائيًا!
+      })
     });
   }
+  
 
-  private getHeaders(): HttpHeaders {
+  private getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')!,
+      'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
       'Accept': 'application/json'
     });
   }

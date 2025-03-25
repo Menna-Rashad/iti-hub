@@ -1,0 +1,245 @@
+:root {
+    --main-color: #880e4f;
+    --secondary-color: #c2185b;
+    --font-family: 'Cairo', sans-serif;
+    --bg-light: #fafafa;
+    --card-radius: 16px;
+    --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  body {
+    font-family: var(--font-family);
+    margin: 0;
+    background-color: var(--bg-light);
+    color:  #000000;
+  }
+  
+  .home-wrapper {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  /* 🎯 Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--main-color), var(--secondary-color));
+    color:  #000000;
+    text-align: center;
+    padding: 80px 20px;
+    border-radius: 25px;
+    margin: 30px 0 50px;
+    box-shadow: var(--shadow);
+    animation: fadeInUp 0.7s ease forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    color:  #880e4f;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .cta-button {
+    background-color: #c2185b;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: var(--shadow);
+  }
+  
+  .cta-button:hover {
+    background-color: #6a0b0b;
+  }
+  
+  /* 👥 Audience */
+  .audience-section {
+    margin: 50px 0;
+    padding-bottom: 20px;
+  }
+  
+  .audience-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .audience-card {
+    background: white;
+    border-radius: var(--card-radius);
+    padding: 30px 20px;
+    flex: 1 1 30%;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+    opacity: 0;
+  }
+  
+  .audience-card:hover {
+    transform: translateY(-6px);
+  }
+  
+  .audience-card img {
+    width: 60px;
+    margin-bottom: 15px;
+  }
+  
+  .audience-card h3 {
+    color: var(--main-color);
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .audience-card p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* 🔍 Search */
+  .search-box {
+    text-align: center;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .search-box input {
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    width: 300px;
+    font-size: 1rem;
+  }
+  
+  .search-box button {
+    padding: 12px 24px;
+    background: #c2185b;
+    color:#ffffff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-box button:hover {
+    background-color:#880e4f;
+  }
+  
+  /* 👣 Footer */
+  .site-footer {
+    background-color: #222;
+    color: white;
+    padding: 30px 20px;
+    border-radius: 20px;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .site-footer img {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-left,
+  .footer-right {
+    flex: 1 1 45%;
+  }
+  
+  .footer-right {
+    text-align: right;
+  }
+  
+  .footer-right a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+  }
+  
+  .footer-right a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ✨ Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .audience-card {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  
+  .audience-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .audience-card:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  .audience-card:nth-child(3) {
+    animation-delay: 0.5s;
+  }
+  
+  /* 📱 Responsive */
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+  
+    .hero p {
+      font-size: 1rem;
+    }
+  
+    .audience-card img {
+      width: 45px;
+    }
+  
+    .audience-card h3 {
+      font-size: 1.3rem;
+    }
+  
+    .audience-card p {
+      font-size: 0.95rem;
+    }
+  
+    .cta-button {
+      padding: 10px 24px;
+      font-size: 0.95rem;
+    }
+  
+    .search-box input {
+      width: 90%;
+    }
+  
+    .site-footer {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .footer-right {
+      margin-top: 15px;
+      text-align: center;
+    }
+  }
+  
