@@ -25,9 +25,12 @@
       </a>
   
       <!-- Dark Mode Toggle -->
-      <button mat-icon-button (click)="toggleDarkMode()">
-        <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      </button>
+      <li class="nav-item">
+        <button id="darkModeToggle" (click)="toggleDarkMode()" [ngClass]="{ rotate: true }" title="Toggle Dark Mode">
+          {{ icon }}
+        </button>
+      </li>
+     
   
       <!-- Profile Menu (if logged in) -->
       <ng-container *ngIf="isLoggedIn">
@@ -54,7 +57,7 @@
   
       <!-- Login/Register (if not logged in) -->
       <ng-container *ngIf="!isLoggedIn">
-        <a mat-button routerLink="/api/login">Login</a>
+        <a mat-button routerLink="/login">Login</a>
         <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
       </ng-container>
     </div>
