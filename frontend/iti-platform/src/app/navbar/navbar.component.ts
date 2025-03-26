@@ -81,9 +81,23 @@ export class NavbarComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  toggleDarkMode(): void {
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('darkMode', this.isDarkMode.toString());
-    document.body.classList.toggle('dark-mode', this.isDarkMode);
+  icon = '🌙';
+
+toggleDarkMode(): void {
+  this.isDarkMode = !this.isDarkMode;
+  localStorage.setItem('darkMode', this.isDarkMode.toString());
+  document.body.classList.toggle('dark-mode', this.isDarkMode);
+  this.icon = this.isDarkMode ? '☀️' : '🌙';
+}
+
+
+ngAfterViewInit() {
+  const toggle = document.getElementById('darkModeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
   }
+}
+
 }
