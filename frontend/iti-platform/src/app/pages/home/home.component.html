@@ -1,49 +1,93 @@
 <div class="home-wrapper">
     <!-- 🚀 Hero Section -->
     <div class="hero" data-aos="fade-down">
-      <h1>Welcome to ITI HUB</h1>
-      <p>Your gateway to opportunities for students, graduates, and companies.</p>
-      <a class="cta-button" routerLink="/explore">Start Exploring</a>
+        <h1>Welcome to ITI HUB</h1>
+        <p>Your gateway to opportunities for students, graduates, and companies.</p>
+        <a class="cta-button" routerLink="/explore">Start Exploring</a>
     </div>
-  
+    <!-- 🎠 Swiper Section -->
+    <!-- 🎠 Swiper Section -->
+    <div class="swiper-container-section">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" *ngFor="let slide of slides">
+                    <img [src]="slide.image" alt="{{ slide.title }}" />
+                    <div class="slide-overlay">
+                        <div class="overlay-content">
+                            <h2>{{ slide.title }}</h2>
+                            <p>{{ slide.text }}</p>
+                            <a class="cta-button" [routerLink]="slide.link">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation & Pagination -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+
     <!-- 👥 Audience Cards -->
     <div class="audience-section">
-      <div class="audience-grid">
-        <div
-          class="audience-card"
-          *ngFor="let feature of filteredFeatures(); let i = index"
-          [attr.data-aos]="'zoom-in-up'"
-          [attr.data-aos-delay]="i * 150"
-        >
-          <img [src]="feature.icon" alt="{{ feature.title }} icon" />
-          <h3>{{ feature.title }}</h3>
-          <p>{{ feature.description }}</p>
+        <div class="audience-grid">
+            <div class="audience-card" *ngFor="let feature of filteredFeatures(); let i = index"
+                [attr.data-aos]="'zoom-in-up'" [attr.data-aos-delay]="i * 150">
+                <img [src]="feature.icon" alt="{{ feature.title }} icon" />
+                <h3>{{ feature.title }}</h3>
+                <p>{{ feature.description }}</p>
+            </div>
         </div>
-      </div>
     </div>
-  
+
     <!-- 🔍 Search Box -->
     <div class="search-box" data-aos="fade-up">
-      <input
-        type="text"
-        [(ngModel)]="searchText"
-        placeholder="Search for tracks, jobs, or mentors..."
-      />
-      <button>Search</button>
+        <input type="text" [(ngModel)]="searchText" placeholder="Search for tracks, jobs, or mentors..." />
+        <button>Search</button>
     </div>
-  
+
     <!-- 👣 Footer -->
-    <footer class="site-footer" data-aos="fade-up" data-aos-delay="300">
-      <div class="footer-left">
-        <img src="assets/logo-footer.svg" alt="ITI Logo" />
-        <p>© 2025 Information Technology Institute. All rights reserved.</p>
-      </div>
-      <div class="footer-right">
-        <a routerLink="/about">About</a>
-        <a routerLink="/news">News</a>
-        <a routerLink="/contact">Contact</a>
-        <a routerLink="/privacy">Privacy Policy</a>
-      </div>
-    </footer>
-  </div>
-  
+    <footer class="custom-footer">
+        <div class="container py-5">
+          <div class="row">
+            <!-- Logo and About -->
+            <div class="col-md-5 mb-4">
+              <img src="assets/iti-logo.png" alt="ITI Logo" class="mb-3" style="width: 140px;">
+              <p>
+                Over 30 years, ITI has kept updating its training portfolio through continuous monitoring 
+                for future global tech trends, supporting national and mega projects, and sustaining graduates’ 
+                employment to 85% prior to graduation.
+              </p>
+            </div>
+      
+            <!-- Quick Links -->
+            <div class="col-md-3 mb-4">
+              <h5>QUICK LINKS</h5>
+              <ul class="list-unstyled">
+                <li><a href="https://iti.gov.eg/about-us">About Us</a></li>
+                <li><a href="https://iti.gov.eg/branches">Branches</a></li>
+                <li><a href="https://iti.gov.eg/news">News</a></li>
+                <li><a href="https://iti.gov.eg/contact-us">Contact Us</a></li>
+              </ul>
+            </div>
+      
+            <!-- Contact & Social -->
+            <div class="col-md-4 mb-4">
+              <h5>KEEP IN TOUCH</h5>
+              <p><i class="fas fa-phone-alt"></i> 17002</p>
+              <p><i class="fas fa-envelope"></i> ITIinfoiti.gov.eg</p>
+              <div class="social-icons mt-3">
+                <a href="https://www.facebook.com/Information.Technology.Institute" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.linkedin.com/school/information-technology-institute/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.youtube.com/user/ITIMoICT" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://twitter.com/ITI_egypt" target="_blank"><i class="fab fa-x-twitter"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+      
+
+</div>
