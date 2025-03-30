@@ -84,11 +84,18 @@ export class LoginComponent {
           this.email = '';
           this.password = '';
 
+          // Handle role-based redirection
           const userRole = response.user?.role;
-          const redirectPath = userRole === 'admin' ? '/admin/dashboard' : '/mentor/dashboard';
+          let redirectPath = '/main-content'; // Default to home
+
+          if (userRole === 'admin') {
+            redirectPath = '/admin/dashboard';
+          } else if (userRole === 'mentor') {
+            redirectPath = '/mentor/dashboard';
+          }
 
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate([redirectPath]); // Navigate to the appropriate route
           }, 1000);
           
         } else {
@@ -123,8 +130,8 @@ export class LoginComponent {
       panelClass: type === 'success' ? 'success-snackbar' : 'error-snackbar',
     });
   }
+
   loginWithGoogle(): void {
     this.showNotification("🚀 Google login is under development", "success");
   }
-  
 }
