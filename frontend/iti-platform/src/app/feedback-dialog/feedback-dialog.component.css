@@ -1,0 +1,26 @@
+:host ::ng-deep .mat-mdc-dialog-surface {
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    background-color: #fff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+  
+  .dialog-content {
+    padding-top: 10px;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  mat-dialog-actions {
+    margin-top: 10px;
+  }
+  
+  button {
+    min-width: 90px;
+  }
+  
