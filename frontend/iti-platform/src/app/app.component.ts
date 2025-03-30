@@ -11,13 +11,14 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent], // <-- Add the components you need
+  imports: [RouterOutlet, NavbarComponent],
   template: `
-  <app-navbar></app-navbar> <!-- This will display the Navbar -->
-  <router-outlet></router-outlet> <!-- This will display the routed content -->
-`,  // <-- Add the Navbar component to the template
-  styleUrl: './app.component.css'
+    <app-navbar></app-navbar>
+    <router-outlet></router-outlet>
+  `,
+  styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
   title = 'iti-hub';
 }
