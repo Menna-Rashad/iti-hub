@@ -29,6 +29,7 @@ export class NavbarComponent implements OnInit {
   userName: string = '';
   isMenuOpen = false;
   isDarkMode = false;
+  icon = '🌙';
 
   constructor(
     private snackBar: MatSnackBar,
@@ -37,15 +38,16 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // ✅ Apply saved dark mode preference
+    // Apply saved dark mode preference
     this.isDarkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', this.isDarkMode);
 
-    // ✅ Auth status and user info
+    // Check the authentication status
     this.authState.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
-      if (status) this.fetchUser();
-      else {
+      if (status) {
+        this.fetchUser();
+      } else {
         this.userImage = '';
         this.userName = '';
       }
@@ -58,7 +60,7 @@ export class NavbarComponent implements OnInit {
       const user = JSON.parse(storedUser);
       this.userImage = user.profile_picture
         ? `http://127.0.0.1:8000/profile_pictures/${user.profile_picture}`
-        : 'assets/user.png';
+        : 'assets/user.png'; // Default profile picture if no image
       this.userName = user.name || 'User';
     }
   }
@@ -74,30 +76,22 @@ export class NavbarComponent implements OnInit {
       horizontalPosition: 'end',
       verticalPosition: 'top',
     });
-    this.router.navigate(['/api/login']);
+    this.router.navigate(['/login']); // Fixed login route
   }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  icon = '🌙';
-
-toggleDarkMode(): void {
-  this.isDarkMode = !this.isDarkMode;
-  localStorage.setItem('darkMode', this.isDarkMode.toString());
-  document.body.classList.toggle('dark-mode', this.isDarkMode);
-  this.icon = this.isDarkMode ? '☀️' : '🌙';
-}
-
-
-ngAfterViewInit() {
-  const toggle = document.getElementById('darkModeToggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
+  // Toggle Dark Mode
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+    document.body.classList.toggle('dark-mode', this.isDarkMode);
+    this.icon = this.isDarkMode ? '☀️' : '🌙';
   }
-}
 
+  ngAfterViewInit() {
+    // You can remove this manual event binding, Angular already handles (click) in the template
+  }
 }
