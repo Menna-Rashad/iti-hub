@@ -12,6 +12,7 @@ import { EditPostComponent } from './components/edit-post/edit-post.component';
 import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.component';
 import { MentorGuard } from './auth/mentor.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { MainContentComponent } from './main-content/main-content.component'; // Import MainContentComponent
 
 export const routes: Routes = [
   // ✅ Auth Routes
@@ -30,7 +31,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
-    title: 'Home'
+    title: 'Home',
   },
 
   { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
@@ -43,12 +44,14 @@ export const routes: Routes = [
     title: 'Mentor Dashboard'
   },
 
+  // ✅ Main Content Route (After login)
+  { path: 'main-content', component: MainContentComponent, canActivate: [AuthGuard], title: 'Main Content' },
+
   // ✅ Forum / Posts
   { path: 'posts', component: PostListComponent },
   { path: 'posts/create', component: CreatePostComponent },
   { path: 'posts/:id', component: PostDetailComponent },
   { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
-  { path: 'posts/:id/edit', component: EditPostComponent },
 
   // ✅ Fallback
   { path: '**', redirectTo: '', pathMatch: 'full' }
