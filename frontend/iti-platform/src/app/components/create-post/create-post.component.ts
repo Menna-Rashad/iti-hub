@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ForumService } from '../../services/forum.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
@@ -20,21 +20,27 @@ import { MatButtonModule } from '@angular/material/button';
     RouterModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ]
 })
-export class CreatePostComponent {
+export class CreatePostComponent implements OnInit {
   postData = {
     title: '',
     content: '',
-    category_id: 1,
+    category_id: null,
     tags: ''
   };
 
-  constructor(
-    private forumService: ForumService,
-    private router: Router
-  ) { }
+  categories = [
+    { id: 1, name: 'General' },
+    { id: 2, name: 'Questions' },
+    { id: 3, name: 'Feedback' }
+  ];
+
+  constructor(private forumService: ForumService, private router: Router) {}
+
+  ngOnInit(): void {}
 
   submitPost(): void {
     if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
@@ -43,14 +49,8 @@ export class CreatePostComponent {
     }
 
     this.forumService.createPost(this.postData).subscribe({
-      next: (response) => {
-        console.log('Post created successfully:', response);
-        this.router.navigate(['/posts']);
-      },
-      error: (err) => {
-        console.error('Error creating post:', err);
-        alert('Failed to create the post!');
-      }
+      next: () => this.router.navigate(['/main-content']),
+      error: () => alert('Failed to create post.')
     });
   }
 }
