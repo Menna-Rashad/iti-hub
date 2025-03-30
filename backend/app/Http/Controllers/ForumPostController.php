@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -34,7 +35,8 @@ class ForumPostController extends Controller
         ]);
 
         $forumPost = ForumPost::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
+
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
