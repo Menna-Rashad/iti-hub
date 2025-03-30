@@ -1,0 +1,85 @@
+<div class="main-content-layout">
+    <!-- Sidebar -->
+    <aside class="left-panel">
+      <app-sidebar></app-sidebar>
+    </aside>
+  
+   <!-- Posts Center -->
+  <main class="center-panel">
+    <div class="actions">
+      <button mat-stroked-button color="primary" (click)="openDialog()">💬 Ask a Question</button>
+      <button mat-stroked-button color="accent" (click)="openDialog()">📝 Give Feedback</button>
+      <a mat-button routerLink="/posts/create">➕ Create Post</a>
+    </div>
+
+    <div *ngFor="let post of posts" class="discussion-card">
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.content }}</p>
+
+      <!-- ✅ Tag-style Category -->
+      <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
+
+      <!-- ✅ Like & Copy -->
+      <div class="likes-section">
+        <button (click)="vote(post.id, 'upvote')" [disabled]="loadingVotes[post.id]">👍 {{ post.upvotes || 0 }}</button>
+        <button (click)="vote(post.id, 'downvote')" [disabled]="loadingVotes[post.id]">👎 {{ post.downvotes || 0 }}</button>
+
+        <!-- ✅ Copy with Tooltip -->
+        <button mat-icon-button [matTooltip]="'Copy post link'" (click)="copyLink(post.id)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+
+      <a [routerLink]="['/posts', post.id]">View Discussion</a>
+
+      <!-- 💬 Comments Section -->
+<div class="comments-wrapper">
+    <div *ngIf="loadingComments[post.id]">Loading comments...</div>
+  
+    <div *ngIf="comments[post.id]">
+      <h4>💬 Comments ({{ comments[post.id]?.length || 0 }})</h4>
+      
+
+        <div class="comment-scroll-box">
+            <div *ngFor="let comment of comments[post.id]" class="comment">
+              <strong>{{ comment.user?.name }}</strong>: {{ comment.content }}
+              <div class="comment-actions" *ngIf="comment.user_id === currentUser?.id">
+                <button class="comment-btn" (click)="editComment(post.id, comment)">✏️ Edit</button>
+                <button class="comment-btn" (click)="deleteComment(post.id, comment.id)">🗑 Delete</button>
+              </div>
+            </div>
+       
+          
+      </div>
+  
+      <!-- <button *ngIf="visibleComments[post.id].length < comments[post.id].length"
+              (click)="loadMoreComments(post.id)">
+        Load More
+      </button> -->
+    </div>
+  
+    <!-- Add Comment -->
+    <div class="add-comment-box">
+      <input
+        type="text"
+        [(ngModel)]="commentText[post.id]"
+        placeholder="Write a comment..."
+      />
+      <button (click)="addComment(post.id)">Add Comment</button>
+    </div>
+  </div>
+  
+      </div>
+    </main>
+  
+    <!-- Top Contributors -->
+    <aside class="right-panel">
+      <h3>Top Contributors</h3>
+      <ul>
+        <li><img src="assets/user.png" /> Sara Emad</li>
+        <li><img src="assets/user.png" /> Ahmed Samir</li>
+        <li><img src="assets/user.png" /> Laila Ahmed</li>
+      </ul>
+    </aside>
+  </div>
+  
