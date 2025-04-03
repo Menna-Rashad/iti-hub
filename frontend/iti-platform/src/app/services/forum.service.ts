@@ -63,6 +63,17 @@ export class ForumService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.put(`${this.apiUrl}/comments/${commentId}`, data, { headers });
   }
-  
+  // إضافة دوال التحديث والحذف للـ Post
+  updatePost(postId: number, data: any): Observable<any> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put(`${this.apiUrl}/posts/${postId}`, data, { headers });
+  }
+
+  deletePost(postId: number): Observable<any> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/posts/${postId}`, { headers });
+  }
   
 }
