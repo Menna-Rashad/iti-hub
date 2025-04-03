@@ -12,6 +12,7 @@ use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\RegisterController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -101,6 +102,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('comments', CommentController::class)->except(['index']);
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
+
+    Route::post('/register', [RegisterController::class, 'register']);
 
 
     // ==========================
