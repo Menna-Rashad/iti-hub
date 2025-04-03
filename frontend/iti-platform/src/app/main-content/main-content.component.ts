@@ -1,19 +1,42 @@
 import {
-  Component, OnInit, AfterViewInit,
-  ElementRef, ViewChildren, QueryList
+  Component, OnInit, ElementRef, ViewChildren, QueryList
 } from '@angular/core';
-
 import { ForumService } from '../services/forum.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import {
+  CommonModule
+} from '@angular/common';
+import {
+  FormsModule
+} from '@angular/forms';
+import {
+  RouterModule
+} from '@angular/router';
+import {
+  MatDialogModule
+} from '@angular/material/dialog';
+import {
+  MatButtonModule
+} from '@angular/material/button';
+import {
+  MatIconModule
+} from '@angular/material/icon';
+import {
+  MatTooltipModule
+} from '@angular/material/tooltip';
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+import {
+  MatInputModule
+} from '@angular/material/input';
+import {
+  MatMenuModule
+} from '@angular/material/menu';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+
 @Component({
   selector: 'app-main-content',
   standalone: true,
@@ -25,6 +48,9 @@ import { ToastrService } from 'ngx-toastr';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    MatInputModule,
     SidebarComponent
   ],
   templateUrl: './main-content.component.html',
@@ -32,20 +58,24 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MainContentComponent implements OnInit {
   posts: any[] = [];
+  filteredPosts: any[] = [];
   loadingVotes: { [key: number]: boolean } = {};
   commentText: { [postId: number]: string } = {};
   loadingComments: { [postId: number]: boolean } = {};
   comments: { [postId: number]: any[] } = {};
-  currentUser: any = null;
   visibleComments: { [postId: number]: any[] } = {};
+  currentUser: any = null;
+  searchQuery = '';
 
+  editingPostId: number | null = null;
+  editPostTitle = '';
+  editPostContent = '';
 
   @ViewChildren('lastVisibleComment', { read: ElementRef }) lastCommentElements!: QueryList<ElementRef>;
-  observer: IntersectionObserver | null = null;
-  
+
   constructor(
-    private dialog: MatDialog,
     private forumService: ForumService,
+    private dialog: MatDialog,
     private toastr: ToastrService
   ) {}
 
@@ -56,67 +86,49 @@ export class MainContentComponent implements OnInit {
 
   getCurrentUser(): void {
     this.forumService.getCurrentUser().subscribe({
-      next: (res) => {
-        console.log('✅ currentUser Response:', res);
-
-        // 👇 حاول جرب ده حسب شكل الـ API عندك
+      next: res => {
         this.currentUser = res.user ?? res;
-
-        console.log('✅ currentUser Stored:', this.currentUser);
       },
-      error: (err) => console.error('❌ Error fetching user', err)
+      error: err => console.error(err)
     });
   }
 
   loadPosts(): void {
     this.forumService.getPosts().subscribe({
-      next: (res) => {
+      next: res => {
         this.posts = res;
+        this.filteredPosts = res;
         res.forEach((post: any) => this.loadComments(post.id));
       },
-      error: (err) => console.error(err)
+      error: err => console.error(err)
     });
   }
 
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
     this.forumService.getPost(postId.toString()).subscribe({
-      next: (res) => {
+      next: res => {
         this.comments[postId] = res.comments;
-        // عرض أول 3 فقط
         this.visibleComments[postId] = res.comments.slice(0, 3);
         this.loadingComments[postId] = false;
       },
-      error: (err) => {
-        console.error('Error loading comments:', err);
+      error: err => {
         this.loadingComments[postId] = false;
+        console.error(err);
       }
     });
   }
-  loadMoreComments(postId: number): void {
-    const currentLength = this.visibleComments[postId]?.length || 0;
-    const nextComments = this.comments[postId].slice(currentLength, currentLength + 3);
-    this.visibleComments[postId] = [
-      ...(this.visibleComments[postId] || []),
-      ...nextComments
-    ];
-  }
-    
 
   addComment(postId: number): void {
     const comment = this.commentText[postId]?.trim();
     if (!comment) return;
-
-    this.forumService.createComment(postId, { content: comment })
-    .subscribe({
+    this.forumService.createComment(postId, { content: comment }).subscribe({
       next: () => {
         this.commentText[postId] = '';
-        this.loadComments(postId); // Refresh
+        this.loadComments(postId);
       },
-      error: (err) => {
-        console.error('Error adding comment:', err);
-      }
-    });  
+      error: err => console.error(err)
+    });
   }
 
   editComment(postId: number, comment: any): void {
@@ -124,7 +136,7 @@ export class MainContentComponent implements OnInit {
     if (newContent && newContent.trim()) {
       this.forumService.updateComment(comment.id, { content: newContent.trim() }).subscribe({
         next: () => this.loadComments(postId),
-        error: (err) => console.error('❌ Error editing comment:', err)
+        error: err => console.error(err)
       });
     }
   }
@@ -132,19 +144,18 @@ export class MainContentComponent implements OnInit {
   deleteComment(postId: number, commentId: number): void {
     this.forumService.deleteComment(commentId).subscribe({
       next: () => this.loadComments(postId),
-      error: (err) => console.error('❌ Error deleting comment:', err)
+      error: err => console.error(err)
     });
   }
 
-  vote(postId: number, voteType: 'upvote' | 'downvote') {
+  vote(postId: number, voteType: 'upvote' | 'downvote'): void {
     this.loadingVotes[postId] = true;
-
     this.forumService.vote({
       target_type: 'post',
       target_id: postId,
       vote_type: voteType
     }).subscribe({
-      next: (res) => {
+      next: res => {
         const post = this.posts.find(p => p.id === postId);
         if (post) {
           post.upvotes = res.upvotes;
@@ -152,9 +163,9 @@ export class MainContentComponent implements OnInit {
         }
         this.loadingVotes[postId] = false;
       },
-      error: (err) => {
-        console.error('❌ Error voting:', err);
+      error: err => {
         this.loadingVotes[postId] = false;
+        console.error(err);
       }
     });
   }
@@ -164,9 +175,7 @@ export class MainContentComponent implements OnInit {
       width: '400px',
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.loadPosts(); // refresh
-    });
+    dialogRef.afterClosed().subscribe(() => this.loadPosts());
   }
 
   copyLink(postId: number): void {
@@ -175,31 +184,54 @@ export class MainContentComponent implements OnInit {
       .then(() => this.toastr.success('Link copied to clipboard ✅'))
       .catch(() => this.toastr.error('Failed to copy link ❌'));
   }
-  
-  // ngAfterViewInit(): void {
-  //   this.lastCommentElements.changes.subscribe(() => {
-  //     this.posts.forEach(post => {
-  //       const visible = this.visibleComments[post.id]?.length || 0;
-  //       const total = this.comments[post.id]?.length || 0;
-  //       if (visible < total) {
-  //         this.observeLastComment(post.id);
-  //       }
-  //     });
-  //   });
-  // }
-  // observeLastComment(postId: number): void {
-  //   const last = this.lastCommentElements?.last;
-  //   if (!last) return;
-  
-  //   if (this.observer) this.observer.disconnect();
-  
-  //   this.observer = new IntersectionObserver((entries) => {
-  //     if (entries[0].isIntersecting) {
-  //       this.loadMoreComments(postId);
-  //     }
-  //   });
-  
-  //   this.observer.observe(last.nativeElement);
-  // }
-    
+
+  onSearch(): void {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      this.filteredPosts = this.posts;
+      return;
+    }
+
+    this.filteredPosts = this.posts.filter(post =>
+      post.title?.toLowerCase().includes(query) ||
+      post.content?.toLowerCase().includes(query) ||
+      post.category?.name?.toLowerCase().includes(query)
+    );
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredPosts = this.posts;
+  }
+
+  // ✅ Post Actions
+  editPost(post: any): void {
+    const newTitle = prompt('📝 Edit post title:', post.title);
+    const newContent = prompt('📝 Edit post content:', post.content);
+
+    if (newTitle?.trim() && newContent?.trim()) {
+      this.forumService.updatePost(post.id, {
+        title: newTitle.trim(),
+        content: newContent.trim()
+      }).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('Post updated successfully.');
+        },
+        error: () => this.toastr.error('Failed to update post.')
+      });
+    }
+  }
+
+  deletePost(postId: number): void {
+    if (confirm('🗑 Are you sure you want to delete this post?')) {
+      this.forumService.deletePost(postId).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('Post deleted successfully.');
+        },
+        error: () => this.toastr.error('Failed to delete post.')
+      });
+    }
+  }
 }
