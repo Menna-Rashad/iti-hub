@@ -33,6 +33,8 @@ export class CreatePostComponent implements OnInit {
     category_id: null,
     tags: ''
   };
+  selectedFiles: File[] = [];
+  previewUrls: string[] = [];
 
   // categories = [
   //   { id: 1, name: 'General' },
@@ -53,19 +55,41 @@ export class CreatePostComponent implements OnInit {
     });
   }
   
-  getCategoryName(id: number | null): string | undefined {
-    return this.categories.find(c => c.id === id)?.name;
+  getCategoryName(id: number | null): string {
+    const cat = this.categories.find(c => c.id === id);
+    return cat ? cat.name : '';
   }
   
-  submitPost(): void {
-    if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
-      alert('Please fill in all required fields!');
-      return;
-    }
-
-    this.forumService.createPost(this.postData).subscribe({
-      next: () => this.router.navigate(['/main-content']),
-      error: () => alert('Failed to create post.')
-    });
+submitPost(): void {
+  if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
+    alert('Please fill in all required fields!');
+    return;
   }
+
+  const formData = new FormData();
+  formData.append('title', this.postData.title);
+  formData.append('content', this.postData.content);
+  formData.append('category_id', this.postData.category_id);
+  formData.append('tags', this.postData.tags);
+
+  this.selectedFiles.forEach(file => {
+    formData.append('media[]', file);
+  });
+
+  this.forumService.createPost(formData).subscribe({
+    next: () => this.router.navigate(['/main-content']),
+    error: () => alert('Failed to create post.')
+  });
+}
+
+onFileChange(event: any): void {
+  this.selectedFiles = Array.from(event.target.files);
+  this.previewUrls = [];
+
+  this.selectedFiles.forEach(file => {
+    const url = URL.createObjectURL(file);
+    this.previewUrls.push(url);
+  });
+}
+
 }
