@@ -25,6 +25,16 @@
   height: 48px;
   margin-bottom: 15px;
 }
+.pagination button {
+  margin: 3px;
+  padding: 5px 10px;
+}
+
+.pagination button:disabled {
+  background-color: #d72638;
+  color: white;
+  font-weight: bold;
+}
 
 .loading {
   text-align: center;
