@@ -25,6 +25,7 @@ return new class extends Migration
                // إضافة الفهرس
             // $table->fullText(['title', 'content']);
             $table->index(['category_id', 'created_at']);
+            $table->json('media_paths')->nullable();
         });
     }
 
