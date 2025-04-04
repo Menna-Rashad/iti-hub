@@ -11,11 +11,15 @@ class ForumPostController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])->get();
-
+            $perPage = $request->input('per_page', 10); // default: 10 posts per page
+    
+            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])
+                ->latest()
+                ->paginate($perPage);
+    
             return response()->json($forumPosts);
         } catch (\Exception $e) {
             return response()->json([
@@ -24,6 +28,7 @@ class ForumPostController extends Controller
             ], 500);
         }
     }
+    
 
     public function store(Request $request)
     {
