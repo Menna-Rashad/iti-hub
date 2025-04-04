@@ -14,13 +14,30 @@ class ForumPostController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = $request->input('per_page', 10); // default: 10 posts per page
+            $perPage = $request->input('per_page', 10);
+            $sort = $request->input('sort', 'newest');
+            $categoryId = $request->input('category');
     
-            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])
-                ->latest()
-                ->paginate($perPage);
+            $query = ForumPost::with(['comments.user', 'votes.user', 'category']);
     
-            return response()->json($forumPosts);
+            if ($categoryId) {
+                $query->where('category_id', $categoryId);
+            }
+    
+            if ($sort === 'top') {
+                $query->withCount([
+                    'votes as upvotes' => function ($q) {
+                        $q->where('vote_type', 'upvote');
+                    },
+                    'votes as downvotes' => function ($q) {
+                        $q->where('vote_type', 'downvote');
+                    },
+                ])->orderByRaw('(upvotes - downvotes) DESC');
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+    
+            return response()->json($query->paginate($perPage));
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error loading posts',
