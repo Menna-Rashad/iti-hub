@@ -16,12 +16,38 @@ export class ForumService {
     
     return this.http.post(`${this.apiUrl}/posts`, postData, { headers });
   }
-  
-  getPostsPaginated(page: number = 1, perPage: number = 5): Observable<any> {
+  getCategories(): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get(`${this.apiUrl}/posts?page=${page}&per_page=${perPage}`, { headers });
-  }  
+    return this.http.get(`${this.apiUrl}/categories`, { headers });
+  }
+  
+getPostsPaginated(
+  page: number = 1,
+  perPage: number = 5,
+  sort: string = 'newest',
+  categoryId?: number
+): Observable<any> {
+  const token = localStorage.getItem('auth_token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  let params: any = {
+    page,
+    per_page: perPage,
+    sort,
+  };
+
+  if (categoryId !== null && categoryId !== undefined) {
+    params.category = categoryId;
+  }
+  
+
+  return this.http.get(`${this.apiUrl}/posts`, {
+    headers,
+    params,
+  });
+}
+  
   
   getPosts(): Observable<any> {
     const token = localStorage.getItem('auth_token');
