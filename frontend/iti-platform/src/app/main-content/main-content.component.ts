@@ -1,40 +1,24 @@
 import {
-  Component, OnInit, ElementRef, ViewChildren, QueryList
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { ForumService } from '../services/forum.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  FormsModule
-} from '@angular/forms';
-import {
-  RouterModule
-} from '@angular/router';
-import {
-  MatDialogModule
-} from '@angular/material/dialog';
-import {
-  MatButtonModule
-} from '@angular/material/button';
-import {
-  MatIconModule
-} from '@angular/material/icon';
-import {
-  MatTooltipModule
-} from '@angular/material/tooltip';
-import {
-  MatFormFieldModule
-} from '@angular/material/form-field';
-import {
-  MatInputModule
-} from '@angular/material/input';
-import {
-  MatMenuModule
-} from '@angular/material/menu';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
@@ -51,10 +35,10 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    SidebarComponent
+    SidebarComponent,
   ],
   templateUrl: './main-content.component.html',
-  styleUrls: ['./main-content.component.css']
+  styleUrls: ['./main-content.component.css'],
 })
 export class MainContentComponent implements OnInit {
   posts: any[] = [];
@@ -71,7 +55,8 @@ export class MainContentComponent implements OnInit {
   editPostTitle = '';
   editPostContent = '';
 
-  @ViewChildren('lastVisibleComment', { read: ElementRef }) lastCommentElements!: QueryList<ElementRef>;
+  @ViewChildren('lastVisibleComment', { read: ElementRef })
+  lastCommentElements!: QueryList<ElementRef>;
 
   constructor(
     private forumService: ForumService,
@@ -86,36 +71,36 @@ export class MainContentComponent implements OnInit {
 
   getCurrentUser(): void {
     this.forumService.getCurrentUser().subscribe({
-      next: res => {
+      next: (res) => {
         this.currentUser = res.user ?? res;
       },
-      error: err => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   loadPosts(): void {
     this.forumService.getPosts().subscribe({
-      next: res => {
+      next: (res) => {
         this.posts = res;
         this.filteredPosts = res;
         res.forEach((post: any) => this.loadComments(post.id));
       },
-      error: err => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
     this.forumService.getPost(postId.toString()).subscribe({
-      next: res => {
+      next: (res) => {
         this.comments[postId] = res.comments;
         this.visibleComments[postId] = res.comments.slice(0, 3);
         this.loadingComments[postId] = false;
       },
-      error: err => {
+      error: (err) => {
         this.loadingComments[postId] = false;
         console.error(err);
-      }
+      },
     });
   }
 
@@ -127,47 +112,51 @@ export class MainContentComponent implements OnInit {
         this.commentText[postId] = '';
         this.loadComments(postId);
       },
-      error: err => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   editComment(postId: number, comment: any): void {
     const newContent = prompt('✏️ Edit your comment:', comment.content);
     if (newContent && newContent.trim()) {
-      this.forumService.updateComment(comment.id, { content: newContent.trim() }).subscribe({
-        next: () => this.loadComments(postId),
-        error: err => console.error(err)
-      });
+      this.forumService
+        .updateComment(comment.id, { content: newContent.trim() })
+        .subscribe({
+          next: () => this.loadComments(postId),
+          error: (err) => console.error(err),
+        });
     }
   }
 
   deleteComment(postId: number, commentId: number): void {
     this.forumService.deleteComment(commentId).subscribe({
       next: () => this.loadComments(postId),
-      error: err => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
   vote(postId: number, voteType: 'upvote' | 'downvote'): void {
     this.loadingVotes[postId] = true;
-    this.forumService.vote({
-      target_type: 'post',
-      target_id: postId,
-      vote_type: voteType
-    }).subscribe({
-      next: res => {
-        const post = this.posts.find(p => p.id === postId);
-        if (post) {
-          post.upvotes = res.upvotes;
-          post.downvotes = res.downvotes;
-        }
-        this.loadingVotes[postId] = false;
-      },
-      error: err => {
-        this.loadingVotes[postId] = false;
-        console.error(err);
-      }
-    });
+    this.forumService
+      .vote({
+        target_type: 'post',
+        target_id: postId,
+        vote_type: voteType,
+      })
+      .subscribe({
+        next: (res) => {
+          const post = this.posts.find((p) => p.id === postId);
+          if (post) {
+            post.upvotes = res.upvotes;
+            post.downvotes = res.downvotes;
+          }
+          this.loadingVotes[postId] = false;
+        },
+        error: (err) => {
+          this.loadingVotes[postId] = false;
+          console.error(err);
+        },
+      });
   }
 
   openDialog(): void {
@@ -180,7 +169,8 @@ export class MainContentComponent implements OnInit {
 
   copyLink(postId: number): void {
     const link = `${window.location.origin}/posts/${postId}`;
-    navigator.clipboard.writeText(link)
+    navigator.clipboard
+      .writeText(link)
       .then(() => this.toastr.success('Link copied to clipboard ✅'))
       .catch(() => this.toastr.error('Failed to copy link ❌'));
   }
@@ -192,10 +182,11 @@ export class MainContentComponent implements OnInit {
       return;
     }
 
-    this.filteredPosts = this.posts.filter(post =>
-      post.title?.toLowerCase().includes(query) ||
-      post.content?.toLowerCase().includes(query) ||
-      post.category?.name?.toLowerCase().includes(query)
+    this.filteredPosts = this.posts.filter(
+      (post) =>
+        post.title?.toLowerCase().includes(query) ||
+        post.content?.toLowerCase().includes(query) ||
+        post.category?.name?.toLowerCase().includes(query)
     );
   }
 
@@ -210,16 +201,18 @@ export class MainContentComponent implements OnInit {
     const newContent = prompt('📝 Edit post content:', post.content);
 
     if (newTitle?.trim() && newContent?.trim()) {
-      this.forumService.updatePost(post.id, {
-        title: newTitle.trim(),
-        content: newContent.trim()
-      }).subscribe({
-        next: () => {
-          this.loadPosts();
-          this.toastr.success('Post updated successfully.');
-        },
-        error: () => this.toastr.error('Failed to update post.')
-      });
+      this.forumService
+        .updatePost(post.id, {
+          title: newTitle.trim(),
+          content: newContent.trim(),
+        })
+        .subscribe({
+          next: () => {
+            this.loadPosts();
+            this.toastr.success('Post updated successfully.');
+          },
+          error: () => this.toastr.error('Failed to update post.'),
+        });
     }
   }
 
@@ -230,7 +223,7 @@ export class MainContentComponent implements OnInit {
           this.loadPosts();
           this.toastr.success('Post deleted successfully.');
         },
-        error: () => this.toastr.error('Failed to delete post.')
+        error: () => this.toastr.error('Failed to delete post.'),
       });
     }
   }
