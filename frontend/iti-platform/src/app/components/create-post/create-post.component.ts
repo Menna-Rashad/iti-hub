@@ -24,7 +24,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule
   ]
 })
+
 export class CreatePostComponent implements OnInit {
+  categories: any[] = [];
   postData = {
     title: '',
     content: '',
@@ -32,17 +34,25 @@ export class CreatePostComponent implements OnInit {
     tags: ''
   };
 
-  categories = [
-    { id: 1, name: 'General' },
-    { id: 2, name: 'Angular' },
-    { id: 3, name: 'Feedback' },
-    { id: 4, name: 'Laravel' }
-  ];
+  // categories = [
+  //   { id: 1, name: 'General' },
+  //   { id: 2, name: 'Angular' },
+  //   { id: 3, name: 'Feedback' },
+  //   { id: 4, name: 'Laravel' }
+  // ];
  
   constructor(private forumService: ForumService, private router: Router) {}
 
-  ngOnInit(): void {}
-
+  ngOnInit(): void {
+    this.getCategories();
+  }
+  getCategories(): void {
+    this.forumService.getCategories().subscribe({
+      next: (res) => (this.categories = res),
+      error: (err) => console.error('Error loading categories:', err),
+    });
+  }
+  
   submitPost(): void {
     if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
       alert('Please fill in all required fields!');
