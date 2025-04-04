@@ -18,6 +18,11 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tags</mat-label>
+      <input matInput [(ngModel)]="postData.tags" name="tags" placeholder="e.g. Angular, Forms, UX" />
+    </mat-form-field>
+    
     <!-- Content Input -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Content</mat-label>
@@ -31,10 +36,17 @@
     </div>
   </form>
 
-  <!-- ✅ Preview -->
-  <div class="preview-box" *ngIf="postData.title || postData.content">
-    <h3>📝 Preview</h3>
-    <h4>{{ postData.title }}</h4>
-    <p>{{ postData.content }}</p>
-  </div>
+<!-- ✅ Preview -->
+<div class="preview-box" *ngIf="postData.title || postData.content">
+  <h3>📝 Preview</h3>
+  <h4>{{ postData.title }}</h4>
+  <p><strong>Category:</strong> {{ getCategoryName(postData.category_id) || 'Uncategorized' }}</p>
+  <p>{{ postData.content }}</p>
+
+  <p *ngIf="postData.tags">
+    <strong>Tags:</strong>
+    <span class="tag" *ngFor="let tag of postData.tags.split(',')">{{ tag.trim() }}</span>
+  </p>
+</div>
+
 </div>
