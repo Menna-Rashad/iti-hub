@@ -34,10 +34,11 @@ export class CreatePostComponent implements OnInit {
 
   categories = [
     { id: 1, name: 'General' },
-    { id: 2, name: 'Questions' },
-    { id: 3, name: 'Feedback' }
+    { id: 2, name: 'Angular' },
+    { id: 3, name: 'Feedback' },
+    { id: 4, name: 'Laravel' }
   ];
-
+ 
   constructor(private forumService: ForumService, private router: Router) {}
 
   ngOnInit(): void {}
