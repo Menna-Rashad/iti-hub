@@ -17,6 +17,12 @@ export class ForumService {
     return this.http.post(`${this.apiUrl}/posts`, postData, { headers });
   }
   
+  getPostsPaginated(page: number = 1, perPage: number = 5): Observable<any> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.apiUrl}/posts?page=${page}&per_page=${perPage}`, { headers });
+  }  
+  
   getPosts(): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
