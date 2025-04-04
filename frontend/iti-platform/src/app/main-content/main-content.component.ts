@@ -41,6 +41,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   styleUrls: ['./main-content.component.css'],
 })
 export class MainContentComponent implements OnInit {
+  selectedSort: string = 'newest';
+  selectedCategoryId: number | null = null;
+  categories: any[] = [];
   posts: any[] = [];
   currentPage: number = 1;
   perPage: number = 5;
@@ -70,6 +73,16 @@ export class MainContentComponent implements OnInit {
   ngOnInit(): void {
     this.loadPosts();
     this.getCurrentUser();
+    this.loadCategories();
+  }
+
+  loadCategories(): void {
+    this.forumService.getCategories().subscribe({
+      next: (res) => {
+        this.categories = res;
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   getCurrentUser(): void {
@@ -82,17 +95,22 @@ export class MainContentComponent implements OnInit {
   }
 
   loadPosts(): void {
-    this.forumService.getPostsPaginated(this.currentPage, this.perPage).subscribe({
-      next: (res) => {
-        this.posts = res.data;
-        this.filteredPosts = res.data;
-        this.totalPages = res.last_page;
-  
-        res.data.forEach((post: any) => this.loadComments(post.id));
-      },
-      error: (err) => console.error(err),
-    });
-  }
+this.forumService.getPostsPaginated(
+  this.currentPage,
+  this.perPage,
+  this.selectedSort,
+  this.selectedCategoryId || undefined 
+)
+      .subscribe({
+        next: (res) => {
+          this.posts = res.data;
+          this.filteredPosts = res.data;
+          this.totalPages = res.last_page;
+          res.data.forEach((post: any) => this.loadComments(post.id));
+        },
+        error: (err) => console.error(err),
+      });
+  }  
   goToPage(page: number): void {
     this.currentPage = page;
     this.loadPosts();
