@@ -46,7 +46,7 @@ export class MainContentComponent implements OnInit {
   loadingVotes: { [key: number]: boolean } = {};
   commentText: { [postId: number]: string } = {};
   loadingComments: { [postId: number]: boolean } = {};
-  comments: { [postId: number]: any[] } = {};
+  comments: { [postId: number]: any[] | undefined } = {};
   visibleComments: { [postId: number]: any[] } = {};
   currentUser: any = null;
   searchQuery = '';
