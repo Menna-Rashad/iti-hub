@@ -53,6 +53,10 @@ export class CreatePostComponent implements OnInit {
     });
   }
   
+  getCategoryName(id: number | null): string | undefined {
+    return this.categories.find(c => c.id === id)?.name;
+  }
+  
   submitPost(): void {
     if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
       alert('Please fill in all required fields!');
