@@ -10,12 +10,13 @@ export class ForumService {
 
   constructor(private http: HttpClient) { }
 
-  createPost(postData: any): Observable<any> {
+  createPost(postData: FormData): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+  
     return this.http.post(`${this.apiUrl}/posts`, postData, { headers });
   }
+  
   getCategories(): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
