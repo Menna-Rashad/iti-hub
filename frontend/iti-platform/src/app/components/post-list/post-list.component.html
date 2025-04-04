@@ -12,7 +12,17 @@
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
-
+    <!-- Category Dropdown -->
+    <select [(ngModel)]="selectedCategoryId" (change)="loadPaginatedPosts()" class="category-dropdown">
+      <option [ngValue]="null">📂 All Categories</option>
+      <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+    </select>
+    
+    <!-- Sort Dropdown -->
+    <select [(ngModel)]="selectedSort" (change)="loadPaginatedPosts()" class="sort-dropdown">
+      <option value="newest">🕒 Newest</option>
+      <option value="top">🔥 Top Voted</option>
+    </select>
   <div *ngFor="let post of posts">
     <mat-card style="margin-top: 15px;">
       <mat-card-title>{{ post.title }}</mat-card-title>
