@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { mentorGuard } from './mentor.guard';
+import { MentorGuard } from './mentor.guard';
 
-describe('mentorGuard', () => {
+describe('MentorGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => mentorGuard(...guardParameters));
+      TestBed.runInInjectionContext(() => MentorGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

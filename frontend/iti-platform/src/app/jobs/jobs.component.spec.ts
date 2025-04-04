@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { JobsComponent } from './jobs.component';
+import { JobComponent } from './jobs.component';
 import { JobService } from '../services/job.service';
 import { of } from 'rxjs'; // Import the `of` function to mock observables
 
@@ -21,19 +21,19 @@ class MockJobService {
   }
 }
 
-describe('JobsComponent', () => {
-  let component: JobsComponent;
-  let fixture: ComponentFixture<JobsComponent>;
+describe('JobComponent', () => {
+  let component: JobComponent;
+  let fixture: ComponentFixture<JobComponent>;
   let jobService: JobService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [JobsComponent], // Component to test
+      declarations: [JobComponent], // Component to test
       providers: [{ provide: JobService, useClass: MockJobService }] // Provide the mocked service
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(JobsComponent);
+    fixture = TestBed.createComponent(JobComponent);
     component = fixture.componentInstance;
     jobService = TestBed.inject(JobService); // Get the injected JobService instance
     fixture.detectChanges();
