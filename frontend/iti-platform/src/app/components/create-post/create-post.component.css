@@ -3,51 +3,60 @@
   margin: 30px auto;
   padding: 30px;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   font-family: 'Segoe UI', sans-serif;
 }
 
-.create-post-container {
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  max-width: 700px;
-  margin: 0 auto;
-}
-
+/* Form field styling */
 .full-width {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
+/* Action buttons */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 10px;
 }
 
-.preview-box {
-  margin-top: 30px;
-  padding: 15px;
-  background: #f1f1f1;
-  border-left: 4px solid #007bff;
-  border-radius: 4px;
-}
-
+/* Submit button - ITI brand color */
 button[mat-raised-button] {
   background-color: #880e4f;
   color: white;
+  transition: background-color 0.3s ease;
 }
 
 button[mat-raised-button]:hover {
   background-color: #6a0c3d;
 }
 
+/* Cancel button */
 button[mat-button] {
-  color: #555;
+  color: #444;
+  transition: color 0.2s ease;
 }
 
 button[mat-button]:hover {
+  color: #222;
   text-decoration: underline;
+}
+
+/* Preview Section */
+.preview-box {
+  margin-top: 35px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-left: 5px solid #880e4f;
+  border-radius: 8px;
+}
+
+.preview-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #880e4f;
+  font-size: 1.2rem;
 }
