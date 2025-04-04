@@ -34,7 +34,7 @@ export class PostListComponent implements OnInit {
   constructor(
     private forumService: ForumService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadPosts();
@@ -43,27 +43,30 @@ export class PostListComponent implements OnInit {
   loadPosts(): void {
     this.forumService.getPosts().subscribe({
       next: (response: any) => {
-        this.posts = response;
-
+        this.posts = response; // تأكدي إن API فعلاً بترجع array مش { data: [...] }
       },
       error: (error: any) => {
-        console.error(error);
+        console.error('Error loading posts:', error);
       }
     });
   }
-  
 
   goToCreate(): void {
     this.router.navigate(['/posts/create']);
   }
 
   search(): void {
+    if (this.searchQuery.trim() === '') {
+      this.loadPosts();
+      return;
+    }
+
     this.forumService.searchPosts(this.searchQuery).subscribe({
       next: (response: any) => {
-        this.posts = response.data;
+        this.posts = response.data || [];
       },
       error: (err: any) => {
-        console.error(err);
+        console.error('Search error:', err);
       }
     });
   }

@@ -1,0 +1,88 @@
+<mat-toolbar class="custom-toolbar" color="primary">
+    <!-- Logo -->
+    <a routerLink="/" class="logo-link">
+      <img src="assets/iti-logo.png" alt="ITI Logo" class="logo-img" />
+      <span class="logo-text">ITI HUB</span>
+    </a>
+  
+    <span class="spacer"></span>
+  
+    <!-- Desktop Links -->
+    <div class="nav-links">
+      <a mat-button routerLink="/projects">
+        <mat-icon>folder</mat-icon>
+        <span>Projects</span>
+      </a>
+  
+      <a mat-button routerLink="/mentorship">
+        <mat-icon>school</mat-icon>
+        <span>Mentorship</span>
+      </a>
+  
+      <a mat-button routerLink="/api/jobs">
+        <mat-icon>work</mat-icon>
+        <span>Jobs</span>
+      </a>
+  
+      <!-- Dark Mode Toggle -->
+      <li class="nav-item">
+        <button id="darkModeToggle" (click)="toggleDarkMode()" [ngClass]="{ rotate: true }" title="Toggle Dark Mode">
+          {{ icon }}
+        </button>
+      </li>
+     
+  
+      <!-- Profile Menu (if logged in) -->
+      <ng-container *ngIf="isLoggedIn">
+        <button mat-button [matMenuTriggerFor]="profileMenu">
+          <img [src]="userImage" alt="Profile" class="user-avatar" />
+          <span class="ms-2">{{ userName }}</span>
+        </button>
+  
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>visibility</mat-icon>
+            View Profile
+          </button>
+          <button mat-menu-item routerLink="/profile/edit">
+            <mat-icon>edit</mat-icon>
+            Edit Profile
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Logout
+          </button>
+        </mat-menu>
+      </ng-container>
+  
+      <!-- Login/Register (if not logged in) -->
+      <ng-container *ngIf="!isLoggedIn">
+        <a mat-button routerLink="/login">Login</a>
+        <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
+      </ng-container>
+    </div>
+  
+    <!-- Burger menu icon -->
+    <button class="menu-icon" mat-icon-button (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-toolbar>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" *ngIf="isMenuOpen">
+    <a routerLink="/projects">Projects</a>
+    <a routerLink="/mentorship">Mentorship</a>
+    <a routerLink="/api/jobs">Jobs</a>
+  
+    <ng-container *ngIf="isLoggedIn">
+      <a routerLink="/profile">View Profile</a>
+      <a routerLink="/profile/edit">Edit Profile</a>
+      <a (click)="logout()">Logout</a>
+    </ng-container>
+  
+    <ng-container *ngIf="!isLoggedIn">
+      <a routerLink="/api/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </ng-container>
+  </div>
+  

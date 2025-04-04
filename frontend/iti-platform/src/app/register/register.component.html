@@ -1,1 +1,155 @@
-<p>register works!</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 animated-card">
+          <div class="card-header text-white text-center py-3">
+            <h3 class="mb-0">Register</h3>
+            <small>Create your account</small>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="registrationForm" (ngSubmit)="handleSubmitForm()" novalidate>
+              <!-- Name Field -->
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  formControlName="name"
+                  class="form-control"
+                  [class.is-invalid]="FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)"
+                />
+                @if (FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['name'].hasError('required')) { **Name is required.** }
+                    @else if (FormControls['name'].hasError('minlength')) {
+                      **Name must be at least {{ FormControls['name'].getError('minlength').requiredLength }} characters long.**
+                    }
+                  </div>
+                }
+              </div>
+  
+              <!-- Email Field -->
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control"
+                  [class.is-invalid]="FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)"
+                />
+                @if (FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['email'].hasError('required')) { **Email is required.** }
+                    @else if (FormControls['email'].hasError('email')) { **Please enter a valid email address.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- Password Field -->
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  formControlName="password"
+                  class="form-control"
+                  [class.is-invalid]="FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)"
+                />
+                @if (FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['password'].hasError('required')) { **Password is required.** }
+                    @else if (FormControls['password'].hasError('minlength')) { **Password must be at least {{ FormControls['password'].getError('minlength').requiredLength }} characters long.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- Confirm Password Field -->
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="form-control"
+                  [class.is-invalid]="(FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)"
+                />
+                @if ((FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['confirmPassword'].hasError('required')) { **Confirm password is required.** }
+                    @else if (registrationForm.hasError('mismatch')) { **Passwords do not match.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- LinkedIn Profile URL Field -->
+              <div class="mb-3">
+                <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                <input
+                  type="url"
+                  id="linkedin"
+                  formControlName="linkedin"
+                  class="form-control"
+                  placeholder="https://www.linkedin.com/in/your-profile"
+                  [class.is-invalid]="FormControls['linkedin'].invalid && (FormControls['linkedin'].dirty || FormControls['linkedin'].touched)"
+                />
+                @if (FormControls['linkedin'].invalid && (FormControls['linkedin'].dirty || FormControls['linkedin'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['linkedin'].hasError('required')) { **LinkedIn profile URL is required.** }
+                    @else if (FormControls['linkedin'].hasError('pattern')) { **Please enter a valid LinkedIn URL.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- GitHub Profile URL Field -->
+              <div class="mb-3">
+                <label for="github" class="form-label">GitHub Profile</label>
+                <input
+                  type="url"
+                  id="github"
+                  formControlName="github"
+                  class="form-control"
+                  placeholder="https://github.com/your-username"
+                  [class.is-invalid]="FormControls['github'].invalid && (FormControls['github'].dirty || FormControls['github'].touched)"
+                />
+                @if (FormControls['github'].invalid && (FormControls['github'].dirty || FormControls['github'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['github'].hasError('required')) { **GitHub profile URL is required.** }
+                    @else if (FormControls['github'].hasError('pattern')) { **Please enter a valid GitHub URL.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- Profile Picture Field -->
+              <div class="mb-3">
+                <label for="profilePicture" class="form-label">Profile Picture</label>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  formControlName="profilePicture"
+                  class="form-control"
+                  accept="image/*"
+                  [class.is-invalid]="FormControls['profilePicture'].invalid && (FormControls['profilePicture'].dirty || FormControls['profilePicture'].touched)"
+                />
+                @if (FormControls['profilePicture'].invalid && (FormControls['profilePicture'].dirty || FormControls['profilePicture'].touched)) {
+                  <div class="invalid-feedback animated-feedback">
+                    @if (FormControls['profilePicture'].hasError('required')) { **Profile picture is required.** }
+                  </div>
+                }
+              </div>
+  
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary w-100">
+                Submit
+              </button>
+            </form>
+            <!-- Already have an account link -->
+            <div class="text-center mt-3">
+              <small>Already have an account? <a href="/login">Login</a></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

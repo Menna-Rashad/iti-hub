@@ -1,47 +1,68 @@
 <div class="login-container">
-  <h2>Login</h2>
+  <div class="login-container">
+    <!-- Logo -->
+    <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo" />
+  
+    <h2>Login</h2>
 
-  <!-- Success Message -->
+  <!-- ✅ Success Message -->
   <div *ngIf="successMessage" class="alert alert-success">
     {{ successMessage }}
   </div>
 
-  <!-- Error Message -->
+  <!-- ❌ Error Message -->
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
 
-  <form (ngSubmit)="login()">
-    <div class="input-group">
+  <!-- 🔐 Login Form -->
+  <form (ngSubmit)="login()" novalidate>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
       <input
+        matInput
         type="email"
         id="email"
-        class="form-control"
         [(ngModel)]="email"
         name="email"
         required
-        placeholder="Email"
+        placeholder="Enter your email"
       />
-    </div>
+    </mat-form-field>
 
-    <div class="input-group">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
       <input
+        matInput
         type="password"
         id="password"
-        class="form-control"
         [(ngModel)]="password"
         name="password"
         required
-        placeholder="Password"
+        placeholder="Enter your password"
       />
-    </div>
+    </mat-form-field>
 
-    <button type="submit" [disabled]="isLoading">
-      <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
-      <span *ngIf="!isLoading">LOGIN</span>
+    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+      <mat-progress-spinner
+        *ngIf="isLoading"
+        diameter="20"
+        mode="indeterminate"
+        color="accent"
+      ></mat-progress-spinner>
+      <span *ngIf="!isLoading">Login</span>
     </button>
   </form>
+<!-- 🌐 OR Login with Google -->
+<div class="social-login">
+  <p>or continue with</p>
+  <button class="google-btn" (click)="loginWithGoogle()">
+    <img src="assets/google-icon.png" alt="Google" />
+    <span>Continue with Google</span>
+  </button>
+</div>
 
+  <!-- 🔁 Forgot Password Link -->
   <div class="forgot-password">
     <a href="#" (click)="navigateToResetPassword($event)">Forgot Username / Password?</a>
   </div>

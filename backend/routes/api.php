@@ -93,12 +93,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // 📝 Forum Routes
     // ==========================
     Route::prefix('forum')->group(function () {
-        Route::get('/forum/posts/{id}', [ForumPostController::class, 'show']);
+        Route::get('/posts/{id}', [ForumPostController::class, 'show']);
         Route::get('posts/search', [ForumPostController::class, 'search']);
-        Route::post('posts/{post}/comments', [CommentController::class, 'store']);
+        Route::post('posts/{postId}/comments', [CommentController::class, 'store']);
         Route::apiResource('posts', ForumPostController::class);
         Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-        Route::apiResource('comments', CommentController::class)->except(['index']);
+      Route::apiResource('comments', CommentController::class)->except(['index']);
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
 

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ✅ Use CommonModule instead of BrowserModule
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { AuthStateService } from '../services/auth-state.service'; // ✅ New import
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -14,7 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, // ✅ Fix the issue
+    CommonModule,
     FormsModule,
     MatSnackBarModule,
     MatCardModule,
@@ -36,7 +37,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar // ✅ Fixed MatSnackBar injection issue
+    private snackBar: MatSnackBar,
+    private authState: AuthStateService // ✅ Inject the AuthStateService
   ) {}
 
   login(): void {
@@ -50,52 +52,52 @@ export class LoginComponent {
     this.successMessage = '';
 
     const credentials = { email: this.email, password: this.password };
-    
-    // Start measuring time
-    const startTime = Date.now(); // Store start time
+    const startTime = Date.now();
 
     this.authService.login(credentials).subscribe({
       next: (response: any) => {
-        // Measure time taken for the API request
         const endTime = Date.now();
-        const timeTaken = endTime - startTime; // Calculate time in milliseconds
+        const timeTaken = endTime - startTime;
         console.log(`API Request took ${timeTaken} ms`);
 
-        // Check if time taken is too long
         if (timeTaken > 2000) {
           console.warn(`⚠️ The request took too long: ${timeTaken} ms`);
         }
 
-        // Handle API response
-        console.log('🚀 Full API Response:', response); // ✅ Log full response
+        console.log('🚀 Full API Response:', response);
 
         if (response.token) {
-          console.log('🔑 Received Token:', response.token); // ✅ Log the token
-          localStorage.setItem('api_token', response.token);
+          console.log('🔑 Received Token:', response.token);
+          localStorage.setItem('auth_token', response.token); // ✅ Correct token key
+          localStorage.setItem('user', JSON.stringify(response.user));
+          this.authState.setLoggedIn(true); // ✅ Notify the app that user is logged in
 
-          // Store mentorId and role in localStorage
+          // Optional: store other user info
           if (response.user?.id) {
-            localStorage.setItem('user_id', response.user.id); // Store mentorId
+            localStorage.setItem('user_id', response.user.id);
           }
           if (response.user?.role) {
-            localStorage.setItem('role', response.user.role); // Store user role
+            localStorage.setItem('role', response.user.role);
           }
 
           this.showNotification('🎉 Login successful! Redirecting...', 'success');
-
-          // Clear email and password fields after successful login
           this.email = '';
           this.password = '';
 
-          // Redirect based on user role
-          const userRole = response.user?.role; // Assuming API returns user role
-          const redirectPath = userRole === 'admin' ? '/admin/dashboard' : '/mentor/dashboard'; // Redirect to Mentor dashboard
+          // Handle role-based redirection
+          const userRole = response.user?.role;
+          let redirectPath = '/main-content'; // Default to home
 
-          // Redirect with a slight delay to give feedback to the user
+          if (userRole === 'admin') {
+            redirectPath = '/admin/dashboard';
+          } else if (userRole === 'mentor') {
+            redirectPath = '/mentor/dashboard';
+          }
+
           setTimeout(() => {
-            this.router.navigate([redirectPath]);
+            this.router.navigate([redirectPath]); // Navigate to the appropriate route
           }, 1000);
-
+          
         } else {
           console.warn('⚠️ No token received from backend!');
           this.showNotification('⚠️ Failed to log in. Please try again.', 'error');
@@ -112,15 +114,14 @@ export class LoginComponent {
             ? '❌ Invalid email or password!'
             : '⚠️ An error occurred. Please try again.';
 
-        // Show error notification
         this.showNotification(this.errorMessage, 'error');
       }
     });
   }
 
   navigateToResetPassword(event: Event): void {
-    event.preventDefault(); // Prevent default link behavior
-    this.router.navigate(['/forgot-password']); // Redirect to the forgot password page
+    event.preventDefault();
+    this.router.navigate(['/forgot-password']);
   }
 
   showNotification(message: string, type: 'success' | 'error') {
@@ -128,5 +129,9 @@ export class LoginComponent {
       duration: 2000,
       panelClass: type === 'success' ? 'success-snackbar' : 'error-snackbar',
     });
+  }
+
+  loginWithGoogle(): void {
+    this.showNotification("🚀 Google login is under development", "success");
   }
 }

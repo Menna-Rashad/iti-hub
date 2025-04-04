@@ -8,15 +8,29 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select [(ngModel)]="postData.category_id" name="category_id" required>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Content</mat-label>
       <textarea matInput [(ngModel)]="postData.content" name="content" rows="5" required></textarea>
     </mat-form-field>
 
     <div class="actions">
-      <button mat-raised-button color="primary" type="submit">
-        Submit
-      </button>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
       <button mat-button routerLink="/forum">Cancel</button>
     </div>
   </form>
+
+  <!-- ✅ Preview -->
+  <div class="preview-box" *ngIf="postData.title || postData.content">
+    <h3>📝 Preview</h3>
+    <h4>{{ postData.title }}</h4>
+    <p>{{ postData.content }}</p>
+  </div>
 </div>

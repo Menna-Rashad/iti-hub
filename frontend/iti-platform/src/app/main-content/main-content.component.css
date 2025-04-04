@@ -1,0 +1,384 @@
+/* ✅ General Layout */
+.main-content-layout {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+/* ✅ Panels */
+.left-panel,
+.right-panel {
+  width: 18%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.center-panel {
+  flex: 1.4;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+/* ✅ Actions */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actions a {
+  font-weight: 500;
+  color: #c2185b;
+}
+
+/* ✅ Search Input */
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #c2185b;
+  border-radius: 30px;
+  padding: 6px 16px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.search-container:focus-within {
+  border-color: #880e4f;
+  box-shadow: 0 0 0 2px rgba(194, 24, 91, 0.2);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  padding: 6px 0;
+  background: transparent;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #c2185b;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: color 0.2s ease;
+}
+
+.clear-btn:hover {
+  color: #880e4f;
+}
+
+/* ✅ Cards */
+.discussion-card {
+  background: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 15px;
+  max-width: 750px;
+  margin: 0 auto 18px auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #c2185b;
+  transition: all 0.3s ease-in-out;
+}
+
+.discussion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.discussion-card h2 {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.discussion-card p {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.category-tag {
+  font-size: 12px;
+  background-color: #f8d7da;
+  color: #c2185b;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+/* ✅ Buttons */
+.share-btn,
+.comment-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #880e4f;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.share-btn:hover,
+.comment-btn:hover {
+  color: #560027;
+  text-decoration: underline;
+}
+
+/* ✅ Likes Section */
+.likes-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.likes-section button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  color: #444;
+  transition: color 0.2s ease;
+}
+
+.likes-section button:hover {
+  color: #880e4f;
+}
+
+.likes-section button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ✅ Comments */
+.comments-wrapper {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #eee;
+}
+
+.comment-scroll-box {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #c2185b #f9f9f9;
+}
+
+.comment-scroll-box::-webkit-scrollbar {
+  width: 6px;
+}
+.comment-scroll-box::-webkit-scrollbar-thumb {
+  background-color: #c2185b;
+  border-radius: 5px;
+}
+.comment-scroll-box::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.comment {
+  background-color: #fff;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.add-comment-box {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.add-comment-box input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-comment-box button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.add-comment-box button:hover {
+  background-color: #0056b3;
+}
+
+/* ✅ Sidebar Contributors */
+.right-panel h3 {
+  margin-bottom: 1rem;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.right-panel ul {
+  list-style: none;
+  padding: 0;
+}
+
+.right-panel li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+.right-panel li:hover {
+  background-color: #f0f0f0;
+}
+
+.right-panel img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+/* ✅ Routing Links */
+a[routerLink] {
+  font-size: 13px;
+  color: #2980b9;
+  text-decoration: underline;
+}
+.likes-section button:active {
+  transform: scale(0.95);
+  transition: transform 0.2s;
+}
+
+/* ✅ Tooltip Button */
+.mat-icon-button {
+  vertical-align: middle;
+  padding: 4px;
+  margin-left: 8px;
+  color: #555;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+  .main-content-layout {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    order: 2;
+  }
+
+  .center-panel {
+    order: 1;
+    padding: 1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-container {
+    width: 100%;
+    margin: 0;
+  }
+
+  .discussion-card {
+    padding: 16px;
+    font-size: 13px;
+  }
+
+  .discussion-card h2 {
+    font-size: 16px;
+  }
+
+  .right-panel img {
+    width: 28px;
+    height: 28px;
+  }
+}
+/* تعديل في الـ CSS */
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-header h2 {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.mat-menu {
+  z-index: 1000;
+}
+
+/* لتنسيق الـ menu */
+button.mat-icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+button.mat-icon-button mat-icon {
+  font-size: 20px;
+  color: #c2185b;
+}
+
+/* عند تفعيل المينيو */
+button.mat-icon-button:hover {
+  color: #880e4f;
+}
+
+.mat-menu-item {
+  font-size: 14px;
+}
+
+.mat-menu-item:hover {
+  background-color: #f8f8f8;
+}

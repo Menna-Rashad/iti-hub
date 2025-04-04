@@ -1,25 +1,53 @@
 .create-post-container {
-    max-width: 700px;
-    margin: 40px auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .post-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .full-width {
-    width: 100%;
-  }
-  
-  .actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 15px;
-  }
-  
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.create-post-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.preview-box {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f1f1f1;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+}
+
+button[mat-raised-button] {
+  background-color: #880e4f;
+  color: white;
+}
+
+button[mat-raised-button]:hover {
+  background-color: #6a0c3d;
+}
+
+button[mat-button] {
+  color: #555;
+}
+
+button[mat-button]:hover {
+  text-decoration: underline;
+}
