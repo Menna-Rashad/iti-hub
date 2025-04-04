@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Models\ForumPost;
+use Illuminate\Support\Facades\Storage;
 
 class ForumPostController extends Controller
 {
@@ -53,20 +54,29 @@ class ForumPostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|string'
+            'tags' => 'nullable|string',
+            'media.*' => 'file|mimes:jpg,jpeg,png,mp4,mp3,pdf,zip,doc,docx,ppt,pptx|max:20480'
         ]);
+        $mediaPaths = [];
 
-        $forumPost = ForumPost::create([
-            'user_id' => Auth::id(),
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $path = $file->store('public/posts');
+                $mediaPaths[] = Storage::url($path);
+            }
+        }
 
-            'title' => $request->title,
-            'content' => $request->content,
-            'category_id' => $request->category_id,
-            'tags' => $request->tags
-        ]);
+    $post = ForumPost::create([
+        'title' => $request->title,
+        'content' => $request->content,
+        'category_id' => $request->category_id,
+        'tags' => $request->tags,
+        'media_paths' => json_encode($mediaPaths),
+        'user_id' => Auth()->id(),
+    ]);
 
-        return response()->json($forumPost, 201);
-    }
+    return response()->json($post, 201);
+}
 
     public function show(string $id)
     {
