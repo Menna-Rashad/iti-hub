@@ -29,6 +29,9 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class PostListComponent implements OnInit {
   posts: any[] = [];
+  currentPage: number = 1;
+  totalPages: number = 0;
+  perPage: number = 5;
   searchQuery: string = '';
 
   constructor(
@@ -37,37 +40,45 @@ export class PostListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadPosts();
+    this.loadPaginatedPosts();
   }
 
-  loadPosts(): void {
-    this.forumService.getPosts().subscribe({
-      next: (response: any) => {
-        this.posts = response; // تأكدي إن API فعلاً بترجع array مش { data: [...] }
+  loadPaginatedPosts(): void {
+    this.forumService.getPostsPaginated(this.currentPage, this.perPage).subscribe({
+      next: (res: any) => {
+        this.posts = res.data;
+        this.totalPages = res.last_page;
       },
-      error: (error: any) => {
-        console.error('Error loading posts:', error);
+      error: (err: any) => {
+        console.error('Error loading paginated posts:', err);
       }
     });
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadPaginatedPosts();
   }
 
   goToCreate(): void {
     this.router.navigate(['/posts/create']);
   }
 
-  search(): void {
-    if (this.searchQuery.trim() === '') {
-      this.loadPosts();
-      return;
-    }
-
-    this.forumService.searchPosts(this.searchQuery).subscribe({
-      next: (response: any) => {
-        this.posts = response.data || [];
-      },
-      error: (err: any) => {
-        console.error('Search error:', err);
-      }
-    });
+search(): void {
+  if (this.searchQuery.trim() === '') {
+    this.loadPaginatedPosts();
+    return;
   }
+
+  this.forumService.searchPosts(this.searchQuery).subscribe({
+    next: (response: any) => {
+      this.posts = response.data || [];
+      this.totalPages = 0; 
+    },
+    error: (err: any) => {
+      console.error('Search error:', err);
+    }
+  });
+}
+
 }
