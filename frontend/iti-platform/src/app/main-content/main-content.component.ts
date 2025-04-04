@@ -42,6 +42,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 })
 export class MainContentComponent implements OnInit {
   posts: any[] = [];
+  currentPage: number = 1;
+  perPage: number = 5;
+  totalPages: number = 0;
   filteredPosts: any[] = [];
   loadingVotes: { [key: number]: boolean } = {};
   commentText: { [postId: number]: string } = {};
@@ -79,15 +82,21 @@ export class MainContentComponent implements OnInit {
   }
 
   loadPosts(): void {
-    this.forumService.getPosts().subscribe({
+    this.forumService.getPostsPaginated(this.currentPage, this.perPage).subscribe({
       next: (res) => {
-        this.posts = res;
-        this.filteredPosts = res;
-        res.forEach((post: any) => this.loadComments(post.id));
+        this.posts = res.data;
+        this.filteredPosts = res.data;
+        this.totalPages = res.last_page;
+  
+        res.data.forEach((post: any) => this.loadComments(post.id));
       },
       error: (err) => console.error(err),
     });
   }
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadPosts();
+  }  
 
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
@@ -181,14 +190,14 @@ export class MainContentComponent implements OnInit {
       this.filteredPosts = this.posts;
       return;
     }
-
+  
     this.filteredPosts = this.posts.filter(
       (post) =>
         post.title?.toLowerCase().includes(query) ||
         post.content?.toLowerCase().includes(query) ||
         post.category?.name?.toLowerCase().includes(query)
     );
-  }
+  }  
 
   clearSearch(): void {
     this.searchQuery = '';
