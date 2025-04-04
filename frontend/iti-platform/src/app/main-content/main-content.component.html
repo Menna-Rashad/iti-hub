@@ -20,6 +20,14 @@
         <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()">×</button>
       </div>
       <a mat-button routerLink="/posts/create">➕ Create Post</a>
+      <select [(ngModel)]="selectedSort" (change)="loadPosts()" class="sort-dropdown">
+        <option value="newest">🕒 Newest</option>
+        <option value="top">🔥 Top Voted</option>
+      </select>      
+      <select [(ngModel)]="selectedCategoryId" (change)="loadPosts()" class="category-dropdown">
+        <option [ngValue]="null">📂 All Categories</option>
+        <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+      </select>
     </div>
 
     <!-- Posts List -->
