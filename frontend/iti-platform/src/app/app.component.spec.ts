@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import 'jasmine';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LocalAppComponent], // Declare the component
+      imports: [AppComponent],
     }).compileComponents();
   });
 
