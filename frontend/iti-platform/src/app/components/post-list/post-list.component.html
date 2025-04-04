@@ -29,6 +29,12 @@
 
       <mat-card-content>
         <p>{{ post.content }}</p>
+
+        <p *ngIf="post.tags">
+          <strong>Tags:</strong>
+          <span class="tag" *ngFor="let tag of post.tags.split(',')">{{ tag.trim() }}</span>
+        </p>
+        
         <p><strong>Category:</strong> {{ post.category?.name || 'General' }}</p>
         <div class="post-stats">
           <span>💬 Comments: {{ post.comments?.length }}</span>
