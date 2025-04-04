@@ -53,7 +53,12 @@
         </ng-container>
       </div>
       <p>{{ post.content }}</p>
-
+      
+      <p *ngIf="post.tags">
+        <strong>Tags:</strong>
+        <span class="tag" *ngFor="let tag of post.tags.split(',')">{{ tag.trim() }}</span>
+      </p>
+      
       <!-- ✅ Tag-style Category -->
       <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
 
