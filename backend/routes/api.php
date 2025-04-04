@@ -12,6 +12,7 @@ use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\CategoryController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -98,8 +99,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('posts/{postId}/comments', [CommentController::class, 'store']);
         Route::apiResource('posts', ForumPostController::class);
         Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-      Route::apiResource('comments', CommentController::class)->except(['index']);
+        Route::apiResource('comments', CommentController::class)->except(['index']);
         Route::post('/vote', [VoteController::class, 'handleVote']);
+        Route::get('/categories', [CategoryController::class, 'index']);
     });
 
 
