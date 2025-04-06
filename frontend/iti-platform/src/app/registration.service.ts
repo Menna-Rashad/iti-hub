@@ -20,7 +20,7 @@ export interface RegistrationData {
 
 export class RegistrationService {
 // Replace with your actual backend URL
-private apiUrl = 'http://localhost:8000/api';
+private apiUrl = 'http://localhost:8000/api/register';
 
 async registerUser(data: RegistrationData): Promise<any> {
   // Create FormData to bundle text and file data
