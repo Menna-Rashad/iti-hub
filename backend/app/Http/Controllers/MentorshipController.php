@@ -18,36 +18,38 @@ class MentorshipController extends Controller
      * Create a new mentorship session (Mentor only)
      */
     public function createMentorship(Request $request)
-    {
-        $user = Auth::user();
-        if ($user->role !== 'mentor') {
-            return response()->json(['message' => 'Only mentors can create a session.'], 403);
-        }
+{
+    $user = Auth::user();
+    if ($user->role !== 'mentor') {
+        return response()->json(['message' => 'Only mentors can create a session.'], 403);
+    }
 
-        $validated = Validator::make($request->all(), [
-            'session_title' => 'required|string',
-            'session_date' => 'required|date_format:Y-m-d H:i:s',
-            'platform' => 'required|in:Zoom,Google Meet,Teams',
+    $validated = Validator::make($request->all(), [
+        'session_title' => 'required|string',
+        'session_date' => 'required|date_format:Y-m-d H:i:s',
+        'platform' => 'required|in:Zoom,Google Meet,Teams',
+    ]);
+
+    if ($validated->fails()) {
+        return response()->json(['message' => 'Validation failed', 'errors' => $validated->errors()], 422);
+    }
+
+    try {
+        // Create the mentorship session without mentee_id
+        $mentorship = MentorshipSession::create([
+            'mentor_id' => $user->id,
+            'session_title' => $request->session_title,
+            'session_date' => $request->session_date,
+            'platform' => $request->platform,
+            'session_status' => 'scheduled', // Default status is scheduled
         ]);
 
-        if ($validated->fails()) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $validated->errors()], 422);
-        }
-
-        try {
-            $mentorship = MentorshipSession::create([
-                'mentor_id' => $user->id,
-                'session_title' => $request->session_title,
-                'session_date' => $request->session_date,
-                'platform' => $request->platform,
-                'session_status' => 'scheduled',
-            ]);
-
-            return response()->json(['message' => 'Mentorship session created successfully!', 'mentorship' => $mentorship], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to create mentorship session.', 'error' => $e->getMessage()], 500);
-        }
+        return response()->json(['message' => 'Mentorship session created successfully!', 'mentorship' => $mentorship], 201);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to create mentorship session.', 'error' => $e->getMessage()], 500);
     }
+}
+
 
     /**
      * Get all sessions for the mentor
@@ -118,30 +120,30 @@ class MentorshipController extends Controller
      * Mark user interest in a session
      */
     public function setInterestStatus(Request $request, $mentorship_id)
-{
-    $validated = $request->validate([
-        'interest_status' => 'required|in:interested,not_interested',
-    ]);
-
-    try {
-        $mentorship = MentorshipSession::findOrFail($mentorship_id);
-
-        // Update interest status in the pivot table (many-to-many relation)
-        $mentorship->users()->syncWithoutDetaching([
-            Auth::id() => ['interest_status' => $validated['interest_status']]
+    {
+        $validated = $request->validate([
+            'interest_status' => 'required|in:interested,not_interested',
         ]);
 
-        // If the user is interested, update the userSessions list
-        if ($validated['interest_status'] === 'interested') {
-            $mentorship->mentee_id = Auth::id();
-            $mentorship->save();
-        }
+        try {
+            $mentorship = MentorshipSession::findOrFail($mentorship_id);
 
-        return response()->json(['message' => 'Interest status updated successfully!'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Failed to update interest status.', 'error' => $e->getMessage()], 500);
+            // Update interest status in the pivot table (many-to-many relation)
+            $mentorship->users()->syncWithoutDetaching([
+                Auth::id() => ['interest_status' => $validated['interest_status']]
+            ]);
+
+            // If the user is interested, update the userSessions list
+            if ($validated['interest_status'] === 'interested') {
+                $mentorship->mentee_id = Auth::id(); // Assign the mentee_id
+                $mentorship->save();
+            }
+
+            return response()->json(['message' => 'Interest status updated successfully!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update interest status.', 'error' => $e->getMessage()], 500);
+        }
     }
-}
 
     /**
      * Mark user as attending a session
