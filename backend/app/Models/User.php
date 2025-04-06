@@ -71,4 +71,14 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+    public function badges()
+    {
+        return $this->hasMany(Badge::class);
+    }
+
+    // علاقة الـ User مع الـ Points
+    public function points()
+    {
+        return $this->hasOne(Points::class);
+    }
 }
