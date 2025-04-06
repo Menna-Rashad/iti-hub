@@ -12,7 +12,7 @@ use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Api\TopContributorsController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // 🔵 Mentorship API Routes (Grouped)
     // ==========================
     Route::prefix('mentorship')->group(function () {
-        
+
         // 📌 General Routes (Both mentors & users)
         Route::get('/', [MentorshipController::class, 'getAvailableMentorships']);
         Route::get('/sessions', [MentorshipController::class, 'getUserSessions']);
@@ -99,12 +99,25 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('posts/{postId}/comments', [CommentController::class, 'store']);
         Route::apiResource('posts', ForumPostController::class);
         Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-      Route::apiResource('comments', CommentController::class)->except(['index']);
+        Route::apiResource('comments', CommentController::class)->except(['index']);
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
 
-    Route::post('/register', [RegisterController::class, 'register']);
+// ========================== 
+// 🔰 Top Contributors 
+// ==========================
+Route::prefix('top-contributors')->group(function () {
+    Route::post('/assign-initial-badge/{userId}', [TopContributorsController::class, 'assignInitialBadge']);
+    Route::post('/assign-post-badge/{userId}', [TopContributorsController::class, 'assignPostBadge']);
+    Route::post('/assign-engagement-badge/{userId}', [TopContributorsController::class, 'assignEngagementBadge']);
+    Route::post('/assign-activity-badge/{userId}', [TopContributorsController::class, 'assignActivityBadge']);
+    Route::post('/assign-achievement-badge/{userId}', [TopContributorsController::class, 'assignAchievementBadge']);
+    Route::post('/assign-mentorship-points/{userId}', [TopContributorsController::class, 'assignMentorshipPoints']);
 
+    // ✅ GET Endpoints for displaying user's badges and score
+    Route::get('/badges/{userId}', [TopContributorsController::class, 'getUserBadges']);
+    Route::get('/score/{userId}', [TopContributorsController::class, 'getUserScore']);
+});
 
     // ==========================
     // 🔴 Admin Dashboard (Protected)

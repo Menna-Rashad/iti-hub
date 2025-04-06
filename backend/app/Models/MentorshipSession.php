@@ -13,31 +13,32 @@ class MentorshipSession extends Model
 
     protected $fillable = [
         'mentor_id',
-        'mentee_id',
+        'mentee_id',  // Added mentee_id
         'session_title',
         'session_date',
         'platform',
-        'session_status', // تم إضافة هذه الحالة بدلًا من interest_status
+        'session_status', // Added status instead of interest_status
         'mentor_rating',
         'mentee_feedback',
     ];
+    
 
-    // علاقة مع الموجه (User)
+    // Relationship with mentor (User)
     public function mentor()
     {
         return $this->belongsTo(User::class, 'mentor_id');
     }
 
-    // علاقة مع المتدرب (User)
+    // Relationship with mentee (User)
     public function mentee()
     {
         return $this->belongsTo(User::class, 'mentee_id');
     }
 
-    // علاقة مع المستخدمين (عديد إلى العديد)
+    // Relationship with users (many-to-many)
     public function users()
     {
         return $this->belongsToMany(User::class, 'mentorship_user', 'mentorship_session_id', 'user_id')
-            ->withPivot('interest_status');  // يحدد حالة الاهتمام في جدول الارتباط
+            ->withPivot('interest_status');  // Defines the interest status in the pivot table
     }
 }

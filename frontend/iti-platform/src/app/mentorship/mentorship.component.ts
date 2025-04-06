@@ -41,34 +41,32 @@ export class MentorshipComponent implements OnInit {
 
   /** ✅ Get sessions the user is attending */
   /** ✅ Mark interest in a session */
-async setInterest(sessionId: number, status: string) {
-  this.isLoading = true;
-  try {
+  async setInterest(sessionId: number, status: string) {
+    this.isLoading = true;
+    try {
       await this.mentorshipService.setInterestStatus(sessionId, status).toPromise();
-
+  
+      // Update the available sessions dynamically
       if (status === 'interested') {
-          // Move session to userSessions only if it's updated in the backend
-          const session = this.availableSessions.find(s => s.id === sessionId);
-          if (session) {
-              this.userSessions.push(session); // ✅ Move session to userSessions (Scheduled Sessions)
-              this.availableSessions = this.availableSessions.filter(s => s.id !== sessionId);
-          }
-      } else {
+        const session = this.availableSessions.find(s => s.id === sessionId);
+        if (session) {
+          this.userSessions.push(session); // Move session to userSessions
           this.availableSessions = this.availableSessions.filter(s => s.id !== sessionId);
+        }
+      } else {
+        this.availableSessions = this.availableSessions.filter(s => s.id !== sessionId);
       }
-
-      // ✅ After the update, re-fetch user sessions from API to persist changes
-      this.getUserSessions(); 
-
-      this.showSuccess(`✅ Session marked as "${status.replace('_', ' ')}"!`);
-  } catch (error) {
-      this.showError('❌ Failed to update interest status.');
-      console.error('🔴 Interest Error:', error);
-  } finally {
+  
+      this.getUserSessions(); // Refresh user sessions list
+      this.showSuccess(`Session marked as "${status.replace('_', ' ')}"!`);
+    } catch (error) {
+      this.showError('Failed to update interest status.');
+      console.error('Interest Error:', error);
+    } finally {
       this.isLoading = false;
+    }
   }
-}
-
+  
 /** ✅ Load sessions */
 async getUserSessions() {
   this.isLoading = true;

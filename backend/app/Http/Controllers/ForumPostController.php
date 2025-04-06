@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Models\ForumPost;
+use App\Models\Comment;
+use App\Models\Vote;
+use App\Models\User;
+use App\Models\Badge;
 
 class ForumPostController extends Controller
 {
@@ -36,12 +40,14 @@ class ForumPostController extends Controller
 
         $forumPost = ForumPost::create([
             'user_id' => Auth::id(),
-
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
             'tags' => $request->tags
         ]);
+
+        // Call the badge assignment function after storing the post
+        $forumPost->assignBadgeBasedOnEngagement();
 
         return response()->json($forumPost, 201);
     }
@@ -129,4 +135,36 @@ class ForumPostController extends Controller
 
         return response()->json($query->paginate(10));
     }
+
+    public function assignBadgeBasedOnEngagement($userId)
+{
+    // استبدال Post بـ ForumPost
+    $totalEngagement = ForumPost::where('user_id', $userId)
+                               ->join('post_likes', 'forum_posts.id', '=', 'post_likes.post_id')
+                               ->count() + 
+                        ForumPost::where('user_id', $userId)
+                                 ->join('comments', 'forum_posts.id', '=', 'comments.post_id')
+                                 ->count();
+
+    // منح بادج بناءً على التفاعل
+    if ($totalEngagement >= 100) {
+        // منح بادج ذهبى
+        User::find($userId)->badges()->create([
+            'badge_type' => 'gold',
+            'earned_at' => now(),
+        ]);
+    } elseif ($totalEngagement >= 50) {
+        // منح بادج فضى
+        User::find($userId)->badges()->create([
+            'badge_type' => 'silver',
+            'earned_at' => now(),
+        ]);
+    } elseif ($totalEngagement >= 10) {
+        // منح بادج برونزى
+        User::find($userId)->badges()->create([
+            'badge_type' => 'bronze',
+            'earned_at' => now(),
+        ]);
+    }
+}
 }
