@@ -56,4 +56,9 @@ class ForumPost extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function badges()
+    {
+        return $this->hasManyThrough(Badge::class, User::class, 'user_id', 'user_id');
+    }
 }
