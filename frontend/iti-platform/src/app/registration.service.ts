@@ -1,48 +1,38 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import axios from 'axios';
 
 export interface RegistrationData {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-  linkedin: string;
-  github: string;
-  profilePicture: File;
+  national_id: string;
+  linkedin?: string;
+  github?: string;
+  profilePicture?: File | null;
 }
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-
-
-
-
 export class RegistrationService {
-// Replace with your actual backend URL
-private apiUrl = 'http://localhost:8000/api/register';
+  private apiUrl = 'http://127.0.0.1:8000/api/register';
 
-async registerUser(data: RegistrationData): Promise<any> {
-  // Create FormData to bundle text and file data
-  const formData = new FormData();
-  formData.append('name', data.name);
-  formData.append('email', data.email);
-  formData.append('password', data.password);
-  formData.append('confirmPassword', data.confirmPassword);
-  formData.append('linkedin', data.linkedin);
-  formData.append('github', data.github);
-  formData.append('profilePicture', data.profilePicture);
+  constructor(private http: HttpClient) {}
 
-  try {
-    const response = await axios.post(this.apiUrl, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data;
-  } catch (error: any) {
-    // Throw error details so you can handle them in your component
-    throw error.response ? error.response.data : error;
+  registerUser(data: RegistrationData) {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('password_confirmation', data.confirmPassword);
+    formData.append('national_id', data.national_id);
+    formData.append('linkedin', data.linkedin || '');
+    formData.append('github', data.github || '');
+    if (data.profilePicture) {
+      formData.append('profilePicture', data.profilePicture);
+    }
+
+    return this.http.post(this.apiUrl, formData);
   }
-}
 }
