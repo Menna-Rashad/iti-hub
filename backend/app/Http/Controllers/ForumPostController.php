@@ -19,6 +19,7 @@ class ForumPostController extends Controller
     {
         try {
             $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])->get();
+
             return response()->json($forumPosts);
         } catch (\Exception $e) {
             return response()->json([
@@ -37,7 +38,6 @@ class ForumPostController extends Controller
             'tags' => 'nullable|string'
         ]);
 
-        // Create the forum post
         $forumPost = ForumPost::create([
             'user_id' => Auth::id(),
             'title' => $request->title,
@@ -46,7 +46,7 @@ class ForumPostController extends Controller
             'tags' => $request->tags
         ]);
 
-        // Call the badge assignment function after creating the post
+        // Call the badge assignment function after storing the post
        
         return response()->json($forumPost, 201);
     }
@@ -56,6 +56,7 @@ class ForumPostController extends Controller
         try {
             $forumPost = ForumPost::with(['comments.user', 'votes', 'category'])->findOrFail($id);
             $forumPost->refreshVoteCounts();
+
             return response()->json($forumPost);
         } catch (\Exception $e) {
             return response()->json([
@@ -81,6 +82,7 @@ class ForumPostController extends Controller
             ]);
 
             $post->update($validated);
+
             return response()->json($post, 200);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             return response()->json(['message' => 'غير مصرح به'], 403);
@@ -98,6 +100,7 @@ class ForumPostController extends Controller
     {
         $forumPost = ForumPost::findOrFail($id);
         $forumPost->delete();
+
         return response()->json(['message' => 'Post deleted successfully']);
     }
 
@@ -132,7 +135,5 @@ class ForumPostController extends Controller
         return response()->json($query->paginate(10));
     }
 
-
-
+   
 }
-
