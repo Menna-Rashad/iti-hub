@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call(JobSeeder::class);
 
         $this->call(CategorySeeder::class);
-
+        
+        // استدعاء Seeder لإدخال منشورات المنتدى
+        $this->call(ForumPostSeeder::class);
     }
 }
