@@ -15,7 +15,7 @@ class Badge extends Model
         'earned_at',
     ];
 
-    // علاقة الـ Badge مع الـ User
+    // Relationship with User
     public function user()
     {
         return $this->belongsTo(User::class);
