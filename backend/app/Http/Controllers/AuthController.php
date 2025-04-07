@@ -10,31 +10,44 @@ use Laravel\Sanctum\HasApiTokens;
 class AuthController extends Controller
 {
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            'national_id'  => 'required|digits:14|unique:users,national_id', 
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|min:3',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|string|confirmed|min:6',
+        'national_id' => 'required|digits:14|unique:users,national_id',
+        'linkedin' => 'nullable|url',
+        'github' => 'nullable|url',
+        'profilePicture'=> 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', 
-            'national_id'  => $request->national_id 
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'User registered successfully!',
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user
-        ], 201);
+    // معالجة صورة البروفايل لو موجودة
+    $profilePath = null;
+    if ($request->hasFile('profilePicture')) {
+        $profilePath = $request->file('profilePicture')->store('profile_pictures', 'public');
     }
+    
+    $user = User::create([
+        'name'            => $request->name,
+        'email'           => $request->email,
+        'password'        => Hash::make($request->password),
+        'national_id'     => $request->national_id,
+        'role'            => 'user',
+        'linkedin'        => $request->linkedin,
+        'github'          => $request->github,
+        'profile_picture' => $profilePath ? basename($profilePath) : null,
+    ]);
+    
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'message' => 'User registered successfully!',
+        'token' => $token,
+        'token_type' => 'Bearer',
+        'user' => $user
+    ], 201);
+}
 
     public function login(Request $request)
     {
