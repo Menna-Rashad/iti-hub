@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth; 
 use App\Models\OpenProject;
 use Illuminate\Http\Request;
 
@@ -51,6 +52,10 @@ public function update(Request $request, $id)
 {
     $project = OpenProject::findOrFail($id);
 
+    if ($project->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+        return response()->json(['error' => 'Unauthorized'], 403); 
+    }
+
     $project->update([
         'name' => $request->name,
         'description' => $request->description,
@@ -64,9 +69,15 @@ public function update(Request $request, $id)
 public function destroy($id)
 {
     $project = OpenProject::findOrFail($id);
+
+    if ($project->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
     $project->delete();
 
     return response()->json(['message' => 'Project deleted successfully']);
 }
+
 
 }
