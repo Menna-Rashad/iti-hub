@@ -218,19 +218,20 @@ class TopContributorsController extends Controller
 
     // دالة داخلية لتخصيص البادج إذا لم يكن موجود مسبقًا
     private function assignBadgeIfNotExists($userId, $badgeType)
-    {
-        $existingBadge = Badge::where('user_id', $userId)
-                              ->where('badge_type', $badgeType)
-                              ->first();
+{
+    $existingBadge = Badge::where('user_id', $userId)
+                          ->where('badge_type', $badgeType)
+                          ->first();
 
-        if (!$existingBadge) {
-            Badge::create([
-                'user_id' => $userId,
-                'badge_type' => $badgeType,
-                'earned_at' => now(),
-            ]);
-        }
+    if (!$existingBadge) {
+        Badge::create([
+            'user_id' => $userId,
+            'badge_type' => $badgeType,
+            'earned_at' => now(),
+        ]);
     }
+}
+
 
     // دالة موحدة لمعالجة الأخطاء
     private function handleException($e)
