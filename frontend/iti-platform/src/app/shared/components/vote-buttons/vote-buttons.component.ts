@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
-import { VoteService } from '../../services/vote.service';
+import { VoteService } from '../../../services/vote.service';
 
 @Component({
   selector: 'app-vote-buttons',

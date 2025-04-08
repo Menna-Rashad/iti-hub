@@ -51,9 +51,15 @@
 
       <!-- ✅ Like & Copy -->
       <div class="likes-section">
-        <button (click)="vote(post.id, 'upvote')" [disabled]="loadingVotes[post.id]">👍 {{ post.upvotes || 0 }}</button>
-        <button (click)="vote(post.id, 'downvote')" [disabled]="loadingVotes[post.id]">👎 {{ post.downvotes || 0 }}</button>
-
+        <app-vote-buttons
+          [targetType]="'post'"
+          [targetId]="post.id"
+          [upvotes]="post.upvotes || 0"
+          [downvotes]="post.downvotes || 0"
+          [currentVote]="post.current_user_vote || null"
+          (voteUpdated)="onVoteUpdated(post.id, $event)"
+        ></app-vote-buttons>
+      
         <!-- ✅ Copy with Tooltip -->
         <button mat-icon-button [matTooltip]="'Copy post link'" (click)="copyLink(post.id)">
           <mat-icon>content_copy</mat-icon>

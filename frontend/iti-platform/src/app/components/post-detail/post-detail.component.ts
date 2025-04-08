@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommentService } from '../../services/comments.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { VoteButtonsComponent } from '../../shared/vote-buttons/vote-buttons.component';
+import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-buttons.component';
 
 @Component({
   selector: 'app-post-detail',
