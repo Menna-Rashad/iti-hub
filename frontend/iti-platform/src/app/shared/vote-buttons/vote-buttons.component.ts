@@ -13,7 +13,7 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
   @Input() downvotes = 0;
   @Input() currentVote: 'upvote' | 'downvote' | null = null;
 
-  @Output() voteUpdated = new EventEmitter<any>(); // Emit when vote changes
+  @Output() voteUpdated = new EventEmitter<any>();
 
   constructor(private voteService: VoteService) {}
 
@@ -26,15 +26,20 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
   }
 
   vote(type: 'upvote' | 'downvote'): void {
+    // Determine if this is a toggle (removing the vote)
+    const isTogglingOff = this.currentVote === type;
+
     this.voteService.handleVote(this.targetType, this.targetId, type).subscribe({
       next: (response: any) => {
         this.upvotes = response.upvotes;
         this.downvotes = response.downvotes;
 
-        if (response.action === 'added') {
-          this.currentVote = type; // highlight the button
+        if (isTogglingOff) {
+          // If the button was already active, remove the vote (set currentVote to null)
+          this.currentVote = null;
         } else {
-          this.currentVote = null; // unhighlight if removed
+          // Otherwise, cast the vote and set currentVote to the new type
+          this.currentVote = type;
         }
 
         // Emit the updated vote information to the parent
@@ -42,7 +47,7 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
           targetType: this.targetType,
           targetId: this.targetId,
           newCounts: { upvotes: this.upvotes, downvotes: this.downvotes },
-          action: response.action,
+          action: isTogglingOff ? 'removed' : 'added',
           currentVote: this.currentVote
         });
       },

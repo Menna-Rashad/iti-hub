@@ -6,7 +6,7 @@ import { Observable, map } from 'rxjs';
   providedIn: 'root'
 })
 export class VoteService {
-  private apiUrl = 'http://localhost:8000/api/forum/vote'; // المسار المعدل
+  private apiUrl = 'http://localhost:8000/api/forum/vote';
 
   constructor(private http: HttpClient) {}
 
@@ -24,9 +24,9 @@ export class VoteService {
       { headers }
     ).pipe(
       map((response: any) => ({
-        upvotes: response.upvotes, // Ensure this matches your API response
-        downvotes: response.downvotes, // Ensure this matches your API response
-        action: response.action || 'added' // Default to 'added' if not provided; adjust based on your API
+        upvotes: response.upvotes, // Match your API response
+        downvotes: response.downvotes, // Match your API response
+        action: response.action || (response.upvotes === 0 && response.downvotes === 0 ? 'removed' : 'added') // Infer action
       }))
     );
   }
