@@ -10,7 +10,7 @@ export class VoteService {
 
   constructor(private http: HttpClient) {}
 
-  handleVote(target_type: 'post' | 'comment', target_id: string, vote_type: 'upvote' | 'downvote'): Observable<any> {
+  handleVote(target_type: 'post' | 'comment', target_id: number, vote_type: 'upvote' | 'downvote'): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 

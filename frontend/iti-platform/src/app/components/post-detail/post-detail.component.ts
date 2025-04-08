@@ -10,7 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommentService } from '../../services/comments.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AuthStateService } from '../../services/auth-state.service';
 import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-buttons.component';
+import { ActionMenuComponent } from '../../shared/components/action-menu/action-menu.component';
 
 @Component({
   selector: 'app-post-detail',
@@ -23,7 +25,8 @@ import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    VoteButtonsComponent
+    VoteButtonsComponent,
+    ActionMenuComponent,
   ],
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.css']
@@ -39,23 +42,27 @@ export class PostDetailComponent implements OnInit {
     private voteService: VoteService,
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authState: AuthStateService
   ) {}
 
   ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.currentUserId = user.id;
+  this.authState.currentUser$.subscribe(user => {
+    if (user) {
+      this.currentUserId = user.id;
+    }
+  });
 
-    this.route.params.subscribe(params => {
-      this.loadPost(params['id']);
-    });
-  }
+  this.route.params.subscribe(params => {
+    this.loadPost(params['id']);
+  });
+}
+
 
   loadPost(id: string) {
     this.api.getPost(id).subscribe(post => {
       this.post = post;
-      const userId = localStorage.getItem('user_id');
-      this.canEdit = userId !== null && post.user_id == userId;
+      this.canEdit = this.currentUserId !== 0 && post.user_id == this.currentUserId;
     });
   }
 
@@ -91,4 +98,36 @@ export class PostDetailComponent implements OnInit {
   goToEdit() {
     this.router.navigate(['/edit-post', this.post.id]);
   }
+
+
+  //add nessary functions for the action menu
+
+  onDeletePost() {
+    // TODO: handle post deletion
+  }
+  
+  onReportPost(post: any) {
+    // TODO: handle report
+  }
+  
+  onHidePost(post: any) {
+    // TODO: handle hiding
+  }
+  
+  onEditComment(comment: any) {
+    // TODO: handle edit comment
+  }
+  
+  onDeleteComment(comment: any) {
+    // TODO: handle delete comment
+  }
+  
+  onReportComment(comment: any) {
+    // TODO: handle report comment
+  }
+  
+  onHideComment(comment: any) {
+    // TODO: handle hide comment
+  }
+  
 }

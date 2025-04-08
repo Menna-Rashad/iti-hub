@@ -2,6 +2,19 @@
   <mat-card class="post-card">
     <mat-card-header>
       <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+
+
+      <app-action-menu
+      [ownerId]="post.user_id"
+      [currentUserId]="currentUserId"
+      [type]="'post'"
+      (edit)="goToEdit()"
+      (delete)="onDeletePost()"
+      (report)="onReportPost(post)"
+      (hide)="onHidePost(post)"
+      ></app-action-menu>
+
+
       <mat-card-subtitle class="post-meta">
         <span>{{ post.user?.name }}</span> · 
         <span>{{ post.created_at | date:'medium' }}</span>
@@ -45,6 +58,17 @@
           <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
         </div>
       </mat-card-content>
+
+
+      <app-action-menu
+        [ownerId]="comment.user_id"
+        [currentUserId]="currentUserId"
+        [type]="'comment'"
+        (edit)="onEditComment(comment)"
+        (delete)="onDeleteComment(comment)"
+        (report)="onReportComment(comment)"
+        (hide)="onHideComment(comment)"
+      ></app-action-menu>
 
       <!-- ✅ بردو استبدلنا التصويت بتاع الكومنت -->
       <app-vote-buttons

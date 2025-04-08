@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { AuthStateService } from './auth-state.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,10 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   private apiUrl = 'http://localhost:8000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authState: AuthStateService
+  ) {}
 
   login(data: { email: string, password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
@@ -17,6 +22,9 @@ export class AuthService {
           localStorage.setItem('auth_token', response.token); 
           localStorage.setItem('user_role', response.user.role); 
           localStorage.setItem('user_id', response.user.id);
+          localStorage.setItem('user', JSON.stringify(response.user));
+          
+          this.authState.setCurrentUser(response.user);
         }
       })
     );

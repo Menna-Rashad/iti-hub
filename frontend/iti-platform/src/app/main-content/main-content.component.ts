@@ -122,5 +122,18 @@ export class MainContentComponent implements OnInit {
     });
   }
 
+
+  openDialog() {}
+  onSearch() {}
+  clearSearch() {}
+  editPost(post: any) {}
+  deletePost(postId: number) {}
+  onVoteUpdated(id: number, event: any) {}
+  copyLink(postId: number) {}
+  editComment(postId: number, comment: any) {}
+  deleteComment(postId: number, commentId: number) {}
+  addComment(postId: number) {}
+
+
   // ... rest of your methods (addComment, editComment, etc.) remain unchanged ...
 }

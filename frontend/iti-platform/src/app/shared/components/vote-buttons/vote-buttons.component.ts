@@ -8,7 +8,7 @@ import { VoteService } from '../../../services/vote.service';
 })
 export class VoteButtonsComponent implements OnInit, OnChanges {
   @Input() targetType!: 'post' | 'comment';
-  @Input() targetId!: string;
+  @Input() targetId!: number;
   @Input() upvotes = 0;
   @Input() downvotes = 0;
   @Input() currentVote: 'upvote' | 'downvote' | null = null;
