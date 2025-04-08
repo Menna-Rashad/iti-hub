@@ -12,6 +12,7 @@ use App\Models\MentorshipUser;
 use App\Models\User;
 use App\Models\Vote;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class TopContributorsController extends Controller
 {
@@ -229,6 +230,21 @@ class TopContributorsController extends Controller
             'badge_type' => $badgeType,
             'earned_at' => now(),
         ]);
+    }
+}
+public function getAllUsersWithScores()
+{
+    try {
+        // استرجاع جميع المستخدمين مع النقاط الخاصة بهم وترتيبهم تنازليًا حسب النقاط
+        $usersWithScores = User::join('points', 'users.id', '=', 'points.user_id')
+            ->select('users.name', 'points.points')
+            ->orderByDesc('points.points') // ترتيب المستخدمين حسب النقاط من الأكبر إلى الأصغر
+            ->take(10) // اختيار أفضل 10 مستخدمين
+            ->get();
+
+        return response()->json(['users_with_scores' => $usersWithScores]); // إرجاع المستخدمين مع النقاط
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'An error occurred'], 500); // التعامل مع أي خطأ يحدث
     }
 }
 
