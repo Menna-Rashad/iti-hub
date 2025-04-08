@@ -19,6 +19,9 @@ class Comment extends Model
         'is_flagged'
     ];
 
+    protected $appends = ['current_user_vote'];
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -41,4 +44,14 @@ class Comment extends Model
             'downvotes' => $this->votes()->where('vote_type', 'downvote')->count()
         ]);
     }
+
+    public function getCurrentUserVoteAttribute()
+    {
+        $user = auth()->user();
+        if (!$user) return null;
+
+        $vote = $this->votes()->where('user_id', $user->id)->first();
+        return $vote?->vote_type;
+    }
+
 }

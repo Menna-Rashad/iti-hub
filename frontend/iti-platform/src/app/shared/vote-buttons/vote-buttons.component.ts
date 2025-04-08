@@ -1,36 +1,53 @@
-import { Component, Input } from '@angular/core';
-import { VoteService } from '../../services/vote.service'; 
+import { Component, Input, OnInit, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
+import { VoteService } from '../../services/vote.service';
 
 @Component({
   selector: 'app-vote-buttons',
-  template: `
-    <div class="vote-container">
-      <button mat-icon-button (click)="vote('upvote')">
-        <mat-icon [color]="currentVote === 'upvote' ? 'primary' : 'inherit'">arrow_upward</mat-icon>
-      </button>
-      <span>{{ upvotes - downvotes }}</span>
-      <button mat-icon-button (click)="vote('downvote')">
-        <mat-icon [color]="currentVote === 'downvote' ? 'warn' : 'inherit'">arrow_downward</mat-icon>
-      </button>
-    </div>
-  `,
-  styleUrls: ['./vote-buttons.component.css'] 
+  templateUrl: './vote-buttons.component.html',
+  styleUrls: ['./vote-buttons.component.css']
 })
-export class VoteButtonsComponent {
+export class VoteButtonsComponent implements OnInit, OnChanges {
   @Input() targetType!: 'post' | 'comment';
   @Input() targetId!: string;
   @Input() upvotes = 0;
   @Input() downvotes = 0;
-  currentVote: 'upvote' | 'downvote' | null = null;
+  @Input() currentVote: 'upvote' | 'downvote' | null = null;
 
-  constructor(private voteService: VoteService) { }
+  @Output() voteUpdated = new EventEmitter<any>(); // Emit when vote changes
+
+  constructor(private voteService: VoteService) {}
+
+  ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentVote']) {
+      this.currentVote = changes['currentVote'].currentValue;
+    }
+  }
 
   vote(type: 'upvote' | 'downvote'): void {
     this.voteService.handleVote(this.targetType, this.targetId, type).subscribe({
       next: (response: any) => {
         this.upvotes = response.upvotes;
         this.downvotes = response.downvotes;
-        this.currentVote = response.action === 'added' ? type : null;
+
+        if (response.action === 'added') {
+          this.currentVote = type; // highlight the button
+        } else {
+          this.currentVote = null; // unhighlight if removed
+        }
+
+        // Emit the updated vote information to the parent
+        this.voteUpdated.emit({
+          targetType: this.targetType,
+          targetId: this.targetId,
+          newCounts: { upvotes: this.upvotes, downvotes: this.downvotes },
+          action: response.action,
+          currentVote: this.currentVote
+        });
+      },
+      error: (err) => {
+        console.error('Vote error:', err);
       }
     });
   }

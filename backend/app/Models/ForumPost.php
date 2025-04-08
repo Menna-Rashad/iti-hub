@@ -23,7 +23,7 @@ class ForumPost extends Model
         'upvotes',
         'downvotes'
     ];
-
+    protected $appends = ['current_user_vote'];
     // public $casts
     // protected $casts = [
     //     'tags' => 'array',
@@ -61,4 +61,14 @@ class ForumPost extends Model
     {
         return $this->hasManyThrough(Badge::class, User::class, 'user_id', 'user_id');
     }
+
+    public function getCurrentUserVoteAttribute()
+    {
+        $user = auth()->user();
+        if (!$user) return null;
+
+        $vote = $this->votes()->where('user_id', $user->id)->first();
+        return $vote?->vote_type;
+    }
+
 }

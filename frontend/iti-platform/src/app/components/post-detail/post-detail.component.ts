@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommentService } from '../../services/comments.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { VoteButtonsComponent } from '../../shared/vote-buttons/vote-buttons.component';
 
 @Component({
   selector: 'app-post-detail',
@@ -21,7 +22,8 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    VoteButtonsComponent
   ],
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.css']
@@ -29,8 +31,8 @@ import { MatInputModule } from '@angular/material/input';
 export class PostDetailComponent implements OnInit {
   post: any;
   newComment = '';
-  currentUserId: number = 0; // ✅ مضاف علشان نعرف مين صاحب البوست
-  canEdit = false; // ✅ لتحديد هل المستخدم يقدر يعدل البوست
+  currentUserId: number = 0;
+  canEdit = false;
 
   constructor(
     private commentService: CommentService,
@@ -38,7 +40,7 @@ export class PostDetailComponent implements OnInit {
     private api: ApiService,
     private route: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -71,29 +73,22 @@ export class PostDetailComponent implements OnInit {
     }
   }
 
-  handleVote(target: 'post' | 'comment', id: string, type: 'upvote' | 'downvote') {
-    this.voteService.handleVote(target, id, type).subscribe({
-      next: (response: any) => {
-        console.log('Vote response:', response);
-
-        if (target === 'post') {
-          this.post.upvotes = response.new_counts.upvotes;
-          this.post.downvotes = response.new_counts.downvotes;
-        } else {
-          const comment = this.post.comments.find((c: any) => c.id === id);
-          if (comment) {
-            comment.upvotes = response.new_counts.upvotes;
-            comment.downvotes = response.new_counts.downvotes;
-          }
-        }
-
-        this.loadPost(this.post.id); 
-      },
-      error: (err) => console.error(err)
-    });
+  onVoteUpdated(target: 'post' | 'comment', id: string, event: any) {
+    if (target === 'post') {
+      this.post.upvotes = event.newCounts.upvotes;
+      this.post.downvotes = event.newCounts.downvotes;
+      this.post.current_user_vote = event.currentVote;
+    } else {
+      const comment = this.post.comments.find((c: any) => c.id === id);
+      if (comment) {
+        comment.upvotes = event.newCounts.upvotes;
+        comment.downvotes = event.newCounts.downvotes;
+        comment.current_user_vote = event.currentVote;
+      }
+    }
   }
 
   goToEdit() {
-    this.router.navigate(['/edit-post', this.post.id]); 
+    this.router.navigate(['/edit-post', this.post.id]);
   }
 }

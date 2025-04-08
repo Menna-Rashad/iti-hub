@@ -1,0 +1,64 @@
+.vote-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f6f7f8; /* رمادي خفيف زي Reddit */
+  padding: 6px 12px;
+  border-radius: 9999px; /* شكل pill */
+  font-weight: bold;
+  font-size: 14px;
+  user-select: none;
+  width: fit-content;
+}
+
+.vote-container button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vote-container svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.vote-container button:hover .vote-icon path{
+    /* transform: scale(1.1); */
+    fill: none;
+    stroke: #ff4500;
+    stroke-width: 2; 
+}
+.vote-container button.active .vote-icon path{
+    fill: #ff4500;
+    /* stroke: none; */
+    stroke: #ff4500;
+}
+.vote-container button{
+    padding: 2px;
+}
+.vote-icon path {
+    fill: gray;
+    stroke: gray;
+    stroke-width: 1;
+    /* transition: all 0.2s ease; */
+  }
+  
+  .vote-icon {
+    width: 24px;
+    height: 24px;
+    padding: 2px; /* عشان تديله مساحة جوا */
+    overflow: visible;
+    display: block;
+  }
+
+.vote-count {
+  font-size: 14px;
+}
+
+
+

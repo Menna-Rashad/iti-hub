@@ -11,20 +11,19 @@
     <mat-card-content>
       <p class="post-content">{{ post.content }}</p>
 
-      <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')">
-          <mat-icon>thumb_up</mat-icon>
-        </button>
-        <span>{{ post.upvotes }}</span>
-        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')">
-          <mat-icon>thumb_down</mat-icon>
-        </button>
-        <span>{{ post.downvotes }}</span>
+      <!-- ✅ بدل الزرائر القديمة، استخدمنا الكمبوننت -->
+      <app-vote-buttons
+      [targetType]="'post'"
+      [targetId]="post.id"
+      [upvotes]="post.upvotes"
+      [downvotes]="post.downvotes"
+      [currentVote]="post.current_user_vote"
+      (voteUpdated)="onVoteUpdated('post', post.id, $event)"
+    ></app-vote-buttons>
 
-        <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
-          ✏️ Edit Post
-        </button>
-      </div>
+      <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
+        ✏️ Edit Post
+      </button>
     </mat-card-content>
   </mat-card>
 
@@ -47,16 +46,15 @@
         </div>
       </mat-card-content>
 
-      <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('comment', comment.id, 'upvote')">
-          <mat-icon>thumb_up</mat-icon>
-        </button>
-        <span>{{ comment.upvotes }}</span>
-        <button mat-icon-button color="warn" (click)="handleVote('comment', comment.id, 'downvote')">
-          <mat-icon>thumb_down</mat-icon>
-        </button>
-        <span>{{ comment.downvotes }}</span>
-      </div>
+      <!-- ✅ بردو استبدلنا التصويت بتاع الكومنت -->
+      <app-vote-buttons
+      [targetType]="'comment'"
+      [targetId]="comment.id"
+      [upvotes]="comment.upvotes"
+      [downvotes]="comment.downvotes"
+      [currentVote]="comment.current_user_vote"
+      (voteUpdated)="onVoteUpdated('comment', comment.id, $event)"
+    ></app-vote-buttons>
     </mat-card>
   </div>
 </div>

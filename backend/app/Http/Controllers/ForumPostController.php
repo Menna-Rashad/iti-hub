@@ -54,9 +54,15 @@ class ForumPostController extends Controller
     public function show(string $id)
     {
         try {
-            $forumPost = ForumPost::with(['comments.user', 'votes', 'category'])->findOrFail($id);
+            $forumPost = ForumPost::with(['comments.user', 'comments.user','votes', 'category'])->findOrFail($id);
+            foreach ($forumPost->comments as $comment) {
+                $comment->current_user_vote = $comment->current_user_vote;
+            }         
             $forumPost->refreshVoteCounts();
-
+    
+             //we need to get the current user vote
+             $forumPost->current_user_vote = $forumPost->current_user_vote; 
+             
             return response()->json($forumPost);
         } catch (\Exception $e) {
             return response()->json([
@@ -67,6 +73,7 @@ class ForumPostController extends Controller
             ], 500);
         }
     }
+    
 
     public function update(Request $request, $id)
     {
