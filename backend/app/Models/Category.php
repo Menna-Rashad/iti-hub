@@ -13,4 +13,8 @@ class Category extends Model
     {
         return $this->hasMany(ForumPost::class);
     }
+     // You can specify the table name if it's different from the default 'categories'
+     protected $table = 'categories'; 
+
+    
 }
