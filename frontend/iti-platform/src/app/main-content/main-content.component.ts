@@ -20,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { TopContributorsComponent } from '../top-contributors/top-contributors.component';  // Import TopContributorsComponent
 
 @Component({
   selector: 'app-main-content',
@@ -36,6 +37,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     MatFormFieldModule,
     MatInputModule,
     SidebarComponent,
+    TopContributorsComponent,  // Add TopContributorsComponent to imports
   ],
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.css'],
@@ -50,10 +52,14 @@ export class MainContentComponent implements OnInit {
   visibleComments: { [postId: number]: any[] } = {};
   currentUser: any = null;
   searchQuery = '';
+  categories: any[] = [];  // لتخزين الفئات
+  selectedCategory: string = '';  // لتخزين الفئة المحددة
+  categoryColors: string[] = []; // لتخزين ألوان الفئات
 
   editingPostId: number | null = null;
   editPostTitle = '';
   editPostContent = '';
+  topContributors: any[] = [];
 
   @ViewChildren('lastVisibleComment', { read: ElementRef })
   lastCommentElements!: QueryList<ElementRef>;
@@ -67,6 +73,8 @@ export class MainContentComponent implements OnInit {
   ngOnInit(): void {
     this.loadPosts();
     this.getCurrentUser();
+    this.getTopContributors(); 
+    this.loadCategories(); // Fetch the top contributors
   }
 
   getCurrentUser(): void {
@@ -227,4 +235,46 @@ export class MainContentComponent implements OnInit {
       });
     }
   }
+
+  //Add the TopContributors component method to fetch contributors
+  getTopContributors(): void {
+    this.forumService.getTopContributors().subscribe(
+      (response: any) => {
+        this.topContributors = response.users_with_scores;
+      },
+      (error: any) => {
+        console.error('Error fetching top contributors:', error);
+      }
+    );
+  }
+  loadCategories(): void {
+    this.forumService.getCategories().subscribe((response) => {
+      this.categories = response;
+      this.categoryColors = this.generateRandomColors(this.categories.length); // توليد ألوان عشوائية
+    });
+  }
+
+  generateRandomColors(count: number): string[] {
+    const colors: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`; // توليد لون عشوائي باستخدام HSL
+      colors.push(randomColor);
+    }
+    return colors;
+  }
+  
+ 
+  // Filtering posts based on the selected category
+  filterPosts(category: any): void {
+    if (category) {
+      this.filteredPosts = this.posts.filter(
+        (post) => post.category_id === category.id
+      );
+    } else {
+      // Show all posts if "All" button is clicked
+      this.filteredPosts = this.posts;
+    }
+  }
+  
+  
 }
