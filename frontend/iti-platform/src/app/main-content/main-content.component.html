@@ -94,12 +94,40 @@
   </main>
 
   <!-- Top Contributors -->
+
   <aside class="right-panel">
-    <h3>Top Contributors</h3>
-    <ul>
-      <li><img src="assets/user.png" /> Sara Emad</li>
-      <li><img src="assets/user.png" /> Ahmed Samir</li>
-      <li><img src="assets/user.png" /> Laila Ahmed</li>
-    </ul>
-  </aside>
+    <app-top-contributors></app-top-contributors> <!-- تم تضمين المكون هنا -->
+  
+  
+  <!-- Sidebar with Categories -->
+<!-- Sidebar with Categories -->
+<span>          
+
+
+</span>
+  <div class="left-panel-categories">
+    <h3>Categories</h3>
+    <!-- 'All' button -->
+    <pre> 
+
+    </pre>  
+    <button class="category-button" (click)="filterPosts(null)">
+      All
+    </button>
+    
+    <!-- Category buttons with dynamic background color -->
+    <div *ngFor="let category of categories; let i = index">
+      <button class="category-button" [style.background-color]="categoryColors[i]" (click)="filterPosts(category)">
+        {{ category.name }}
+      </button>
+    </div>
+  </div>
+
+
+</aside>
+  
+  
+  
+  
+
 </div>
