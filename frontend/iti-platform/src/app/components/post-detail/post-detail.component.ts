@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthStateService } from '../../services/auth-state.service';
 import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-buttons.component';
 import { ActionMenuComponent } from '../../shared/components/action-menu/action-menu.component';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-detail',
@@ -46,23 +47,78 @@ export class PostDetailComponent implements OnInit {
     private authState: AuthStateService
   ) {}
 
+  // ngOnInit() {
+  //   this.authState.currentUser$
+  //     .pipe(
+  //       filter(user => !!user),  // استنى لحد ما ييجي يوزر فعلاً
+  //       take(1)                  // خده مرة واحدة بس
+  //     )
+  //     .subscribe(user => {
+  //       this.currentUserId = user!.id;
+  
+  //       this.route.params.subscribe(params => {
+  //         this.loadPost(params['id']);
+  //       });
+  //     });
+  // }
+  
   ngOnInit() {
-  this.authState.currentUser$.subscribe(user => {
-    if (user) {
-      this.currentUserId = user.id;
-    }
-  });
+    console.log('🔄 Waiting for user...');
+    this.authState.currentUser$
+      .pipe(
+        filter(user => !!user),  // استنى لما يبقى فيه يوزر
+        take(1)
+      )
+      .subscribe(user => {
+        this.currentUserId = user!.id;
+        console.log('✅ Logged in user ID:', this.currentUserId);
+  
+        this.route.params.subscribe(params => {
+          console.log('📦 Route param post ID:', params['id']);
+          this.loadPost(params['id']);
+        });
+      });
+  }
 
-  this.route.params.subscribe(params => {
-    this.loadPost(params['id']);
-  });
-}
+  // loadPost(id: string) {
+  //   this.api.getPost(id).subscribe(post => {
+  //     this.post = post;
+  
+  //     // 3. دلوقتي نقدر نتحقق من الصلاحية
+  //     this.canEdit = post.user_id === this.currentUserId;
+  //   });
+  // }
 
-
+  // loadPost(id: string) {
+  //   this.api.getPost(id).subscribe(post => {
+  //     this.post = post;
+  
+  //     console.log('✅ Current user ID:', this.currentUserId);
+  //     console.log('🧑‍💻 Post owner ID:', post.user_id);
+  
+  //     // optional: اطبعي برضو الكومنتات لو حابة تتأكدي
+  //     post.comments.forEach((comment: any, i: number) => {
+  //       console.log(`💬 Comment ${i} by user ID:`, comment.user_id);
+  //     });
+  
+  //     this.canEdit = this.currentUserId !== 0 && post.user_id == this.currentUserId;
+  //   });
+  // }
+  
   loadPost(id: string) {
+    console.log('📥 Fetching post with ID:', id);
+  
     this.api.getPost(id).subscribe(post => {
       this.post = post;
-      this.canEdit = this.currentUserId !== 0 && post.user_id == this.currentUserId;
+  
+      console.log('🧑‍💻 Post owner ID:', post.user_id);
+      console.log('💡 currentUserId at post load:', this.currentUserId);
+  
+      post.comments.forEach((comment: any, i: number) => {
+        console.log(`💬 Comment ${i} by user ID:`, comment.user_id);
+      });
+  
+      this.canEdit = post.user_id === this.currentUserId;
     });
   }
 

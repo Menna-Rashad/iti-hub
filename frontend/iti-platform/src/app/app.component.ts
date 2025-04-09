@@ -1,13 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-// import { LoginComponent } from './login/login.component';
-// import { FormsModule } from '@angular/forms'; // <-- Import FormsModule here
-// import { MentorshipComponent } from './mentorship/mentorship.component'; // <-- Import the MentorshipComponent here
-import { NavbarComponent } from './navbar/navbar.component'; // <-- Import the NavbarComponent here
+import { NavbarComponent } from './navbar/navbar.component';
+import { AuthStateService } from './services/auth-state.service'; // ✅ استيراد الـ service
 
-// import { BrowserModule } from '@angular/platform-browser';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -18,7 +13,12 @@ import { CommonModule } from '@angular/common';
   `,
   styleUrls: ['./app.component.css']
 })
-
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'iti-hub';
+
+  constructor(private authState: AuthStateService) {}
+
+  ngOnInit(): void {
+    this.authState.loadUserFromStorage(); // ✅ تحميل اليوزر عند بدء التطبيق
+  }
 }

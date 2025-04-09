@@ -22,6 +22,9 @@ export class ActionMenuComponent {
   @Output() hide = new EventEmitter<void>();
 
   get isOwner(): boolean {
+  //   console.log('ownerId:', this.ownerId);
+  // console.log('currentUserId:', this.currentUserId);
+  // console.log('isOwner:', this.isOwner);
     return this.ownerId === this.currentUserId;
   }
 }
