@@ -8,7 +8,8 @@ import { NgIf } from '@angular/common';
   selector: 'app-action-menu',
   standalone: true,
   imports: [MatMenuModule, MatIconModule, MatButtonModule, NgIf],
-  templateUrl: './action-menu.component.html'
+  templateUrl: './action-menu.component.html',
+  styleUrls: ['./action-menu.component.css']
 })
 export class ActionMenuComponent {
   @Input() ownerId!: number;
