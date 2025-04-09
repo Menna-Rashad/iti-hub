@@ -1,25 +1,32 @@
 <div class="post-wrapper" *ngIf="post">
   <mat-card class="post-card">
-    <mat-card-header>
-      <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
-
-
-      <app-action-menu
-      [ownerId]="post.user_id"
-      [currentUserId]="currentUserId"
-      [type]="'post'"
-      (edit)="goToEdit()"
-      (delete)="onDeletePost()"
-      (report)="onReportPost(post)"
-      (hide)="onHidePost(post)"
-      ></app-action-menu>
-
-
-      <mat-card-subtitle class="post-meta">
-        <span>{{ post.user?.name }}</span> · 
-        <span>{{ post.created_at | date:'medium' }}</span>
-      </mat-card-subtitle>
-    </mat-card-header>
+    <div class="post-header-wrapper">
+      <div class="post-header">
+        <!-- ✅ اليسار: العنوان والتاريخ -->
+        <div class="post-info">
+          <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+          <mat-card-subtitle class="post-meta">
+            <span>{{ post.user?.name }}</span> · 
+            <span>{{ post.created_at | date:'medium' }}</span>
+          </mat-card-subtitle>
+        </div>
+    
+        <!-- ✅ اليمين: المنيو -->
+        <div class="menu-wrapper">
+          <app-action-menu
+            [ownerId]="post.user_id"
+            [currentUserId]="currentUserId"
+            [type]="'post'"
+            (edit)="goToEdit()"
+            (delete)="onDeletePost()"
+            (report)="onReportPost(post)"
+            (hide)="onHidePost(post)"
+          ></app-action-menu>
+        </div>
+      </div>
+    </div>
+    
+    
 
     <mat-card-content>
       <p class="post-content">{{ post.content }}</p>
@@ -34,9 +41,9 @@
       (voteUpdated)="onVoteUpdated('post', post.id, $event)"
     ></app-vote-buttons>
 
-      <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
+      <!-- <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
         ✏️ Edit Post
-      </button>
+      </button> -->
     </mat-card-content>
   </mat-card>
 
@@ -52,33 +59,37 @@
     </div>
 
     <mat-card *ngFor="let comment of post.comments" class="comment-card">
-      <mat-card-content>
-        <p>{{ comment.content }}</p>
-        <div class="comment-meta">
-          <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
+      <div class="comment-header">
+        <mat-card-content>
+          <p>{{ comment.content }}</p>
+          <div class="comment-meta">
+            <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
+          </div>
+        </mat-card-content>
+    
+        <div class="menu-wrapper">
+          <app-action-menu
+            [ownerId]="comment.user_id"
+            [currentUserId]="currentUserId"
+            [type]="'comment'"
+            (edit)="onEditComment(comment)"
+            (delete)="onDeleteComment(comment)"
+            (report)="onReportComment(comment)"
+            (hide)="onHideComment(comment)"
+          ></app-action-menu>
         </div>
-      </mat-card-content>
-
-
-      <app-action-menu
-        [ownerId]="comment.user_id"
-        [currentUserId]="currentUserId"
-        [type]="'comment'"
-        (edit)="onEditComment(comment)"
-        (delete)="onDeleteComment(comment)"
-        (report)="onReportComment(comment)"
-        (hide)="onHideComment(comment)"
-      ></app-action-menu>
-
-      <!-- ✅ بردو استبدلنا التصويت بتاع الكومنت -->
+      </div>
+    
+      <!-- التصويت -->
       <app-vote-buttons
-      [targetType]="'comment'"
-      [targetId]="comment.id"
-      [upvotes]="comment.upvotes"
-      [downvotes]="comment.downvotes"
-      [currentVote]="comment.current_user_vote"
-      (voteUpdated)="onVoteUpdated('comment', comment.id, $event)"
-    ></app-vote-buttons>
+        [targetType]="'comment'"
+        [targetId]="comment.id"
+        [upvotes]="comment.upvotes"
+        [downvotes]="comment.downvotes"
+        [currentVote]="comment.current_user_vote"
+        (voteUpdated)="onVoteUpdated('comment', comment.id, $event)"
+      ></app-vote-buttons>
     </mat-card>
+    
   </div>
 </div>

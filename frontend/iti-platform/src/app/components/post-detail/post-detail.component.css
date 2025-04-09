@@ -85,3 +85,32 @@
 button.mat-raised-button {
     border-radius: 50px;
 }
+/* Post header */
+.post-header {
+    position: relative;
+  }
+  
+  .menu-wrapper {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  /* Comment */
+  .comment-header {
+    position: relative;
+  }
+  
+  .comment-header .menu-wrapper {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  
