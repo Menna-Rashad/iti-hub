@@ -16,5 +16,6 @@ class OpenProject extends Model
         'github_url',
         'status',
         'category',
+        'user_id', 
     ];
 }
