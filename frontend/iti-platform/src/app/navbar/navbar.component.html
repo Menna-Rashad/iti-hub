@@ -15,8 +15,13 @@
         <mat-icon>home</mat-icon>
         <span>Home</span>
       </a>
-    </ng-container>
 
+    </ng-container>
+      <a mat-button routerLink="/open-projects">
+        <mat-icon>folder</mat-icon>
+        <span>Open Projects</span>
+      </a>
+        
     <a mat-button routerLink="/projects">
       <mat-icon>folder</mat-icon>
       <span>Projects</span>
@@ -50,6 +55,7 @@
         <button mat-menu-item routerLink="/profile">
           <mat-icon>visibility</mat-icon>
           View Profile
+
         </button>
         <button mat-menu-item routerLink="/profile/edit">
           <mat-icon>edit</mat-icon>
@@ -67,6 +73,9 @@
       <a mat-button routerLink="/login">Login</a>
       <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
     </ng-container>
+
+    <a routerLink="/open-projects">Open Projects</a>
+
   </div>
 
   <!-- Burger menu icon -->

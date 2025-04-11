@@ -1,0 +1,65 @@
+<div class="project-list-container">
+    <div class="search-filter-bar">
+        <mat-form-field appearance="outline">
+          <mat-label>Search projects</mat-label>
+          <input matInput [(ngModel)]="searchTerm" placeholder="Type name or category..." />
+        </mat-form-field>
+      
+        <mat-form-field appearance="outline">
+          <mat-label>Sort by</mat-label>
+          <mat-select [(ngModel)]="sortOption">
+            <mat-option value="newest">Newest</mat-option>
+            <mat-option value="oldest">Oldest</mat-option>
+            <mat-option value="az">A → Z</mat-option>
+            <mat-option value="za">Z → A</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+    <div style="text-align: right; margin: 20px;">
+      <button mat-flat-button color="primary" routerLink="/open-projects/add">
+        <mat-icon>add</mat-icon>
+        Add Project
+      </button>
+    </div>
+      
+    <div class="project-cards">
+        <ng-container *ngIf="sortedProjects.length > 0; else noProjects">
+            <mat-card *ngFor="let project of sortedProjects">          
+          <mat-card-title>{{ project.name }}</mat-card-title>
+          <mat-card-content>
+            <p>
+                <strong>Status:</strong>
+                <span class="status-badge" [ngClass]="'status-' + project.status">
+                  {{ project.status }}
+                </span>
+            </p>
+            <p><strong>Category:</strong> {{ project.category }}</p>
+            <a [href]="project.github_url" target="_blank">View on GitHub</a>
+          </mat-card-content>
+  
+          <mat-card-actions>
+            <button mat-button color="primary" (click)="viewDetails(project.id!)">
+              <mat-icon>visibility</mat-icon>
+              View Details
+            </button>
+  
+            <button *ngIf="canEdit(project)" mat-button color="accent" [routerLink]="['/open-projects/edit', project.id]">
+              <mat-icon>edit</mat-icon>
+              Edit Project
+            </button>
+  
+            <button *ngIf="canEdit(project)" mat-button color="warn" (click)="deleteProject(project.id!)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </ng-container>
+  
+      <ng-template #noProjects>
+        <p style="margin: 1rem;">😕 No projects found.</p>
+      </ng-template>
+    </div>
+  </div>
+  

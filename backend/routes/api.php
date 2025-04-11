@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TopContributorsController;
+use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
+
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
 // ==========================
@@ -136,4 +138,10 @@ Route::prefix('top-contributors')->group(function () {
             'users' => User::all()
         ]);
     });
+});
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/open-projects', [OpenProjectController::class, 'index']);
+        Route::post('/open-projects', [OpenProjectController::class, 'store']);
+        Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
+        Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
 });

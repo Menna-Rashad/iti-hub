@@ -1,0 +1,46 @@
+<div class="edit-project-container">
+    <h2>Edit Project</h2>
+  
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" formControlName="description"></textarea>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Technologies</mat-label>
+        <input matInput formControlName="technologies" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>GitHub URL</mat-label>
+        <input matInput formControlName="github_url" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="under_development">Under Development</mat-option>
+          <mat-option value="completed">Completed</mat-option>
+          <mat-option value="in_review">In Review</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category" />
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">Update Project</button>
+      <div class="button-group">
+        <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancel</button>
+      </div>
+      
+    </form>
+  </div>
+  

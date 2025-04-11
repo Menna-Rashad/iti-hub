@@ -1,0 +1,118 @@
+.project-list-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  mat-form-field {
+    width: 280px;
+  }
+  
+  .project-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 16px;
+    background-color: #fafafa;
+    flex: 1 1 330px; /* Equal width but flexible */
+    max-width: 330px;
+    min-height: 280px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out;
+  }
+
+ .project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+  
+mat-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+  }
+
+  mat-card-content {
+    flex-grow: 1;
+  }
+
+  mat-card-content p {
+    margin: 4px 0;
+    color: #444;
+    font-size: 0.95rem;
+  }
+  
+  mat-card-content a {
+    color: #1e88e5;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  
+  mat-card-content a:hover {
+    text-decoration: underline;
+  }
+  
+  mat-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  button[mat-button] {
+    font-size: 0.85rem;
+    text-transform: none;
+  }
+  
+  .add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    margin-left: 5px;
+  }
+  
+  .status-completed {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+  }
+  
+  .status-under_development {
+    background-color: #fff9c4;
+    color: #f9a825;
+  }
+  
+  .status-in_review {
+    background-color: #bbdefb;
+    color: #1565c0;
+  }
+  
