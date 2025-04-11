@@ -1,40 +1,220 @@
+/* General Container */
 .example-container {
-    height: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #f4f6f9; /* Light background for a clean look */
+}
+
+/* Sidebar Container */
+mat-sidenav {
+  width: 280px; /* Slightly increased width */
+  background-color: #f9fafa; /* Softer shade */
+  border-radius: 16px; /* Larger radius for more modern look */
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Refined shadow */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Sidebar Content */
+mat-sidenav-content {
+  padding: 20px;
+  flex: 1;
+}
+
+/* Navigation Links */
+mat-nav-list a {
+  color: #34495e; /* Softer text color */
+  text-decoration: none;
+  font-weight: 600;
+  padding: 12px 25px;
+  display: block;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+mat-nav-list a:hover {
+  background-color: #d6e5f7;
+  color: #2c3e50; }
+
+/* Sidebar Animation */
+mat-sidenav {
+  animation: fadeInSlide 0.6s ease-in-out;
+}
+
+/* Left Panel (Sidebar Background & Structure) */
+.left-panel {
+  background: linear-gradient(to bottom, #2c3e50, #34495e);
+  color: white;
+  width: 280px; /* Adjusted width */
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  
+  transition: transform 0.3s ease;
+}
+
+/* Profile Section */
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 50px;
+  transition: background 0.3s ease;
+}
+
+.profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.ms-2 {
+  margin-left: 6px;
+  color: #b71c1c;
+  border-radius: 50%;
+  font-weight: 500;
+  font-size: 14px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* .profile-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: center;
+  color: #1fa9cc;
+} */
+
+/* Menu Section */
+.menu-section {
+  margin-bottom: 30px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  margin: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #1e90ff;
+}
+
+.menu-item mat-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+
+.menu-item span {
+  font-size: 16px;
+}
+
+/* Section Title */
+.menu-section .section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #c2185b;;
+}
+
+/* Footer Section (Log Out) */
+.logout-btn {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #c2185b;;
+  font-size: 16px;
+}
+
+.logout-btn:hover {
+  color: #f44336;
+  transform: scale(1.1); /* Slight animation effect */
+}
+
+/* Badge for notifications */
+mat-badge {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+/* Sidebar Responsive Design */
+@media (max-width: 768px) {
+  .left-panel {
+    width: 240px;
+    padding: 15px;
+  }
+
+  .profile-name {
+    font-size: 1.2rem;
+  }
+
+  .menu-item span {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .left-panel {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .profile-section {
+    align-items: flex-start;
+  }
+
+  .profile-image {
+    width: 50px;
+    height: 50px;
   }
   
-  mat-sidenav {
-    width: 250px;
-    background-color: #e9eef6; /* ✅ لون أفتح */
-    border-radius: 8px;
-    padding: 10px 0;
+  .user-avatar {
+    width: 35px;
+    height: 35px;
   }
-  
-  mat-nav-list a {
-    color: #2c3e50; /* لون أغمق لكن مش غامق قوي */
-    text-decoration: none;
-    font-weight: 500;
-    padding: 10px 20px;
-    display: block;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
+
+  .profile-name {
+    font-size: 1.2rem;
   }
-  
-  mat-nav-list a:hover {
-    background-color: #d0e3f5; /* ✅ تأثير hover بلون ناعم */
-    color: #000;
+
+  .menu-item span {
+    font-size: 13px;
   }
-  mat-sidenav {
-    animation: fadeInSlide 0.6s ease;
+
+  .menu-section {
+    margin-bottom: 10px;
   }
-  
-  @keyframes fadeInSlide {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+}
+
+/* Sidebar Animation Keyframes */ 
+@keyframes fadeInSlide {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
   }
-    
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

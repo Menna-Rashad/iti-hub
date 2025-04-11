@@ -1,16 +1,61 @@
+
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" opened="true">
-      <mat-nav-list>
-        <a mat-list-item routerLink="/home">🏠 Home</a>
-        <a mat-list-item routerLink="/discussions">💬 Discussions</a>
-        <a mat-list-item routerLink="/announcements">📢 Announcements</a>
-      </mat-nav-list>
-    </mat-sidenav>
-  
-    <mat-sidenav-content>
-      <div class="content">
-        <router-outlet></router-outlet>
+  <mat-sidenav #sidenav mode="side" opened="true">
+    <mat-nav-list>
+      <!-- Profile Section -->
+      <div class="profile-button">
+      <button >
+        <img [src]="userImage" alt="Profile" class="user-avatar" />
+        <span class="ms-2">{{ userName }}</span>
+      </button>
+    </div>
+
+
+      <!-- Main Menu Section -->
+      <div class="menu-section">
+        <div class="menu-item" (click)="navigateToDashboard()">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </div>
+        <div class="menu-item" (click)="navigateToChat()">
+          <mat-icon>chat</mat-icon>
+          <span>Chat</span>
+          <mat-badge [matBadge]="" matBadgeColor="accent" matBadgePosition="after"></mat-badge>
+        </div>
+        <div class="menu-item" (click)="navigateToTeam()">
+          <mat-icon>group</mat-icon>
+          <span>Team</span>
+        </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-  
+
+      <!-- Shortcuts Section -->
+      <div class="menu-section">
+        <span class="section-title">Shortcuts</span>
+        <div class="menu-item" (click)="navigateToProjects()">
+          <mat-icon>task</mat-icon>
+          <span>Projects</span>
+        </div>
+        <div class="menu-item" (click)="navigateToForumView()">
+          <mat-icon>assessment</mat-icon>
+          <span>Reports</span>
+        </div>
+        <div class="menu-item" (click)="navigateToSettings()">
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <div class="logout-btn" *ngIf="isLoggedIn" (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Log Out</span>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

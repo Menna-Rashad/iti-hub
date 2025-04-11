@@ -13,9 +13,18 @@
 .right-panel {
   width: 18%;
   background-color: #ffffff;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: all 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover Effect on Panels */
+.left-panel:hover,
+.right-panel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 .center-panel {
@@ -243,38 +252,77 @@
 }
 
 /* ✅ Sidebar Contributors */
-.right-panel h3 {
-  margin-bottom: 1rem;
-  font-size: 18px;
-  font-weight: bold;
+.right-panel {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-.right-panel ul {
+.contributors-title {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.contributors-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.right-panel li {
+.contributor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 12px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.contributor-item:hover {
+  background-color: #e7e7e7;
+}
+
+.contributor-info {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-  background: #fff;
-  padding: 8px;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-.right-panel li:hover {
-  background-color: #f0f0f0;
 }
 
-.right-panel img {
-  width: 32px;
-  height: 32px;
+.contributor-img {
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  margin-right: 0.5rem;
+  margin-right: 15px;
 }
 
+.contributor-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+}
+
+.contributor-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.contributor-points {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.badge {
+  padding: 5px;
+  background-color: gold; /* يمكن تغيير اللون بناءً على نوع البادج */
+  color: white;
+  border-radius: 10px;
+  font-size: 12px;
+}
 /* ✅ Routing Links */
 a[routerLink] {
   font-size: 13px;
@@ -381,4 +429,138 @@ button.mat-icon-button:hover {
 
 .mat-menu-item:hover {
   background-color: #f8f8f8;
+}
+/* Sidebar */
+/* Sidebar */
+.left-panel-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* زيادة المسافة بين الأزرار */
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 100%;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Title */
+.left-panel-categories h3 {
+  font-size: 1.6rem;
+  color: #1e3d58;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Style for category buttons */
+.category-button {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border-radius: 25px;
+  padding: 10px 18px; /* تحسين المسافات */
+  font-size: 14px;
+  font-weight: 500;
+  border: 2px solid #388e3c;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Hover effect */
+.category-button:hover {
+  background-color: #388e3c;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Active state */
+.category-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for 'All' button */
+.category-button:first-of-type {
+  background-color: #bbdefb;
+  border-color: #1976d2;
+  color: #000;
+}
+
+.category-button:first-of-type:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Responsive Design for Medium Screens */
+@media (max-width: 768px) {
+  .left-panel-categories {
+    padding: 15px;
+  }
+
+  .left-panel-categories h3 {
+    font-size: 1.4rem;
+  }
+
+  .category-button {
+    font-size: 13px;
+    padding: 10px;
+    width: 100%; /* Making buttons take full width on smaller screens */
+  }
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 480px) {
+  .left-panel-categories {
+    padding: 10px;
+  }
+
+  .left-panel-categories h3 {
+    font-size: 1.2rem;
+  }
+
+  .category-button {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+
+/* Responsive Design for Medium Screens */
+@media (max-width: 768px) {
+  .left-panel-categories {
+    max-width: 100%; /* Full width for small screens */
+    padding: 15px; /* Adjust padding */
+  }
+
+  .left-panel-categories h3 {
+    font-size: 1.3rem; /* Adjust heading size */
+  }
+
+  .category-button {
+    font-size: 12px;
+    padding: 10px;
+    width: 100%; /* Ensure the buttons take full width in smaller screens */
+  }
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 480px) {
+  .left-panel-categories {
+    max-width: 100%; /* Full width for very small screens */
+    padding: 10px; /* Adjust padding further */
+  }
+
+  .left-panel-categories h3 {
+    font-size: 1.1rem; /* Smaller heading for small screens */
+  }
+
+  .category-button {
+    padding: 8px; /* Less padding for small screens */
+    font-size: 10px; /* Smaller font size */
+  }
 }

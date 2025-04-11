@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
+use App\Http\Controllers\CategoryController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -103,7 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('comments', CommentController::class)->except(['index']);
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
-
+    Route::get('/categories', [CategoryController::class, 'index']);
 // ========================== 
 // 🔰 Top Contributors 
 // ==========================
@@ -114,6 +115,8 @@ Route::prefix('top-contributors')->group(function () {
     Route::post('/assign-activity-badge/{userId}', [TopContributorsController::class, 'assignActivityBadge']);
     Route::post('/assign-achievement-badge/{userId}', [TopContributorsController::class, 'assignAchievementBadge']);
     Route::post('/assign-mentorship-points/{userId}', [TopContributorsController::class, 'assignMentorshipPoints']);
+    Route::get('/all-users-scores', [TopContributorsController::class, 'getAllUsersWithScores']);
+
 
     // ✅ GET Endpoints for displaying user's badges and score
     Route::get('/badges/{userId}', [TopContributorsController::class, 'getUserBadges']);

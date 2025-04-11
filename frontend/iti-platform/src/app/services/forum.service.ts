@@ -75,5 +75,14 @@ export class ForumService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.apiUrl}/posts/${postId}`, { headers });
   }
+  getTopContributors(): Observable<any> {
+    return this.http.get<any>('http://127.0.0.1:8000/api/top-contributors/all-users-scores');
+  }
+  getCategories(): Observable<any> {
+    return this.http.get<any>('http://127.0.0.1:8000/api/categories'); // رابط الـ API الخاص بالفئات
+  }
+  
+  
+  
   
 }
