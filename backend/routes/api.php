@@ -135,9 +135,10 @@ Route::prefix('top-contributors')->group(function () {
             'users' => User::all()
         ]);
     });
-
-    Route::get('/open-projects', [OpenProjectController::class, 'index']);
-    Route::post('/open-projects', [OpenProjectController::class, 'store']);
-    Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
-    Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
+});
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/open-projects', [OpenProjectController::class, 'index']);
+        Route::post('/open-projects', [OpenProjectController::class, 'store']);
+        Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
+        Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
 });
