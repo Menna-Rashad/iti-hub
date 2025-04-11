@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('open_projects', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->string('name');  
             $table->text('description'); 
             $table->string('technologies')->nullable(); 
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('category'); 
             $table->timestamps();
         });
-    }
+    }    
     
 
     /**
