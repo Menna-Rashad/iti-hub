@@ -28,7 +28,11 @@ class ForumPost extends Model
     // protected $casts = [
     //     'tags' => 'array',
     // ];
-
+    
+    protected $casts = [
+        'media' => 'array',
+    ];
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
