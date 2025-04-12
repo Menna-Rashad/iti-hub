@@ -12,8 +12,10 @@ export class ForumService {
 
   createPost(postData: any): Observable<any> {
     const token = localStorage.getItem('auth_token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
     return this.http.post(`${this.apiUrl}/posts`, postData, { headers });
   }
   
