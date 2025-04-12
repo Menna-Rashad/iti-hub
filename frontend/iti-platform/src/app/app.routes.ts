@@ -13,6 +13,7 @@ import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.co
 import { MentorGuard } from './auth/mentor.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MainContentComponent } from './main-content/main-content.component'; // Import MainContentComponent
+import { jobRoutes } from './jobs/job.routes';
 
 export const routes: Routes = [
   // ✅ Auth Routes
@@ -55,8 +56,11 @@ export const routes: Routes = [
 
 
   // ✅ Jobs Page
-  { path: 'jobs', component: JobListComponent, title: 'Jobs' },
-  { path: 'jobs/:id', loadComponent: () => import('./jobs/components/job-details/job-details.component').then(m => m.JobDetailsComponent), title: 'Job Details' },
+  {
+    path: 'jobs',
+    children: jobRoutes
+  },
+  
 
   // ✅ Fallback
   { path: '**', redirectTo: '', pathMatch: 'full' }

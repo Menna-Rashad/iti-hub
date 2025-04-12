@@ -11,7 +11,7 @@ import { CommentFormComponent } from '../../../shared/components/comment-form/co
 import { JobService } from '../../services/job.service';
 import { CommentService } from '../../../services/comments.service';
 import { Job } from '../../models/job.model';
-import { Comment } from '../../../models/comment.model';
+import { Comment } from '../../../shared/models/comment.model';
 
 @Component({
   selector: 'app-job-details',

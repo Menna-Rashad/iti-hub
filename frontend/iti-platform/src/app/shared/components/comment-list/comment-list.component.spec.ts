@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Comment } from '../../models/comment.model';
+import { Comment } from '../../../shared/models/comment.model';
 
 describe('CommentListComponent', () => {
   let component: CommentListComponent;

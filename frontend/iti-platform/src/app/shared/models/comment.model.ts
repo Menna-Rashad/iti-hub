@@ -8,4 +8,8 @@ export interface Comment {
   commentable_id: number;
   created_at: string;
   updated_at: string;
-} 
+  votes_count: number;
+  user_vote?: 'up' | 'down';
+  replies: Comment[];
+  parent_id?: number;
+}
