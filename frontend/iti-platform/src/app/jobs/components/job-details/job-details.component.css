@@ -1,0 +1,118 @@
+.job-details-container {
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.job-details-card {
+  margin-bottom: 32px;
+}
+
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.meta-item mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.job-content {
+  padding: 16px 0;
+}
+
+.job-section {
+  margin-bottom: 24px;
+}
+
+.job-section h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.job-section p {
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+mat-card-actions {
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.comments-section {
+  margin-top: 32px;
+}
+
+.comments-section h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.error-container {
+  text-align: center;
+  padding: 48px 0;
+}
+
+.error-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 16px;
+}
+
+.error-container h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.error-container p {
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .job-meta {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  mat-card-actions {
+    flex-direction: column;
+  }
+
+  mat-card-actions button {
+    width: 100%;
+  }
+} 

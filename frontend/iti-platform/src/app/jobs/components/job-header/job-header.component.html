@@ -1,0 +1,33 @@
+<div class="job-header">
+  <div class="job-header-content">
+    <div class="job-title">
+      <h1>{{ title }}</h1>
+      <p class="company-name">{{ company }}</p>
+    </div>
+    <div class="job-meta">
+      <span class="post-time">
+        <mat-icon>schedule</mat-icon>
+        {{ createdAt | date:'mediumDate' }}
+      </span>
+    </div>
+  </div>
+  <div class="job-actions">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>report</mat-icon>
+        <span>Report</span>
+      </button>
+    </mat-menu>
+  </div>
+</div> 

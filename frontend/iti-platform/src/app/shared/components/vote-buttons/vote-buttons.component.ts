@@ -1,19 +1,29 @@
 import { Component, Input, OnInit, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { VoteService } from '../../../services/vote.service';
 
 @Component({
   selector: 'app-vote-buttons',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule],
   templateUrl: './vote-buttons.component.html',
   styleUrls: ['./vote-buttons.component.css']
 })
 export class VoteButtonsComponent implements OnInit, OnChanges {
-  @Input() targetType!: 'post' | 'comment';
+  @Input() targetType!: 'post' | 'comment' | 'job';
   @Input() targetId!: number;
   @Input() upvotes = 0;
   @Input() downvotes = 0;
   @Input() currentVote: 'upvote' | 'downvote' | null = null;
 
-  @Output() voteUpdated = new EventEmitter<any>();
+  @Output() voteUpdated = new EventEmitter<{
+    targetType: 'post' | 'comment' | 'job';
+    targetId: number;
+    newCounts: { upvotes: number; downvotes: number };
+    action: 'added' | 'removed';
+  }>();
 
   constructor(private voteService: VoteService) {}
 
@@ -26,7 +36,6 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
   }
 
   vote(type: 'upvote' | 'downvote'): void {
-    // Determine if this is a toggle (removing the vote)
     const isTogglingOff = this.currentVote === type;
 
     this.voteService.handleVote(this.targetType, this.targetId, type).subscribe({
@@ -35,24 +44,20 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
         this.downvotes = response.downvotes;
 
         if (isTogglingOff) {
-          // If the button was already active, remove the vote (set currentVote to null)
           this.currentVote = null;
         } else {
-          // Otherwise, cast the vote and set currentVote to the new type
           this.currentVote = type;
         }
 
-        // Emit the updated vote information to the parent
         this.voteUpdated.emit({
           targetType: this.targetType,
           targetId: this.targetId,
           newCounts: { upvotes: this.upvotes, downvotes: this.downvotes },
-          action: isTogglingOff ? 'removed' : 'added',
-          currentVote: this.currentVote
+          action: isTogglingOff ? 'removed' : 'added'
         });
       },
-      error: (err) => {
-        console.error('Vote error:', err);
+      error: (error) => {
+        console.error('Error voting:', error);
       }
     });
   }

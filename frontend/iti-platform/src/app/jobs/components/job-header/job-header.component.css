@@ -1,0 +1,59 @@
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.job-header-content {
+  flex: 1;
+}
+
+.job-title h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.company-name {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
+.job-meta {
+  margin-top: 8px;
+}
+
+.post-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+}
+
+.post-time mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.job-actions {
+  margin-left: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .job-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .job-actions {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+} 

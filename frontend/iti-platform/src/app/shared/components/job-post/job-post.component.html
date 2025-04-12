@@ -1,0 +1,32 @@
+<mat-card class="job-post-card">
+  <!-- Header Section -->
+  <div class="post-header">
+    <div class="user-info">
+      <img [src]="userAvatar" alt="User avatar" class="avatar">
+      <div class="user-details">
+        <span class="user-name">{{ userName }}</span>
+        <span class="post-date">{{ job.createdAt | date:'medium' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job Card Section -->
+  <app-job-card [job]="job"></app-job-card>
+
+  <!-- Actions Section -->
+  <div class="post-actions">
+    <app-vote-buttons
+      [targetType]="'job'"
+      [targetId]="job.id"
+      [upvotes]="upvotes"
+      [downvotes]="downvotes"
+      [currentVote]="currentVote"
+      (voteUpdated)="onVoteUpdated($event)"
+    ></app-vote-buttons>
+
+    <button mat-button color="primary" (click)="showComments.emit()">
+      <mat-icon>comment</mat-icon>
+      Comments
+    </button>
+  </div>
+</mat-card> 

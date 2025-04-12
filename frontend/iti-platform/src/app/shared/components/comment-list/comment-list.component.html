@@ -1,0 +1,56 @@
+<div class="comments-container">
+  <h3 class="comments-title">💬 Comments ({{ comments.length }})</h3>
+
+  <div class="comment-list">
+    @if (loading) {
+      <div class="loading-container">
+        <mat-spinner diameter="24"></mat-spinner>
+      </div>
+    } @else if (comments.length === 0) {
+      <div class="no-comments">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>No comments yet</p>
+      </div>
+    } @else {
+      @for (comment of comments; track comment.id) {
+        <mat-card class="comment-card">
+          <mat-card-header>
+            <img mat-card-avatar [src]="comment.user_avatar || 'assets/default-avatar.png'" [alt]="comment.user_name">
+            <mat-card-title>{{ comment.user_name }}</mat-card-title>
+            <mat-card-subtitle>{{ comment.created_at | date:'medium' }}</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="comment-content">{{ comment.content }}</p>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-icon-button>
+              <mat-icon>thumb_up</mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon>thumb_down</mat-icon>
+            </button>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>report</mat-icon>
+                <span>Report</span>
+              </button>
+            </mat-menu>
+          </mat-card-actions>
+        </mat-card>
+      }
+    }
+  </div>
+</div> 

@@ -3,7 +3,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { MentorshipComponent } from './mentorship/mentorship.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { JobComponent } from './jobs/jobs.component';
+import { JobListComponent } from './jobs/components/job-list/job-list.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
@@ -52,6 +52,11 @@ export const routes: Routes = [
   { path: 'posts/create', component: CreatePostComponent },
   { path: 'posts/:id', component: PostDetailComponent },
   { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
+
+
+  // ✅ Jobs Page
+  { path: 'jobs', component: JobListComponent, title: 'Jobs' },
+  { path: 'jobs/:id', loadComponent: () => import('./jobs/components/job-details/job-details.component').then(m => m.JobDetailsComponent), title: 'Job Details' },
 
   // ✅ Fallback
   { path: '**', redirectTo: '', pathMatch: 'full' }

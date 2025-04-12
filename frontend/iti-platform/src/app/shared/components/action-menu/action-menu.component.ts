@@ -14,7 +14,7 @@ import { NgIf } from '@angular/common';
 export class ActionMenuComponent {
   @Input() ownerId!: number;
   @Input() currentUserId!: number;
-  @Input() type: 'post' | 'comment' = 'post';
+  @Input() type: 'post' | 'comment' | 'job' = 'post';
 
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();

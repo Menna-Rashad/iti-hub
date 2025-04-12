@@ -7,15 +7,18 @@ import { Observable, map } from 'rxjs';
 })
 export class VoteService {
   private apiUrl = 'http://localhost:8000/api/forum/vote';
+  private jobVoteUrl = 'http://localhost:8000/api/jobs/vote';
 
   constructor(private http: HttpClient) {}
 
-  handleVote(target_type: 'post' | 'comment', target_id: number, vote_type: 'upvote' | 'downvote'): Observable<any> {
+  handleVote(target_type: 'post' | 'comment' | 'job', target_id: number, vote_type: 'upvote' | 'downvote'): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
+    const url = target_type === 'job' ? this.jobVoteUrl : this.apiUrl;
+
     return this.http.post(
-      this.apiUrl,
+      url,
       {
         target_type: target_type,
         target_id: target_id,
@@ -24,9 +27,9 @@ export class VoteService {
       { headers }
     ).pipe(
       map((response: any) => ({
-        upvotes: response.upvotes, // Match your API response
-        downvotes: response.downvotes, // Match your API response
-        action: response.action || (response.upvotes === 0 && response.downvotes === 0 ? 'removed' : 'added') // Infer action
+        upvotes: response.upvotes,
+        downvotes: response.downvotes,
+        action: response.action || (response.upvotes === 0 && response.downvotes === 0 ? 'removed' : 'added')
       }))
     );
   }

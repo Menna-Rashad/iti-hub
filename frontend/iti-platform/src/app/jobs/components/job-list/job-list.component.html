@@ -1,0 +1,28 @@
+<mat-card class="job-list-container">
+  <mat-card-header class="job-list-header">
+    <mat-card-title>Job Opportunities</mat-card-title>
+    <button mat-raised-button color="primary" routerLink="/jobs/create">
+      <mat-icon>add</mat-icon>
+      Post a Job
+    </button>
+  </mat-card-header>
+
+  <mat-card-content class="job-list-content">
+    @if (loading) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else if (jobs.length === 0) {
+      <div class="no-jobs">
+        <mat-icon class="no-jobs-icon">work_outline</mat-icon>
+        <p class="no-jobs-text">No job opportunities available at the moment.</p>
+      </div>
+    } @else {
+      <div class="job-grid">
+        @for (job of jobs; track job.id) {
+          <app-job-card [job]="job" [showFullContent]="false"></app-job-card>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card> 

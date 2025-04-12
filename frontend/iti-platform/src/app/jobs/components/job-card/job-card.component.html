@@ -1,0 +1,74 @@
+<mat-card class="job-card">
+  <mat-card-header>
+    <mat-card-title>{{ job.title }}</mat-card-title>
+    <mat-card-subtitle>{{ job.company_name }}</mat-card-subtitle>
+    <div class="job-actions">
+      <app-action-menu
+        [ownerId]="job.user_id"
+        [currentUserId]="currentUserId"
+        [type]="'post'"
+        (edit)="onEdit()"
+        (delete)="onDelete()"
+        (report)="onReport()"
+      ></app-action-menu>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="job-info">
+      <div class="job-meta">
+        <span class="job-type">
+          <mat-icon>work</mat-icon>
+          {{ job.job_type }}
+        </span>
+        <span class="job-location">
+          <mat-icon>location_on</mat-icon>
+          {{ job.location }}
+        </span>
+        <span class="job-state">
+          <mat-icon>public</mat-icon>
+          {{ job.job_state }}
+        </span>
+      </div>
+
+      @if (job.salary_range) {
+        <div class="job-salary">
+          <mat-icon>payments</mat-icon>
+          {{ job.salary_range }}
+        </div>
+      }
+    </div>
+
+    @if (showFullContent) {
+      <div class="job-description">
+        <h3>Description</h3>
+        <p>{{ job.description }}</p>
+      </div>
+
+      <div class="job-requirements">
+        <h3>Requirements</h3>
+        <p>{{ job.requirements }}</p>
+      </div>
+
+      <div class="job-votes">
+        <app-vote-buttons
+          [targetType]="'post'"
+          [targetId]="job.id"
+          [upvotes]="job.votes_count"
+          [downvotes]="0"
+          [currentVote]="job.user_vote === 'upvote' ? 'upvote' : job.user_vote === 'downvote' ? 'downvote' : null"
+          (voteUpdated)="onVoteUpdated($event)"
+        ></app-vote-buttons>
+      </div>
+    }
+  </mat-card-content>
+
+  <mat-card-actions>
+    <a mat-button color="primary" [href]="job.apply_link" target="_blank">
+      Apply Now
+    </a>
+    <button mat-button [routerLink]="['/jobs', job.id]">
+      View Details
+    </button>
+  </mat-card-actions>
+</mat-card> 
