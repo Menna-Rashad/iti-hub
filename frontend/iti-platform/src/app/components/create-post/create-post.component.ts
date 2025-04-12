@@ -25,12 +25,19 @@ import { MatSelectModule } from '@angular/material/select';
   ]
 })
 export class CreatePostComponent implements OnInit {
-  postData = {
+  postData: {
+    title: string;
+    content: string;
+    category_id: number | null;
+    tags: string;
+  } = {
     title: '',
     content: '',
     category_id: null,
     tags: ''
   };
+
+  mediaFiles: File[] = [];
 
   categories = [
     { id: 1, name: 'General' },
@@ -38,10 +45,16 @@ export class CreatePostComponent implements OnInit {
     { id: 3, name: 'Feedback' },
     { id: 4, name: 'Laravel' }
   ];
- 
+
   constructor(private forumService: ForumService, private router: Router) {}
 
   ngOnInit(): void {}
+
+  onFileSelected(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.mediaFiles = Array.from(event.target.files);
+    }
+  }
 
   submitPost(): void {
     if (!this.postData.title || !this.postData.content || !this.postData.category_id) {
@@ -49,7 +62,17 @@ export class CreatePostComponent implements OnInit {
       return;
     }
 
-    this.forumService.createPost(this.postData).subscribe({
+    const formData = new FormData();
+    formData.append('title', this.postData.title);
+    formData.append('content', this.postData.content);
+    formData.append('category_id', this.postData.category_id?.toString());
+    formData.append('tags', this.postData.tags || '');
+
+    this.mediaFiles.forEach(file => {
+      formData.append('media[]', file);
+    });
+
+    this.forumService.createPost(formData).subscribe({
       next: () => this.router.navigate(['/main-content']),
       error: () => alert('Failed to create post.')
     });

@@ -1,7 +1,7 @@
 <div class="create-post-container">
   <h2>Create New Post</h2>
 
-  <form (ngSubmit)="submitPost()" class="post-form">
+  <form (ngSubmit)="submitPost()" class="post-form" enctype="multipart/form-data">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
       <input matInput [(ngModel)]="postData.title" name="title" required />
@@ -21,13 +21,27 @@
       <textarea matInput [(ngModel)]="postData.content" name="content" rows="5" required></textarea>
     </mat-form-field>
 
+    <!-- ✅ File Upload Input -->
+    <div class="mb-3">
+      <label for="media">Attach Media Files</label>
+      <input type="file" id="media" (change)="onFileSelected($event)" multiple />
+    </div>
+
+    <!-- ✅ Preview Section -->
+    <div class="media-preview" *ngIf="mediaFiles.length > 0">
+      <h4>📂 Selected Files:</h4>
+      <ul>
+        <li *ngFor="let file of mediaFiles">{{ file.name }}</li>
+      </ul>
+    </div>
+
     <div class="actions">
       <button mat-raised-button color="primary" type="submit">Submit</button>
       <button mat-button routerLink="/forum">Cancel</button>
     </div>
   </form>
 
-  <!-- ✅ Preview -->
+  <!-- ✅ Text Preview -->
   <div class="preview-box" *ngIf="postData.title || postData.content">
     <h3>📝 Preview</h3>
     <h4>{{ postData.title }}</h4>
