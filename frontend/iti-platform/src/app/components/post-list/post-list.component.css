@@ -32,3 +32,25 @@
   font-style: italic;
   color: #888;
 }
+.media-section {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.media-preview {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.doc-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #3f51b5;
+  font-weight: bold;
+  text-decoration: none;
+}
