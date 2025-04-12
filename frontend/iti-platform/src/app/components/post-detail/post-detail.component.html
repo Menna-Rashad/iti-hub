@@ -10,6 +10,17 @@
 
     <mat-card-content>
       <p class="post-content">{{ post.content }}</p>
+      <!-- ✅ MEDIA PREVIEW -->
+    <div class="media-section" *ngIf="post.media?.length > 0">
+      <ng-container *ngFor="let file of post.media">
+      <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+      <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+      <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+      <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
+        <mat-icon>insert_drive_file</mat-icon> View Document
+      </a>
+      </ng-container>
+    </div>
 
       <div class="vote-section">
         <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')">
