@@ -43,7 +43,7 @@ export class PostListComponent implements OnInit {
   loadPosts(): void {
     this.forumService.getPosts().subscribe({
       next: (response: any) => {
-        this.posts = response; // تأكدي إن API فعلاً بترجع array مش { data: [...] }
+        this.posts = response;
       },
       error: (error: any) => {
         console.error('Error loading posts:', error);
@@ -69,5 +69,22 @@ export class PostListComponent implements OnInit {
         console.error('Search error:', err);
       }
     });
+  }
+
+  // ✅ وظائف فحص نوع الملف
+  isImage(file: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+  }
+
+  isVideo(file: string): boolean {
+    return /\.(mp4|webm|ogg)$/i.test(file);
+  }
+
+  isAudio(file: string): boolean {
+    return /\.(mp3|wav|ogg)$/i.test(file);
+  }
+
+  isDocument(file: string): boolean {
+    return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
 }
