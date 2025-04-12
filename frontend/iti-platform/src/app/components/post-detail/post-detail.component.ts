@@ -96,4 +96,20 @@ export class PostDetailComponent implements OnInit {
   goToEdit() {
     this.router.navigate(['/edit-post', this.post.id]); 
   }
+  isImage(file: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+  }
+  
+  isVideo(file: string): boolean {
+    return /\.(mp4|webm|ogg)$/i.test(file);
+  }
+  
+  isAudio(file: string): boolean {
+    return /\.(mp3|wav|ogg)$/i.test(file);
+  }
+  
+  isDocument(file: string): boolean {
+    return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
+  }
+  
 }
