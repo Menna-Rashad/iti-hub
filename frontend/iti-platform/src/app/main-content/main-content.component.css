@@ -564,3 +564,43 @@ button.mat-icon-button:hover {
     font-size: 10px; /* Smaller font size */
   }
 }
+/* ✅ Media Section Styling */
+.media-section {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.media-preview {
+  max-width: 220px;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.media-preview:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ Document Link Styling */
+.doc-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  color: #3f51b5;
+  gap: 6px;
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+
+.doc-link:hover {
+  background-color: #e0e0e0;
+}
