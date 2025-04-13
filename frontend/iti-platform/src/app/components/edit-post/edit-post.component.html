@@ -1,16 +1,24 @@
 <form *ngIf="postForm" [formGroup]="postForm" (ngSubmit)="updatePost()" enctype="multipart/form-data">
+  <!-- Title Field -->
+  <h2>Edit Post</h2>
   <mat-form-field appearance="outline" class="full-width">
-    <input matInput placeholder="Title" formControlName="title">
+    <mat-label>Title</mat-label>
+    <input matInput placeholder="Enter the post title" formControlName="title">
   </mat-form-field>
 
+  <!-- Content Field -->
   <mat-form-field appearance="outline" class="full-width">
-    <textarea matInput placeholder="Content" formControlName="content"></textarea>
+    <mat-label>Content</mat-label>
+    <textarea matInput placeholder="Enter the post content" formControlName="content"></textarea>
   </mat-form-field>
 
+  <!-- Tags Field -->
   <mat-form-field appearance="outline" class="full-width">
-    <input matInput placeholder="Tags" formControlName="tags">
+    <mat-label>Tags</mat-label>
+    <input matInput placeholder="Enter tags" formControlName="tags">
   </mat-form-field>
 
+  <!-- Category Field -->
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Category</mat-label>
     <mat-select formControlName="category_id" required>
@@ -20,6 +28,7 @@
     </mat-select>
   </mat-form-field>
 
+  <!-- Existing Media Section -->
   <div *ngIf="existingMedia.length > 0" class="media-preview">
     <h4>Existing Files:</h4>
     <ul>
@@ -30,6 +39,7 @@
     </ul>
   </div>
 
+  <!-- New Media Upload Section -->
   <div>
     <label for="newFiles">Upload New Media</label>
     <input type="file" id="newFiles" (change)="onFileSelected($event)" multiple />
