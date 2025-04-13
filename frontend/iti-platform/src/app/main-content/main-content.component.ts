@@ -96,7 +96,16 @@ export class MainContentComponent implements OnInit {
       error: (err) => console.error(err),
     });
   }
-
+  
+  applyFilter(event: any): void {
+    const selectedFilter = event.target.value;
+    if (selectedFilter === 'newest') {
+      this.filteredPosts = this.posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } else if (selectedFilter === 'top-votes') {
+      this.filteredPosts = this.posts.sort((a, b) => b.upvotes - a.upvotes);
+    }
+  }
+  
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
     this.forumService.getPost(postId.toString()).subscribe({
