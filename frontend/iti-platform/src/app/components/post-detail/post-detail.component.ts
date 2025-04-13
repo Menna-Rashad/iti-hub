@@ -41,6 +41,8 @@ export class PostDetailComponent implements OnInit {
   selectedVote: string | null = null;
   isVoting = false;
   isAddingComment = false;
+  isFollowing: boolean = false;
+
   defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
 
   constructor(
@@ -51,7 +53,7 @@ export class PostDetailComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private forumService: ForumService,
-    private clipboard: Clipboard // تضمين مكتبة Clipboard
+    private clipboard: Clipboard 
   ) { }
 
   ngOnInit() {
@@ -70,9 +72,16 @@ export class PostDetailComponent implements OnInit {
     this.api.getPost(id).subscribe(post => {
       this.post = post;
       const userId = localStorage.getItem('user_id');
+      this.isFollowing = post.user_id === userId; 
       this.canEdit = userId !== null && post.user_id == userId;
       this.visibleComments = post.comments?.slice(0, 3);
     });
+  }
+
+  toggleFollow() {
+    this.isFollowing = !this.isFollowing;
+
+    console.log(this.isFollowing ? "Followed" : "Unfollowed");
   }
 
   selectVote(vote: string): void {
