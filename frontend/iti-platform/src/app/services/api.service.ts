@@ -52,4 +52,11 @@ export class ApiService {
   getCategories(): Observable<any> {
     return this.http.get(`${this.apiUrl}/categories`);
   }
+
+  deletePost(postId: string): Observable<any> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/forum/posts/${postId}`, { headers });  // تأكد من الرابط الصحيح
+  }   
+  
 }
