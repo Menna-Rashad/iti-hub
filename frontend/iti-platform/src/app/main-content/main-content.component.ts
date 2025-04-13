@@ -20,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { TopContributorsComponent } from '../top-contributors/top-contributors.component';  // Import TopContributorsComponent
+import { TopContributorsComponent } from '../top-contributors/top-contributors.component';
 
 @Component({
   selector: 'app-main-content',
@@ -37,7 +37,7 @@ import { TopContributorsComponent } from '../top-contributors/top-contributors.c
     MatFormFieldModule,
     MatInputModule,
     SidebarComponent,
-    TopContributorsComponent,  // Add TopContributorsComponent to imports
+    TopContributorsComponent,
   ],
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.css'],
@@ -52,9 +52,9 @@ export class MainContentComponent implements OnInit {
   visibleComments: { [postId: number]: any[] } = {};
   currentUser: any = null;
   searchQuery = '';
-  categories: any[] = [];  // لتخزين الفئات
-  selectedCategory: string = '';  // لتخزين الفئة المحددة
-  categoryColors: string[] = []; // لتخزين ألوان الفئات
+  categories: any[] = [];
+  selectedCategory: string = '';
+  categoryColors: string[] = [];
 
   editingPostId: number | null = null;
   editPostTitle = '';
@@ -73,8 +73,8 @@ export class MainContentComponent implements OnInit {
   ngOnInit(): void {
     this.loadPosts();
     this.getCurrentUser();
-    this.getTopContributors(); 
-    this.loadCategories(); // Fetch the top contributors
+    this.getTopContributors();
+    this.loadCategories();
   }
 
   getCurrentUser(): void {
@@ -207,22 +207,28 @@ export class MainContentComponent implements OnInit {
   editPost(post: any): void {
     const newTitle = prompt('📝 Edit post title:', post.title);
     const newContent = prompt('📝 Edit post content:', post.content);
-
+  
     if (newTitle?.trim() && newContent?.trim()) {
-      this.forumService
-        .updatePost(post.id, {
-          title: newTitle.trim(),
-          content: newContent.trim(),
-        })
-        .subscribe({
-          next: () => {
-            this.loadPosts();
-            this.toastr.success('Post updated successfully.');
-          },
-          error: () => this.toastr.error('Failed to update post.'),
-        });
+      const formData = new FormData();
+  
+      formData.append('title', newTitle.trim());
+      formData.append('content', newContent.trim());
+      formData.append('category_id', post.category_id?.toString() || ''); // لو عايزة تغيريه برضو
+      formData.append('tags', post.tags || '');
+  
+      formData.append('existing_media', JSON.stringify(post.media || []));
+      formData.append('_method', 'PUT'); // مهم جداً عشان Laravel يفهم إنها تحديث مش إنشاء
+  
+      this.forumService.updatePost(post.id, formData).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('✔️ Post updated successfully.');
+        },
+        error: () => this.toastr.error('❌ Failed to update post.'),
+      });
     }
   }
+  
 
   deletePost(postId: number): void {
     if (confirm('🗑 Are you sure you want to delete this post?')) {
@@ -247,17 +253,18 @@ export class MainContentComponent implements OnInit {
       }
     );
   }
+
   loadCategories(): void {
     this.forumService.getCategories().subscribe((response) => {
       this.categories = response;
-      this.categoryColors = this.generateRandomColors(this.categories.length); // توليد ألوان عشوائية
+      this.categoryColors = this.generateRandomColors(this.categories.length);
     });
   }
 
   generateRandomColors(count: number): string[] {
     const colors: string[] = [];
     for (let i = 0; i < count; i++) {
-      const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`; // توليد لون عشوائي باستخدام HSL
+      const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
       colors.push(randomColor);
     }
     return colors;
@@ -274,6 +281,21 @@ export class MainContentComponent implements OnInit {
       // Show all posts if "All" button is clicked
       this.filteredPosts = this.posts;
     }
+  }
+  isImage(file: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+  }
+  
+  isVideo(file: string): boolean {
+    return /\.(mp4|webm|ogg)$/i.test(file);
+  }
+  
+  isAudio(file: string): boolean {
+    return /\.(mp3|wav|ogg)$/i.test(file);
+  }
+  
+  isDocument(file: string): boolean {
+    return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
   
   

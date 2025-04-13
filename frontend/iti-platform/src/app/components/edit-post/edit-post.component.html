@@ -1,19 +1,46 @@
-<form [formGroup]="postForm" (ngSubmit)="updatePost()">
-  <mat-form-field>
+<form *ngIf="postForm" [formGroup]="postForm" (ngSubmit)="updatePost()" enctype="multipart/form-data">
+  <mat-form-field appearance="outline" class="full-width">
     <input matInput placeholder="Title" formControlName="title">
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
     <textarea matInput placeholder="Content" formControlName="content"></textarea>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
     <input matInput placeholder="Tags" formControlName="tags">
   </mat-form-field>
 
-  <mat-form-field>
-    <input matInput placeholder="Category ID" formControlName="category_id">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Category</mat-label>
+    <mat-select formControlName="category_id" required>
+      <mat-option *ngFor="let category of categories" [value]="category.id">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
+
+  <div *ngIf="existingMedia.length > 0" class="media-preview">
+    <h4>Existing Files:</h4>
+    <ul>
+      <li *ngFor="let file of existingMedia">
+        {{ file }}
+        <button type="button" (click)="removeMedia(file)">❌ Remove</button>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <label for="newFiles">Upload New Media</label>
+    <input type="file" id="newFiles" (change)="onFileSelected($event)" multiple />
+  </div>
+
+  <div *ngIf="newMediaFiles.length > 0">
+    <h4>New Files to Upload:</h4>
+    <ul>
+      <li *ngFor="let file of newMediaFiles">{{ file.name }}</li>
+    </ul>
+  </div>
 
   <button mat-raised-button color="primary" type="submit">Update</button>
 </form>
