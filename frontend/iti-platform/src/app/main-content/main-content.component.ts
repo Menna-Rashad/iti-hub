@@ -20,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { TopContributorsComponent } from '../top-contributors/top-contributors.component';
 import { VoteButtonsComponent } from '../shared/components/vote-buttons/vote-buttons.component';
 
 // Define the Post interface
@@ -31,8 +32,10 @@ interface Post {
   downvotes: number;
   current_user_vote: 'upvote' | 'downvote' | null;
   user_id: number;
+  category_id?: number;
   category?: { name: string };
-  // Add other fields as needed
+  tags?: string;
+  media?: string[];
 }
 
 @Component({
@@ -51,6 +54,7 @@ interface Post {
     MatInputModule,
     SidebarComponent,
     VoteButtonsComponent,
+    TopContributorsComponent,
   ],
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.css'],
@@ -65,10 +69,10 @@ export class MainContentComponent implements OnInit {
   visibleComments: { [postId: number]: any[] } = {};
   currentUser: any = null;
   searchQuery = '';
-
-  editingPostId: number | null = null;
-  editPostTitle = '';
-  editPostContent = '';
+  categories: any[] = [];
+  selectedCategory: string = '';
+  categoryColors: string[] = [];
+  topContributors: any[] = [];
 
   @ViewChildren('lastVisibleComment', { read: ElementRef })
   lastCommentElements!: QueryList<ElementRef>;
@@ -82,6 +86,8 @@ export class MainContentComponent implements OnInit {
   ngOnInit(): void {
     this.loadPosts();
     this.getCurrentUser();
+    this.getTopContributors();
+    this.loadCategories();
   }
 
   getCurrentUser(): void {
@@ -98,7 +104,7 @@ export class MainContentComponent implements OnInit {
       next: (res: Post[]) => {
         this.posts = res.map((post: Post) => ({
           ...post,
-          current_user_vote: post.current_user_vote || null // Ensure this field exists
+          current_user_vote: post.current_user_vote || null,
         }));
         this.filteredPosts = this.posts;
         res.forEach((post: Post) => this.loadComments(post.id));
@@ -122,18 +128,155 @@ export class MainContentComponent implements OnInit {
     });
   }
 
+  vote(postId: number, voteType: 'upvote' | 'downvote'): void {
+    this.loadingVotes[postId] = true;
+    this.forumService
+      .vote({
+        target_type: 'post',
+        target_id: postId,
+        vote_type: voteType,
+      })
+      .subscribe({
+        next: (res) => {
+          const post = this.posts.find((p) => p.id === postId);
+          if (post) {
+            post.upvotes = res.upvotes;
+            post.downvotes = res.downvotes;
+          }
+          this.loadingVotes[postId] = false;
+        },
+        error: (err) => {
+          this.loadingVotes[postId] = false;
+          console.error(err);
+        },
+      });
+  }
 
-  openDialog() {}
-  onSearch() {}
-  clearSearch() {}
-  editPost(post: any) {}
-  deletePost(postId: number) {}
-  onVoteUpdated(id: number, event: any) {}
-  copyLink(postId: number) {}
-  editComment(postId: number, comment: any) {}
-  deleteComment(postId: number, commentId: number) {}
-  addComment(postId: number) {}
+  openDialog(): void {
+    const dialogRef = this.dialog.open(FeedbackDialogComponent, {
+      width: '400px',
+    });
 
+    dialogRef.afterClosed().subscribe(() => this.loadPosts());
+  }
 
-  // ... rest of your methods (addComment, editComment, etc.) remain unchanged ...
+  copyLink(postId: number): void {
+    const link = `${window.location.origin}/posts/${postId}`;
+    navigator.clipboard
+      .writeText(link)
+      .then(() => this.toastr.success('Link copied to clipboard ✅'))
+      .catch(() => this.toastr.error('Failed to copy link ❌'));
+  }
+
+  onSearch(): void {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      this.filteredPosts = this.posts;
+      return;
+    }
+
+    this.filteredPosts = this.posts.filter(
+      (post) =>
+        post.title?.toLowerCase().includes(query) ||
+        post.content?.toLowerCase().includes(query) ||
+        post.category?.name?.toLowerCase().includes(query)
+    );
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredPosts = this.posts;
+  }
+
+  editPost(post: Post): void {
+    const newTitle = prompt('📝 Edit post title:', post.title);
+    const newContent = prompt('📝 Edit post content:', post.content);
+
+    if (newTitle?.trim() && newContent?.trim()) {
+      const formData = new FormData();
+      formData.append('title', newTitle.trim());
+      formData.append('content', newContent.trim());
+      formData.append('category_id', post.category_id?.toString() || '');
+      formData.append('tags', post.tags || '');
+      formData.append('existing_media', JSON.stringify(post.media || []));
+      formData.append('_method', 'PUT');
+
+      this.forumService.updatePost(post.id, formData).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('✔️ Post updated successfully.');
+        },
+        error: () => this.toastr.error('❌ Failed to update post.'),
+      });
+    }
+  }
+
+  deletePost(postId: number): void {
+    if (confirm('🗑 Are you sure you want to delete this post?')) {
+      this.forumService.deletePost(postId).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('Post deleted successfully.');
+        },
+        error: () => this.toastr.error('Failed to delete post.'),
+      });
+    }
+  }
+
+  getTopContributors(): void {
+    this.forumService.getTopContributors().subscribe({
+      next: (res) => {
+        this.topContributors = res.users_with_scores;
+      },
+      error: (err) => console.error('Error fetching top contributors:', err),
+    });
+  }
+
+  loadCategories(): void {
+    this.forumService.getCategories().subscribe((response) => {
+      this.categories = response;
+      this.categoryColors = this.generateRandomColors(this.categories.length);
+    });
+  }
+
+  generateRandomColors(count: number): string[] {
+    const colors: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+      colors.push(randomColor);
+    }
+    return colors;
+  }
+
+  filterPosts(category: any): void {
+    if (category) {
+      this.filteredPosts = this.posts.filter(
+        (post) => post.category_id === category.id
+      );
+    } else {
+      this.filteredPosts = this.posts;
+    }
+  }
+
+  isImage(file: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
+  }
+
+  isVideo(file: string): boolean {
+    return /\.(mp4|webm|ogg)$/i.test(file);
+  }
+
+  isAudio(file: string): boolean {
+    return /\.(mp3|wav|ogg)$/i.test(file);
+  }
+
+  isDocument(file: string): boolean {
+    return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
+  }
+
+  // Placeholder stubs to override errors in template
+  addComment(_: number) {}
+  editComment(_: number, __: any) {}
+  deleteComment(_: number, __: number) {}
+  onVoteUpdated(_: number, __: any) {}
 }

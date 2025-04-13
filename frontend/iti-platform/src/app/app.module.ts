@@ -28,8 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     PostListComponent,
     PostDetailComponent,
-    MatFormFieldModule,
-    MatInputModule
+    PostDetailComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -39,7 +38,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     CommonModule,
     RouterModule,
-    AppRoutingModule,
+    // AppRoutingModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,

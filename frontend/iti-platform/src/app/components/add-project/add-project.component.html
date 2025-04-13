@@ -1,0 +1,42 @@
+<mat-card class="add-project-card">
+    <h2>Add New Project</h2>
+  
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Technologies</mat-label>
+        <input matInput formControlName="technologies" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>GitHub URL</mat-label>
+        <input matInput formControlName="github_url" />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="under_development">Under Development</mat-option>
+          <mat-option value="completed">Completed</mat-option>
+          <mat-option value="in_review">In Review</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category" />
+      </mat-form-field>
+  
+      <button mat-flat-button color="primary" type="submit" [disabled]="!projectForm.valid">Submit</button>
+    </form>
+  </mat-card>
+  

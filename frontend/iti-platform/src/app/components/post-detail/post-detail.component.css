@@ -1,62 +1,96 @@
+/* Post Wrapper */
 .post-wrapper {
     max-width: 750px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    transition: box-shadow 0.3s ease;
 }
 
+.post-wrapper:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Post Card */
 .post-card {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    padding: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #9b1e2f; /* اللون الأحمر الداكن */
 }
 
 .post-title {
-    font-size: 22px;
+    font-size: 28px;  /* تكبير حجم اسم المستخدم */
     font-weight: 600;
     color: #333;
+    margin-bottom: 10px;
 }
 
 .post-meta {
-    font-size: 14px;
-    color: #777;
+    font-size: 10px;  /* تصغير حجم التاريخ */
+    color: #888;
 }
 
 .post-content {
     font-size: 16px;
-    margin-top: 10px;
+    margin-top: 15px;
     color: #333;
+    line-height: 1.6;
 }
 
+/* Vote Section */
 .vote-section {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     margin-top: 15px;
 }
 
-.edit-btn {
-    margin-left: auto;
-    font-weight: bold;
-    color: #007bff;
-    border: 1px solid #007bff;
-    padding: 8px 15px;
-    border-radius: 20px;
+.vote-section button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #9C2A2F; /* اللون الأحمر */
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
     transition: background-color 0.3s ease;
 }
 
-.edit-btn:hover {
-    background-color: #007bff;
-    color: white;
+.vote-section button:hover {
+    background-color: #7C2327; /* اللون الداكن عند التمرير */
 }
 
-.comments-container {
-    margin-top: 30px;
+.vote-section button:disabled {
+    opacity: 0.5;
 }
 
+.vote-section span {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Comment Section */
 .comment-form {
     display: flex;
     flex-direction: column;
@@ -64,13 +98,30 @@
     margin-bottom: 30px;
 }
 
+.comment-form button {
+    background-color: #9C2A2F;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.comment-form button:hover {
+    background-color: #7C2327;
+}
+
 .comment-card {
     margin-bottom: 15px;
     padding: 12px;
     background: #ffffff;
     border-radius: 10px;
-    border-left: 5px solid #007bff;
+    border-left: 5px solid #9C2A2F; /* نفس اللون الأحمر */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.comment-card:hover {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .comment-meta {
@@ -78,12 +129,151 @@
     color: #777;
 }
 
-.full-width {
-    width: 100%;
+.comment-input.animate {
+    animation: fadeIn 0.4s ease-in;
 }
 
-button.mat-raised-button {
-    border-radius: 50px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Section */
+.media-section {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.media-preview {
+    max-width: 240px;
+    max-height: 160px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Document Link */
+.doc-link {
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    color: #3f51b5;
+    gap: 6px;
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+
+.doc-link:hover {
+    background-color: #e0e0e0;
+}
+
+.comment-form input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.comment-form input:focus {
+    border-color: #9C2A2F;
+    outline: none;
+}
+
+/* Hover Effects */
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/* Links and Text Styles */
+.author-link {
+    color: #9C2A2F;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
+
+.more-options {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 10;
+}
+
+/* زر نسخ رابط البوست */
+.copy-button {
+    background-color: #9C2A2F;
+    color: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: auto;
+    cursor: pointer;
+}
+
+.copy-button:hover {
+    background-color: #7C2327;
+    transform: scale(1.05);
+}
+
+.copy-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.copy-button mat-icon {
+    font-size: 18px;
+}
+
+.vote-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.follow-btn {
+    background-color: transparent;
+    color: #9C2A2F;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.follow-btn:hover {
+    color: #7C2327;
+}
+
+.follow-btn:focus {
+    outline: none;
+}
+
+.follow-btn:disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
 }
 /* Post header */
 .post-header {

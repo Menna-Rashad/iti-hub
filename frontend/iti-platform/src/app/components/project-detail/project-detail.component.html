@@ -1,0 +1,38 @@
+<ng-container *ngIf="!loading && project; else loadingTpl">
+    <mat-card class="project-detail-card">
+      <mat-card-title>{{ project?.name }}</mat-card-title>
+      <mat-card-content>
+        <p>
+          <strong>Status:</strong>
+          <span class="status-badge" [ngClass]="project?.status">{{ project?.status }}</span>
+        </p>
+        <p><strong>Category:</strong> {{ project?.category }}</p>
+        <p><strong>Description:</strong> {{ project?.description }}</p>
+        <p><strong>Technologies:</strong> {{ project?.technologies }}</p>
+        <p>
+          <strong>GitHub:</strong>
+          <a [href]="project?.github_url" target="_blank">{{ project?.github_url }}</a>
+        </p>
+      </mat-card-content>
+  
+      <mat-card-actions>
+        <button mat-stroked-button color="accent" routerLink="/open-projects">
+          <mat-icon>arrow_back</mat-icon> Back to Projects
+        </button>
+  
+        <button
+          *ngIf="project?.user_id === currentUserId"
+          mat-stroked-button
+          color="primary"
+          [routerLink]="['/open-projects/edit', project?.id]"
+        >
+          <mat-icon>edit</mat-icon> Edit Project
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
+  
+  <ng-template #loadingTpl>
+    <p>Loading project details...</p>
+  </ng-template>
+  

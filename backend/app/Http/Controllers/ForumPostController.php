@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Models\ForumPost;
@@ -18,7 +19,7 @@ class ForumPostController extends Controller
     public function index()
     {
         try {
-            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])->get();
+            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category' ])->get();
 
             return response()->json($forumPosts);
         } catch (\Exception $e) {
@@ -35,7 +36,8 @@ class ForumPostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|string'
+            'tags' => 'nullable|string',
+            'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200' // max 50MB
         ]);
 
         $forumPost = ForumPost::create([
@@ -43,11 +45,18 @@ class ForumPostController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category_id,
-            'tags' => $request->tags
+            'tags' => $request->tags,
         ]);
 
-        // Call the badge assignment function after storing the post
-       
+        if ($request->hasFile('media')) {
+            $mediaPaths = [];
+            foreach ($request->file('media') as $file) {
+                $mediaPaths[] = $file->store('posts_media', 'public');
+            }
+            $forumPost->media = $mediaPaths;
+            $forumPost->save();
+        }
+
         return response()->json($forumPost, 201);
     }
 
@@ -64,7 +73,11 @@ class ForumPostController extends Controller
              $forumPost->current_user_vote = $forumPost->current_user_vote; 
              
             return response()->json($forumPost);
+
         } catch (\Exception $e) {
+            $forumPost->media = $forumPost->media ?? []; // fallback لو null
+            return response()->json($forumPost->toArray(), 200); // يخلي media ترجع array دايمًا
+
             return response()->json([
                 'message' => 'خطأ في الخادم',
                 'error' => $e->getMessage(),
@@ -76,32 +89,49 @@ class ForumPostController extends Controller
     
 
     public function update(Request $request, $id)
-    {
-        try {
-            $post = ForumPost::findOrFail($id);
-            $this->authorize('update', $post);
+{
+    Log::info('Update request:', $request->all());
+    Log::info('✔️ title: ' . $request->input('title'));
+    Log::info('✔️ content: ' . $request->input('content'));
+    Log::info('✔️ tags: ' . $request->input('tags'));
+    Log::info('✔️ category_id: ' . $request->input('category_id'));
+    
+    $post = ForumPost::findOrFail($id);
+    $this->authorize('update', $post);
 
-            $validated = $request->validate([
-                'title' => 'sometimes|string|max:255',
-                'content' => 'sometimes|string',
-                'category_id' => 'nullable|exists:categories,id',
-                'tags' => 'nullable|string'
-            ]);
+    // 🛡️ Validate
+    $request->validate([
+        'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200'
+    ]);
 
-            $post->update($validated);
+    // ✅ استخدم input بدال has
+    $post->title = $request->input('title', $post->title);
+    $post->content = $request->input('content', $post->content);
+    $post->tags = $request->input('tags', $post->tags);
+    $post->category_id = $request->input('category_id', $post->category_id);
 
-            return response()->json($post, 200);
-        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return response()->json(['message' => 'غير مصرح به'], 403);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'المنشور غير موجود'], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'خطأ في الخادم',
-                'error' => $e->getMessage()
-            ], 500);
+    // ✅ Handle media
+    $mediaFiles = $request->allFiles()['media'] ?? [];
+    if (!is_array($mediaFiles)) {
+        $mediaFiles = [$mediaFiles];
+    }
+
+    $newMediaPaths = [];
+    foreach ($mediaFiles as $file) {
+        if ($file && $file->isValid()) {
+            $newMediaPaths[] = $file->store('posts_media', 'public');
         }
     }
+
+    $existingMedia = json_decode($request->input('existing_media') ?? '[]');
+    $post->media = array_merge($existingMedia, $newMediaPaths);
+    $post->save();
+
+    return response()->json($post->toArray(), 200);
+}
+
+
+
 
     public function destroy(string $id)
     {

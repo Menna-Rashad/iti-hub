@@ -7,16 +7,9 @@
   <!-- Posts Center -->
   <main class="center-panel">
     <div class="actions">
-      <!-- <button mat-stroked-button color="primary" (click)="openDialog()">💬 Ask a Question</button> -->
       <button mat-stroked-button color="accent" (click)="openDialog()">📝 Give Feedback</button>
       <div class="search-container">
-        <input
-          type="text"
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
-          placeholder="🔍 Search posts..."
-          class="search-input"
-        />
+        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="🔍 Search posts..." class="search-input" />
         <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()">×</button>
       </div>
       <a mat-button routerLink="/posts/create">➕ Create Post</a>
@@ -44,7 +37,21 @@
           </mat-menu>
         </ng-container>
       </div>
+
       <p>{{ post.content }}</p>
+
+<!-- ✅ MEDIA PREVIEW -->
+<div class="media-section" *ngIf="post.media?.length > 0">
+  <ng-container *ngFor="let file of post.media">
+    <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+    <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+    <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+    <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
+      <mat-icon>insert_drive_file</mat-icon> View Document
+    </a>
+  </ng-container>
+</div>
+
 
       <!-- ✅ Tag-style Category -->
       <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
@@ -88,24 +95,25 @@
 
         <!-- Add Comment -->
         <div class="add-comment-box">
-          <input
-            type="text"
-            [(ngModel)]="commentText[post.id]"
-            placeholder="Write a comment..."
-          />
+          <input type="text" [(ngModel)]="commentText[post.id]" placeholder="Write a comment..." />
           <button (click)="addComment(post.id)">Add Comment</button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Top Contributors -->
+  <!-- Top Contributors + Categories -->
   <aside class="right-panel">
-    <h3>Top Contributors</h3>
-    <ul>
-      <li><img src="assets/user.png" /> Sara Emad</li>
-      <li><img src="assets/user.png" /> Ahmed Samir</li>
-      <li><img src="assets/user.png" /> Laila Ahmed</li>
-    </ul>
+    <app-top-contributors></app-top-contributors>
+
+    <div class="left-panel-categories">
+      <h3>Categories</h3>
+      <button class="category-button" (click)="filterPosts(null)">All</button>
+      <div *ngFor="let category of categories; let i = index">
+        <button class="category-button" [style.background-color]="categoryColors[i]" (click)="filterPosts(category)">
+          {{ category.name }}
+        </button>
+      </div>
+    </div>
   </aside>
 </div>

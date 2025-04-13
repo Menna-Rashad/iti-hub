@@ -1,0 +1,13 @@
+<div class="top-contributors-container">
+    <h3>Top Contributors</h3>
+    <ul>
+      <li *ngFor="let contributor of topContributors" class="contributor-item">
+        <img [src]="getProfilePictureUrl(contributor)" alt="User image" class="contributor-avatar" />
+        <div class="contributor-details">
+          <span class="contributor-name">{{ contributor.name }}</span>
+          <span class="contributor-score">Score: {{ contributor.score }}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  

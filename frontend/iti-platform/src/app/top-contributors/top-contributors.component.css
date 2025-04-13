@@ -1,0 +1,127 @@
+.top-contributors-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto; /* Center the container */
+  }
+  
+  h3 {
+    font-size: 1.5rem; /* Using rem for font size */
+    color: #1e3d58; /* Darker color for better visibility */
+    margin-bottom: 15px;
+    text-align: center; /* Center the title */
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .contributor-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .contributor-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .contributor-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  
+  .contributor-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .contributor-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .contributor-score {
+    font-size: 0.9rem;
+    color: #e74c3c; /* Red for score */
+  }
+  
+  .contributor-score span {
+    font-weight: 600;
+  }
+  
+  /* Responsive Design for Medium Screens */
+  @media (max-width: 768px) {
+    .top-contributors-container {
+      max-width: 100%; /* Full width for small screens */
+      padding: 15px; /* Adjust padding */
+    }
+  
+    h3 {
+      font-size: 1.3rem; /* Adjust heading size */
+    }
+  
+    .contributor-item {
+      flex-direction: column; /* Stack avatar and text vertically */
+      align-items: flex-start; /* Align items to the left */
+      padding: 12px;
+    }
+  
+    .contributor-avatar {
+      width: 45px; /* Slightly smaller avatar */
+      height: 45px;
+      margin-bottom: 10px; /* Space between avatar and text */
+    }
+  
+    .contributor-name {
+      font-size: 1rem;
+    }
+  
+    .contributor-score {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Responsive Design for Small Screens */
+  @media (max-width: 480px) {
+    .top-contributors-container {
+      max-width: 100%; /* Full width for very small screens */
+      padding: 10px; /* Adjust padding further */
+    }
+  
+    h3 {
+      font-size: 1.1rem; /* Smaller heading for small screens */
+    }
+  
+    .contributor-item {
+      padding: 8px; /* Less padding for small screens */
+    }
+  
+    .contributor-avatar {
+      width: 40px; /* Even smaller avatar */
+      height: 40px;
+    }
+  
+    .contributor-name {
+      font-size: 0.9rem; /* Smaller font size */
+    }
+  
+    .contributor-score {
+      font-size: 0.8rem;
+    }
+  }
+  

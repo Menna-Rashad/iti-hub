@@ -2,16 +2,20 @@
   <mat-card class="post-card">
     <div class="post-header-wrapper">
       <div class="post-header">
-        <!-- ✅ اليسار: العنوان والتاريخ -->
+        <!-- اليسار: العنوان والتاريخ -->
         <div class="post-info">
           <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
           <mat-card-subtitle class="post-meta">
-            <span>{{ post.user?.name }}</span> · 
+            <a [routerLink]="['/profile', post.user?.id]" class="author-link">{{ post.user?.name }}</a> · 
             <span>{{ post.created_at | date:'medium' }}</span>
+            <!-- زر الـ Follow/Unfollow -->
+            <button mat-button class="follow-btn" (click)="toggleFollow()">
+              {{ isFollowing ? 'Unfollow' : 'Follow' }}
+            </button>
           </mat-card-subtitle>
         </div>
     
-        <!-- ✅ اليمين: المنيو -->
+        <!-- اليمين: المنيو -->
         <div class="menu-wrapper">
           <app-action-menu
             [ownerId]="post.user_id"
@@ -26,39 +30,57 @@
       </div>
     </div>
     
-    
-
     <mat-card-content>
-      <p class="post-content">{{ post.content }}</p>
+      <div class="post-content">{{ post.content }}</div>
 
-      <!-- ✅ بدل الزرائر القديمة، استخدمنا الكمبوننت -->
+      <!-- دعم الميديا -->
+      <div class="media-section" *ngIf="post.media?.length > 0">
+        <ng-container *ngFor="let file of post.media">
+          <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+          <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+          <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+          <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
+            <mat-icon>insert_drive_file</mat-icon> View Document
+          </a>
+        </ng-container>
+      </div>
+
+      <!-- زر الـ Vote باستخدام الكومبوننت -->
       <app-vote-buttons
-      [targetType]="'post'"
-      [targetId]="post.id"
-      [upvotes]="post.upvotes"
-      [downvotes]="post.downvotes"
-      [currentVote]="post.current_user_vote"
-      (voteUpdated)="onVoteUpdated('post', post.id, $event)"
-    ></app-vote-buttons>
+        [targetType]="'post'"
+        [targetId]="post.id.toString()"
+        [upvotes]="post.upvotes"
+        [downvotes]="post.downvotes"
+        [currentVote]="post.current_user_vote"
+        (voteUpdated)="onVoteUpdated('post', post.id, $event)"
+      ></app-vote-buttons>
 
-      <!-- <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary" class="edit-btn">
-        ✏️ Edit Post
-      </button> -->
+      <!-- زر Copy Post -->
+      <button mat-raised-button color="accent" (click)="copyPost(post)" class="copy-button">
+        <mat-icon>content_copy</mat-icon> Copy Link
+      </button>
     </mat-card-content>
   </mat-card>
 
-  <!-- Comments -->
+  <!-- Comments Section -->
   <div class="comments-container">
     <h3>💬 Comments ({{ post.comments?.length }})</h3>
 
     <div class="comment-form">
       <mat-form-field appearance="outline" class="full-width">
-        <textarea matInput [(ngModel)]="newComment" placeholder="Write a comment..."></textarea>
+        <textarea
+          matInput
+          [(ngModel)]="newComment"
+          placeholder="Write a comment..."
+          class="comment-input animate"
+        ></textarea>
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="addComment()">Add Comment</button>
+      <button mat-raised-button color="primary" (click)="addComment()" [disabled]="isAddingComment">
+        {{ isAddingComment ? 'Adding...' : 'Add Comment' }}
+      </button>
     </div>
 
-    <mat-card *ngFor="let comment of post.comments" class="comment-card">
+    <mat-card *ngFor="let comment of visibleComments" class="comment-card">
       <div class="comment-header">
         <mat-card-content>
           <p>{{ comment.content }}</p>
@@ -80,16 +102,20 @@
         </div>
       </div>
     
-      <!-- التصويت -->
+      <!-- التصويت للكومنت -->
       <app-vote-buttons
         [targetType]="'comment'"
-        [targetId]="comment.id"
+        [targetId]="comment.id.toString()"
         [upvotes]="comment.upvotes"
         [downvotes]="comment.downvotes"
         [currentVote]="comment.current_user_vote"
         (voteUpdated)="onVoteUpdated('comment', comment.id, $event)"
       ></app-vote-buttons>
     </mat-card>
-    
+
+    <!-- زر Show More Comments -->
+    <button *ngIf="post.comments?.length > visibleComments.length" mat-stroked-button color="accent" (click)="showMoreComments()">
+      Show more comments
+    </button>
   </div>
 </div>

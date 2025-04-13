@@ -14,6 +14,8 @@ import { MentorGuard } from './auth/mentor.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MainContentComponent } from './main-content/main-content.component'; // Import MainContentComponent
 import { jobRoutes } from './jobs/job.routes';
+import { OpenProjectListComponent } from './components/open-project-list/open-project-list.component';
+import { EditProjectComponent } from './components/edit-project.component';
 
 export const routes: Routes = [
   // ✅ Auth Routes
@@ -53,15 +55,43 @@ export const routes: Routes = [
   { path: 'posts/create', component: CreatePostComponent },
   { path: 'posts/:id', component: PostDetailComponent },
   { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
+  {
+    path: 'open-projects',
+    loadComponent: () => import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent)
+  },
+  {
+    path: 'edit-post/:id',
+    loadComponent: () => import('./components/edit-post/edit-post.component').then(m => m.EditPostComponent)
+  }
+  ,
+  {
+    path: 'open-projects/add',
+    loadComponent: () => import('./components/add-project/add-project.component').then(m => m.AddProjectComponent),
+    title: 'Add Project',
+  },
+  {
+    path: 'open-projects/edit/:id',
+    loadComponent: () => import('./components/edit-project.component').then(m => m.EditProjectComponent),
+    title: 'Edit Project'
+  },
+  {
+    path: 'open-projects/:id',
+    loadComponent: () =>
+      import('./components/project-detail/project-detail.component').then(
+        (m) => m.ProjectDetailComponent
+      ),
+    title: 'Project Details'
+  },
+  { path: 'open-projects/edit/:id', component: EditProjectComponent, canActivate: [AuthGuard] },
 
-
+  
   // ✅ Jobs Page
   {
     path: 'jobs',
     children: jobRoutes
   },
   
-
   // ✅ Fallback
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' },
+ 
 ];
