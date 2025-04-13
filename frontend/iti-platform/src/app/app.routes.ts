@@ -59,6 +59,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent)
   },
   {
+    path: 'edit-post/:id',
+    loadComponent: () => import('./components/edit-post/edit-post.component').then(m => m.EditPostComponent)
+  }
+  ,
+  {
     path: 'open-projects/add',
     loadComponent: () => import('./components/add-project/add-project.component').then(m => m.AddProjectComponent),
     title: 'Add Project',
