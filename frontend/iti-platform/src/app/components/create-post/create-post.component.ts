@@ -9,6 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 
+interface MediaFile extends File {
+  preview?: string; // إضافة preview لكل ملف
+}
+
 @Component({
   standalone: true,
   selector: 'app-create-post',
@@ -37,23 +41,32 @@ export class CreatePostComponent implements OnInit {
     tags: ''
   };
 
-  mediaFiles: File[] = [];
+  mediaFiles: MediaFile[] = [];
 
-  categories = [
-    { id: 1, name: 'General' },
-    { id: 2, name: 'Angular' },
-    { id: 3, name: 'Feedback' },
-    { id: 4, name: 'Laravel' }
-  ];
+  categories: any[] = []; // الفئات التي سيتم تحميلها من الباك إند
 
   constructor(private forumService: ForumService, private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // جلب الفئات من الـ API عند تحميل المكون
+    this.forumService.getCategories().subscribe(categories => {
+      this.categories = categories; // حفظ الفئات المجلوبة في المصفوفة
+    });
+  }
 
   onFileSelected(event: any): void {
     if (event.target.files && event.target.files.length > 0) {
       this.mediaFiles = Array.from(event.target.files);
+
+      // إضافة preview لكل ملف
+      this.mediaFiles.forEach((file: MediaFile) => {
+        file.preview = URL.createObjectURL(file);  // إضافة preview
+      });
     }
+  }
+
+  removeFile(index: number): void {
+    this.mediaFiles.splice(index, 1); // إزالة الملف من المصفوفة
   }
 
   submitPost(): void {
