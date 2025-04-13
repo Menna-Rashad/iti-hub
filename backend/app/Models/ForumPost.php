@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ForumPost extends Model
 {
+    protected $casts = [
+        'media' => 'array',
+    ];
+
     protected $fillable = [
         'user_id',
         'category_id',
@@ -21,7 +25,8 @@ class ForumPost extends Model
         'content',
         'tags',
         'upvotes',
-        'downvotes'
+        'downvotes',
+        'media'
     ];
 
     // public $casts
@@ -29,9 +34,6 @@ class ForumPost extends Model
     //     'tags' => 'array',
     // ];
     
-    protected $casts = [
-        'media' => 'array',
-    ];
     
     public function user(): BelongsTo
     {
