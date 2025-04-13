@@ -4,11 +4,14 @@
       <div class="user-info">
         <img class="user-avatar" [src]="post.user?.profile_picture || defaultAvatar" alt="User" />
         <div class="meta-text">
-          <div class="post-title">{{ post.title }}</div>
           <div class="post-meta">
             <a [routerLink]="['/profile', post.user?.id]" class="author-link">{{ post.user?.name }}</a>
-            · <span>{{ post.created_at | date:'medium' }}</span>
+     <!-- Follow Button below user name -->
+     <button mat-button class="follow-btn" (click)="toggleFollow()">
+      {{ isFollowing ? 'Unfollow' : 'Follow' }}
+    </button>          
           </div>
+            <span>{{ post.created_at | date:'medium' }}</span>
         </div>
         <!-- Menu for Edit & Delete -->
         <div *ngIf="canEdit" class="more-options">
@@ -22,8 +25,10 @@
         </div>
       </div>
     </mat-card-header>
+    <div class="post-title">{{ post.title }}</div>
 
     <mat-card-content>
+      
       <div class="post-content">{{ post.content }}</div>
 
       <!-- MEDIA PREVIEW -->
@@ -38,22 +43,23 @@
         </ng-container>
       </div>
 
-<!-- VOTE SECTION -->
-<div class="vote-section">
-  <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
-      <mat-icon>arrow_upward</mat-icon>
-  </button>
-  <span>{{ post.upvotes }}</span>
+      <!-- VOTE SECTION -->
+      <div class="vote-section">
+        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <span>{{ post.upvotes }}</span>
 
-  <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
-      <mat-icon>arrow_downward</mat-icon>
-  </button>
-  <span>{{ post.downvotes }}</span>
-</div>
- <!-- Copy Post Button (Below Content) -->
- <button mat-raised-button color="accent" (click)="copyPost(post)" class="copy-button">
-  <mat-icon>content_copy</mat-icon>
-</button>
+        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <span>{{ post.downvotes }}</span>
+      </div>
+
+      <!-- Copy Post Button (Below Content) -->
+      <button mat-raised-button color="accent" (click)="copyPost(post)" class="copy-button">
+        <mat-icon>content_copy</mat-icon>
+      </button>
 
     </mat-card-content>
   </mat-card>
