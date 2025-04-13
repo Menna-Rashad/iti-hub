@@ -10,6 +10,16 @@
             · <span>{{ post.created_at | date:'medium' }}</span>
           </div>
         </div>
+        <!-- Menu for Edit & Delete -->
+        <div *ngIf="canEdit" class="more-options">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="goToEdit()">Edit</button>
+            <button mat-menu-item (click)="deletePost()">Delete</button>
+          </mat-menu>
+        </div>
       </div>
     </mat-card-header>
 
@@ -28,18 +38,23 @@
         </ng-container>
       </div>
 
-      <!-- VOTE SECTION -->
-      <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
-          <mat-icon>arrow_upward</mat-icon>
-        </button>
-        <span>{{ post.upvotes }}</span> <!-- سيتم تحديث هذه القيمة فورًا -->
-      
-        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
-          <mat-icon>arrow_downward</mat-icon>
-        </button>
-        <span>{{ post.downvotes }}</span> <!-- سيتم التحديث بشكل فوري هنا أيضًا -->
-      </div>
+<!-- VOTE SECTION -->
+<div class="vote-section">
+  <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
+      <mat-icon>arrow_upward</mat-icon>
+  </button>
+  <span>{{ post.upvotes }}</span>
+
+  <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
+      <mat-icon>arrow_downward</mat-icon>
+  </button>
+  <span>{{ post.downvotes }}</span>
+</div>
+ <!-- Copy Post Button (Below Content) -->
+ <button mat-raised-button color="accent" (click)="copyPost(post)" class="copy-button">
+  <mat-icon>content_copy</mat-icon>
+</button>
+
     </mat-card-content>
   </mat-card>
 
@@ -87,6 +102,5 @@
     <button *ngIf="post.comments.length > visibleComments.length" mat-stroked-button color="accent" (click)="showMoreComments()">
       Show more comments
     </button>
-
   </div>
 </div>
