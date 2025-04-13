@@ -18,7 +18,7 @@ class ForumPostController extends Controller
     public function index()
     {
         try {
-            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category'])->get();
+            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category' ])->get();
 
             return response()->json($forumPosts);
         } catch (\Exception $e) {
@@ -62,11 +62,16 @@ class ForumPostController extends Controller
     public function show(string $id)
     {
         try {
-            $forumPost = ForumPost::with(['comments.user', 'votes', 'category'])->findOrFail($id);
+            $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user'])->findOrFail($id);
             $forumPost->refreshVoteCounts();
-
-            return response()->json($forumPost);
+    
+            $forumPost->media = $forumPost->media ?? [];
+            return response()->json($forumPost->toArray(), 200);
+            
         } catch (\Exception $e) {
+            $forumPost->media = $forumPost->media ?? []; // fallback لو null
+            return response()->json($forumPost->toArray(), 200); // يخلي media ترجع array دايمًا
+
             return response()->json([
                 'message' => 'خطأ في الخادم',
                 'error' => $e->getMessage(),
@@ -75,44 +80,52 @@ class ForumPostController extends Controller
             ], 500);
         }
     }
+    
 
     public function update(Request $request, $id)
-    {
-        try {
-            $post = ForumPost::findOrFail($id);
-            $this->authorize('update', $post);
+{
+    \Log::info('Update request:', $request->all());
+    \Log::info('✔️ title: ' . $request->input('title'));
+    \Log::info('✔️ content: ' . $request->input('content'));
+    \Log::info('✔️ tags: ' . $request->input('tags'));
+    \Log::info('✔️ category_id: ' . $request->input('category_id'));
+    
+    $post = ForumPost::findOrFail($id);
+    $this->authorize('update', $post);
 
-            $validated = $request->validate([
-                'title' => 'sometimes|string|max:255',
-                'content' => 'sometimes|string',
-                'category_id' => 'nullable|exists:categories,id',
-                'tags' => 'nullable|string',
-                'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200'
-            ]);
+    // 🛡️ Validate
+    $request->validate([
+        'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200'
+    ]);
 
-            $post->update($validated);
+    // ✅ استخدم input بدال has
+    $post->title = $request->input('title', $post->title);
+    $post->content = $request->input('content', $post->content);
+    $post->tags = $request->input('tags', $post->tags);
+    $post->category_id = $request->input('category_id', $post->category_id);
 
-            if ($request->hasFile('media')) {
-                $mediaPaths = [];
-                foreach ($request->file('media') as $file) {
-                    $mediaPaths[] = $file->store('posts_media', 'public');
-                }
-                $post->media = $mediaPaths;
-                $post->save();
-            }
+    // ✅ Handle media
+    $mediaFiles = $request->allFiles()['media'] ?? [];
+    if (!is_array($mediaFiles)) {
+        $mediaFiles = [$mediaFiles];
+    }
 
-            return response()->json($post, 200);
-        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return response()->json(['message' => 'غير مصرح به'], 403);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'المنشور غير موجود'], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'خطأ في الخادم',
-                'error' => $e->getMessage()
-            ], 500);
+    $newMediaPaths = [];
+    foreach ($mediaFiles as $file) {
+        if ($file && $file->isValid()) {
+            $newMediaPaths[] = $file->store('posts_media', 'public');
         }
     }
+
+    $existingMedia = json_decode($request->input('existing_media') ?? '[]');
+    $post->media = array_merge($existingMedia, $newMediaPaths);
+    $post->save();
+
+    return response()->json($post->toArray(), 200);
+}
+
+
+
 
     public function destroy(string $id)
     {
