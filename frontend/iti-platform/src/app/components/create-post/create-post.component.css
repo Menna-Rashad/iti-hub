@@ -8,23 +8,24 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-.create-post-container {
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.full-width {
+.create-post-container .full-width {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .actions {
   display: flex;
   gap: 10px;
+  justify-content: flex-start;
+}
+
+.actions button {
+  background-color: #880e4f;
+  color: white;
+}
+
+.actions button:hover {
+  background-color: #6a0c3d;
 }
 
 .preview-box {
@@ -50,4 +51,67 @@ button[mat-button] {
 
 button[mat-button]:hover {
   text-decoration: underline;
+}
+
+input[type="file"] {
+  display: block;
+  margin-top: 10px;
+}
+
+.media-preview {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.media-preview h4 {
+  margin-bottom: 15px;
+}
+
+.media-preview ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.media-preview li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.media-preview button {
+  background-color: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+}
+
+.media-preview button:hover {
+  text-decoration: underline;
+}
+
+.media-preview img, .media-preview video {
+  max-width: 100px;
+  max-height: 100px;
+  margin-top: 10px;
+}
+
+.preview-box {
+  background: #f1f1f1;
+  padding: 20px;
+  border-left: 5px solid #007bff;
+  margin-top: 30px;
+  border-radius: 5px;
+}
+
+.preview-box h3 {
+  color: #333;
+  font-weight: bold;
+}
+
+.preview-box h4, .preview-box p {
+  color: #555;
 }

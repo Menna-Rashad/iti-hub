@@ -20,18 +20,36 @@
       <mat-label>Content</mat-label>
       <textarea matInput [(ngModel)]="postData.content" name="content" rows="5" required></textarea>
     </mat-form-field>
-
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tags (Optional)</mat-label>
+      <input matInput [(ngModel)]="postData.tags" name="tags" />
+    </mat-form-field>
+    
     <!-- ✅ File Upload Input -->
     <div class="mb-3">
       <label for="media">Attach Media Files</label>
       <input type="file" id="media" (change)="onFileSelected($event)" multiple />
     </div>
 
-    <!-- ✅ Preview Section -->
+    <!-- ✅ Preview and Remove Media Files -->
     <div class="media-preview" *ngIf="mediaFiles.length > 0">
       <h4>📂 Selected Files:</h4>
       <ul>
-        <li *ngFor="let file of mediaFiles">{{ file.name }}</li>
+        <li *ngFor="let file of mediaFiles; let i = index">
+          {{ file.name }}
+          <button (click)="removeFile(i)">❌ Remove</button>
+
+          <!-- Preview the media file (if image) -->
+          <div *ngIf="file.type.startsWith('image')">
+            <img [src]="file.preview" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+          </div>
+
+          <!-- Preview for videos (if type is video) -->
+          <div *ngIf="file.type.startsWith('video')">
+            <video [src]="file.preview" controls style="max-width: 100px; max-height: 100px;"></video>
+          </div>
+        </li>
       </ul>
     </div>
 

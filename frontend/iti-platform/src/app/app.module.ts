@@ -28,7 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     PostListComponent,
     PostDetailComponent,
-
+    PostDetailComponent,
   ],
   imports: [
     BrowserAnimationsModule,
