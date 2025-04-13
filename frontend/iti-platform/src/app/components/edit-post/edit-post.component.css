@@ -1,0 +1,77 @@
+form {
+    max-width: 750px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fefefe;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  mat-form-field {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .media-preview {
+    margin: 20px 0;
+    padding: 10px 15px;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .media-preview h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #444;
+  }
+  
+  .media-preview ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .media-preview li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+  }
+  
+  .media-preview button {
+    background: #e53935;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .media-preview button:hover {
+    background: #c62828;
+  }
+  
+  input[type="file"] {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    padding-left: 0;
+  }
+  
+  ul li {
+    background-color: #fafafa;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+  }
+  
