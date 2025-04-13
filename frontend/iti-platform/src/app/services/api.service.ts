@@ -40,5 +40,9 @@ getPost(id: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.put(`${this.apiUrl}/forum/posts/${postId}`, data, { headers });
   }
+  getCategories() {
+    return this.http.get(`${this.apiUrl}/categories`);
+  }
+  
   
 }
