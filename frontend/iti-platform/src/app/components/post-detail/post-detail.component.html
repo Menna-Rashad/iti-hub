@@ -1,68 +1,49 @@
 <div class="post-wrapper" *ngIf="post">
   <mat-card class="post-card">
     <mat-card-header>
-      <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
-      <mat-card-subtitle class="post-meta">
-        <span>{{ post.user?.name }}</span> · 
-        <span>{{ post.created_at | date:'medium' }}</span>
-      </mat-card-subtitle>
+      <div class="user-info">
+        <img class="user-avatar" [src]="post.user?.profile_picture || defaultAvatar" alt="User" />
+        <div class="meta-text">
+          <div class="post-title">{{ post.title }}</div>
+          <div class="post-meta">
+            <a [routerLink]="['/profile', post.user?.id]" class="author-link">{{ post.user?.name }}</a>
+            · <span>{{ post.created_at | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
     </mat-card-header>
 
     <mat-card-content>
-      <p class="post-content">{{ post.content }}</p>
+      <div class="post-content">{{ post.content }}</div>
 
-      <!-- ✅ MEDIA PREVIEW -->
+      <!-- MEDIA PREVIEW -->
       <div class="media-section" *ngIf="post.media?.length > 0">
         <ng-container *ngFor="let file of post.media">
-          <img
-            *ngIf="isImage(file)"
-            [src]="'http://localhost:8000/storage/' + file"
-            class="media-preview"
-          />
-
-          <video
-            *ngIf="isVideo(file)"
-            [src]="'http://localhost:8000/storage/' + file"
-            controls
-            class="media-preview"
-          ></video>
-
-          <audio
-            *ngIf="isAudio(file)"
-            [src]="'http://localhost:8000/storage/' + file"
-            controls
-          ></audio>
-
-          <a
-            *ngIf="isDocument(file)"
-            [href]="'http://localhost:8000/storage/' + file"
-            target="_blank"
-            class="doc-link"
-          >
+          <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+          <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+          <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+          <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
             <mat-icon>insert_drive_file</mat-icon> View Document
           </a>
         </ng-container>
       </div>
 
+      <!-- VOTE SECTION -->
       <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')">
-          <mat-icon>thumb_up</mat-icon>
+        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
+          <mat-icon>arrow_upward</mat-icon>
         </button>
-        <span>{{ post.upvotes }}</span>
-
-        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')">
-          <mat-icon>thumb_down</mat-icon>
+        <span>{{ post.upvotes }}</span> <!-- سيتم تحديث هذه القيمة فورًا -->
+      
+        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
+          <mat-icon>arrow_downward</mat-icon>
         </button>
-        <span>{{ post.downvotes }}</span>
-
-        <button *ngIf="canEdit" (click)="goToEdit()" mat-stroked-button color="primary">
-          ✏️ Edit Post
-        </button>
+        <span>{{ post.downvotes }}</span> <!-- سيتم التحديث بشكل فوري هنا أيضًا -->
       </div>
     </mat-card-content>
   </mat-card>
 
-  <!-- Comments -->
+  <!-- Comments Section -->
   <div class="comments-container">
     <h3>💬 Comments ({{ post.comments?.length }})</h3>
 
@@ -72,30 +53,40 @@
           matInput
           [(ngModel)]="newComment"
           placeholder="Write a comment..."
+          class="comment-input animate"
         ></textarea>
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="addComment()">Add Comment</button>
+      <button mat-raised-button color="primary" (click)="addComment()" [disabled]="isAddingComment">
+        {{ isAddingComment ? 'Adding...' : 'Add Comment' }}
+      </button>
     </div>
 
-    <mat-card *ngFor="let comment of post.comments" class="comment-card">
+    <mat-card *ngFor="let comment of visibleComments" class="comment-card">
       <mat-card-content>
-        <p>{{ comment.content }}</p>
+        <div class="comment-content">{{ comment.content }}</div>
         <div class="comment-meta">
           <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
         </div>
+
+        <!-- Vote Section for Comment -->
+        <div class="vote-section">
+          <button mat-icon-button color="primary" (click)="handleVote('comment', comment.id, 'upvote')" [disabled]="isVoting">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <span>{{ comment.upvotes }}</span>
+
+          <button mat-icon-button color="warn" (click)="handleVote('comment', comment.id, 'downvote')" [disabled]="isVoting">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <span>{{ comment.downvotes }}</span>
+        </div>
       </mat-card-content>
-
-      <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('comment', comment.id, 'upvote')">
-          <mat-icon>thumb_up</mat-icon>
-        </button>
-        <span>{{ comment.upvotes }}</span>
-
-        <button mat-icon-button color="warn" (click)="handleVote('comment', comment.id, 'downvote')">
-          <mat-icon>thumb_down</mat-icon>
-        </button>
-        <span>{{ comment.downvotes }}</span>
-      </div>
     </mat-card>
+
+    <!-- Show more comments button -->
+    <button *ngIf="post.comments.length > visibleComments.length" mat-stroked-button color="accent" (click)="showMoreComments()">
+      Show more comments
+    </button>
+
   </div>
 </div>
