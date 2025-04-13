@@ -14,7 +14,14 @@
       </div>
       <a mat-button routerLink="/posts/create">➕ Create Post</a>
     </div>
-
+        <!-- فلتر البوستات -->
+        <div class="filter-container">
+          <label for="filter" class="filter-label">Filter by:</label>
+          <select id="filter" (change)="applyFilter($event)" class="filter-select">
+            <option value="newest">Newest</option>
+            <option value="top-votes">Top Votes</option>
+          </select>
+        </div>
     <!-- Posts List -->
     <div *ngFor="let post of filteredPosts" class="discussion-card">
       <div class="post-header">
