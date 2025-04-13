@@ -56,10 +56,14 @@ export class MainContentComponent implements OnInit {
   selectedCategory: string = '';
   categoryColors: string[] = [];
 
+  isFollowing: { [key: number]: boolean } = {}; 
+
   editingPostId: number | null = null;
   editPostTitle = '';
   editPostContent = '';
   topContributors: any[] = [];
+
+  defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
 
   @ViewChildren('lastVisibleComment', { read: ElementRef })
   lastCommentElements!: QueryList<ElementRef>;
@@ -91,12 +95,29 @@ export class MainContentComponent implements OnInit {
       next: (res) => {
         this.posts = res;
         this.filteredPosts = res;
-        res.forEach((post: any) => this.loadComments(post.id));
+  
+        res.forEach((post: any) => {
+          console.log('Post User:', post.user); // تحقق من أن بيانات المستخدم موجودة
+          this.loadComments(post.id);
+        });
       },
-      error: (err) => console.error(err),
+      error: (err) => console.error('Error loading posts:', err),
     });
   }
-
+  
+toggleFollow(post: any): void {
+  this.isFollowing[post.id] = !this.isFollowing[post.id];
+  console.log(this.isFollowing[post.id] ? "Followed" : "Unfollowed");
+}
+  applyFilter(event: any): void {
+    const selectedFilter = event.target.value;
+    if (selectedFilter === 'newest') {
+      this.filteredPosts = this.posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } else if (selectedFilter === 'top-votes') {
+      this.filteredPosts = this.posts.sort((a, b) => b.upvotes - a.upvotes);
+    }
+  }
+  
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
     this.forumService.getPost(postId.toString()).subscribe({

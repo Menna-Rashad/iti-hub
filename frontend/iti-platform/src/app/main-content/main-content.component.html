@@ -14,11 +14,28 @@
       </div>
       <a mat-button routerLink="/posts/create">➕ Create Post</a>
     </div>
-
+        <!-- فلتر البوستات -->
+        <div class="filter-container">
+          <label for="filter" class="filter-label">Filter by:</label>
+          <select id="filter" (change)="applyFilter($event)" class="filter-select">
+            <option value="newest">Newest</option>
+            <option value="top-votes">Top Votes</option>
+          </select>
+        </div>
     <!-- Posts List -->
     <div *ngFor="let post of filteredPosts" class="discussion-card">
       <div class="post-header">
-        <h2>{{ post.title }}</h2>
+        <div class="post-author">
+          <div class="user-info">
+          <img [src]="post.user?.profile_picture || defaultAvatar" alt="User Avatar" class="user-avatar">
+            <span>{{ post.user?.name || 'Unknown User' }}</span> <!-- عرض اسم صاحب البوست -->
+            <button mat-button class="follow-btn" (click)="toggleFollow(post)">
+              {{ isFollowing[post.id] ? 'Unfollow' : 'Follow' }} <!-- التفاعل مع زر المتابعة -->
+            </button>
+          </div>
+          <br>
+          <h2>{{ post.title }}</h2>
+        </div>
 
         <!-- ⋯ Post Options (Only for post owner) -->
         <ng-container *ngIf="post.user_id === currentUser?.id">
