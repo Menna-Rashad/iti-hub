@@ -1,3 +1,4 @@
+
 <div class="main-content-layout">
   <!-- Sidebar -->
   <aside class="left-panel">
@@ -40,18 +41,19 @@
 
       <p>{{ post.content }}</p>
 
-<!-- ✅ MEDIA PREVIEW -->
-<div class="media-section" *ngIf="post.media?.length > 0">
-  <ng-container *ngFor="let file of post.media">
-    <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
-    <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
-    <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
-    <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
-      <mat-icon>insert_drive_file</mat-icon> View Document
-    </a>
-  </ng-container>
-</div>
-
+      <!-- ✅ MEDIA PREVIEW -->
+      <ng-container *ngIf="post?.media as media">
+        <div class="media-section" *ngIf="media.length > 0">
+          <ng-container *ngFor="let file of media">
+            <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+            <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+            <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+            <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
+              <mat-icon>insert_drive_file</mat-icon> View Document
+            </a>
+          </ng-container>
+        </div>
+      </ng-container>
 
       <!-- ✅ Tag-style Category -->
       <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
