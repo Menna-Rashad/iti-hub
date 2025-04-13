@@ -22,10 +22,6 @@
         <span>Open Projects</span>
       </a>
         
-    <a mat-button routerLink="/projects">
-      <mat-icon>folder</mat-icon>
-      <span>Projects</span>
-    </a>
 
     <a mat-button routerLink="/mentorship">
       <mat-icon>school</mat-icon>
@@ -74,7 +70,6 @@
       <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
     </ng-container>
 
-    <a routerLink="/open-projects">Open Projects</a>
 
   </div>
 
@@ -87,7 +82,7 @@
 <!-- Mobile Menu -->
 <div class="mobile-menu" *ngIf="isMenuOpen">
   <a routerLink="/main-content">Home</a>
-  <a routerLink="/projects">Projects</a>
+  <a routerLink="/open-projects">Open Projects</a>
   <a routerLink="/mentorship">Mentorship</a>
   <a routerLink="/api/jobs">Jobs</a>
 
