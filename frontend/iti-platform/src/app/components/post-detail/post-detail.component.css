@@ -201,3 +201,52 @@ button:hover {
 .author-link:hover {
     text-decoration: underline;
 }
+.more-options {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 10;
+  }
+
+/* زر نسخ رابط البوست */
+.copy-button {
+    background-color: #376aad; /* اللون الأخضر الزاهي */
+    color: white;
+    margin-top: 20px; /* مسافة أعلى */
+    border-radius: 8px;
+    padding: 10px 20px; /* حواف أعرض ومسافة داخلية أكبر */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* المسافة بين الأيقونة والنص */
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* تأثيرات التحويم */
+    width: auto;
+    cursor: pointer;
+}
+
+/* عند التحويم على الزر */
+.copy-button:hover {
+    background-color: #1f4d91; /* تغيير اللون عند التحويم */
+    transform: scale(1.05); /* تكبير الزر قليلاً */
+}
+
+/* عند تعطيل الزر */
+.copy-button:disabled {
+    opacity: 0.6; /* تقليل الشفافية عند تعطيله */
+    cursor: not-allowed;
+}
+
+/* تنسيق الأيقونة داخل الزر */
+.copy-button mat-icon {
+    font-size: 18px; /* تكبير الأيقونة قليلاً */
+}
+
+/* تعديل المسافة بين الأزرار */
+.vote-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
