@@ -1,23 +1,48 @@
+/* Post Wrapper */
 .post-wrapper {
     max-width: 750px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    transition: box-shadow 0.3s ease;
 }
 
+.post-wrapper:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Post Card */
 .post-card {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    padding: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
 }
 
 .post-title {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
     color: #333;
+    margin-bottom: 10px;
 }
 
 .post-meta {
@@ -27,41 +52,62 @@
 
 .post-content {
     font-size: 16px;
-    margin-top: 10px;
+    margin-top: 15px;
     color: #333;
+    line-height: 1.6;
 }
 
+/* Vote Section */
 .vote-section {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     margin-top: 15px;
 }
 
-.edit-btn {
-    margin-left: auto;
-    font-weight: bold;
-    color: #007bff;
-    border: 1px solid #007bff;
-    padding: 8px 15px;
-    border-radius: 20px;
+.vote-section button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #880e4f;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
     transition: background-color 0.3s ease;
 }
 
-.edit-btn:hover {
-    background-color: #007bff;
-    color: white;
+.vote-section button:hover {
+    background-color: #6a0c3d;
 }
 
-.comments-container {
-    margin-top: 30px;
+.vote-section button:disabled {
+    opacity: 0.5;
 }
 
+.vote-section span {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Comment Section */
 .comment-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-bottom: 30px;
+}
+
+.comment-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.comment-form button:hover {
+    background-color: #005f8c;
 }
 
 .comment-card {
@@ -71,6 +117,11 @@
     border-radius: 10px;
     border-left: 5px solid #007bff;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.comment-card:hover {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .comment-meta {
@@ -78,30 +129,33 @@
     color: #777;
 }
 
-.full-width {
-    width: 100%;
+.comment-input.animate {
+    animation: fadeIn 0.4s ease-in;
 }
 
-button.mat-raised-button {
-    border-radius: 50px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
+/* Media Section */
 .media-section {
-    margin-top: 15px;
+    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-  }
-  
-  .media-preview {
+}
+
+.media-preview {
     max-width: 240px;
     max-height: 160px;
     border-radius: 8px;
     object-fit: cover;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .doc-link {
+}
+
+/* Document Link */
+.doc-link {
     display: inline-flex;
     align-items: center;
     font-weight: bold;
@@ -113,9 +167,37 @@ button.mat-raised-button {
     border-radius: 6px;
     background-color: #f1f1f1;
     transition: background-color 0.3s ease;
-  }
-  
-  .doc-link:hover {
+}
+
+.doc-link:hover {
     background-color: #e0e0e0;
-  }
-  
+}
+
+.comment-form input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.comment-form input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Hover Effects */
+button:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/* Links and Text Styles */
+.author-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
