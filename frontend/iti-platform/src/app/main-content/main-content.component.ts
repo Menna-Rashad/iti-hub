@@ -207,22 +207,28 @@ export class MainContentComponent implements OnInit {
   editPost(post: any): void {
     const newTitle = prompt('📝 Edit post title:', post.title);
     const newContent = prompt('📝 Edit post content:', post.content);
-
+  
     if (newTitle?.trim() && newContent?.trim()) {
-      this.forumService
-        .updatePost(post.id, {
-          title: newTitle.trim(),
-          content: newContent.trim(),
-        })
-        .subscribe({
-          next: () => {
-            this.loadPosts();
-            this.toastr.success('Post updated successfully.');
-          },
-          error: () => this.toastr.error('Failed to update post.'),
-        });
+      const formData = new FormData();
+  
+      formData.append('title', newTitle.trim());
+      formData.append('content', newContent.trim());
+      formData.append('category_id', post.category_id?.toString() || ''); // لو عايزة تغيريه برضو
+      formData.append('tags', post.tags || '');
+  
+      formData.append('existing_media', JSON.stringify(post.media || []));
+      formData.append('_method', 'PUT'); // مهم جداً عشان Laravel يفهم إنها تحديث مش إنشاء
+  
+      this.forumService.updatePost(post.id, formData).subscribe({
+        next: () => {
+          this.loadPosts();
+          this.toastr.success('✔️ Post updated successfully.');
+        },
+        error: () => this.toastr.error('❌ Failed to update post.'),
+      });
     }
   }
+  
 
   deletePost(postId: number): void {
     if (confirm('🗑 Are you sure you want to delete this post?')) {
