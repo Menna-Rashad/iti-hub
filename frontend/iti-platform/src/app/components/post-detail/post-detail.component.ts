@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { VoteService } from '../../services/vote.service';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommentService } from '../../services/comments.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-detail',
@@ -29,8 +30,8 @@ import { MatInputModule } from '@angular/material/input';
 export class PostDetailComponent implements OnInit {
   post: any;
   newComment = '';
-  currentUserId: number = 0; // ✅ مضاف علشان نعرف مين صاحب البوست
-  canEdit = false; // ✅ لتحديد هل المستخدم يقدر يعدل البوست
+  currentUserId: number = 0;
+  canEdit = false;
 
   constructor(
     private commentService: CommentService,
@@ -41,12 +42,15 @@ export class PostDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.currentUserId = user.id;
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const id = this.route.snapshot.paramMap.get('id');
+        if (id) this.loadPost(id);
+      });
 
-    this.route.params.subscribe(params => {
-      this.loadPost(params['id']);
-    });
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) this.loadPost(id);
   }
 
   loadPost(id: string) {
@@ -74,8 +78,6 @@ export class PostDetailComponent implements OnInit {
   handleVote(target: 'post' | 'comment', id: string, type: 'upvote' | 'downvote') {
     this.voteService.handleVote(target, id, type).subscribe({
       next: (response: any) => {
-        console.log('Vote response:', response);
-
         if (target === 'post') {
           this.post.upvotes = response.new_counts.upvotes;
           this.post.downvotes = response.new_counts.downvotes;
@@ -86,30 +88,29 @@ export class PostDetailComponent implements OnInit {
             comment.downvotes = response.new_counts.downvotes;
           }
         }
-
-        this.loadPost(this.post.id); 
+        this.loadPost(this.post.id);
       },
       error: (err) => console.error(err)
     });
   }
 
   goToEdit() {
-    this.router.navigate(['/edit-post', this.post.id]); 
+    this.router.navigate(['/posts/edit', this.post.id]);
   }
+
   isImage(file: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
   }
-  
+
   isVideo(file: string): boolean {
     return /\.(mp4|webm|ogg)$/i.test(file);
   }
-  
+
   isAudio(file: string): boolean {
     return /\.(mp3|wav|ogg)$/i.test(file);
   }
-  
+
   isDocument(file: string): boolean {
     return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
-  
 }
