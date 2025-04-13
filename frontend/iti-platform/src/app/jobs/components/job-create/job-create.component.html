@@ -1,0 +1,71 @@
+<div class="job-create-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Create New Job Listing</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" class="job-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Job Title</mat-label>
+          <input matInput [(ngModel)]="jobData.title" name="title" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Company Name</mat-label>
+          <input matInput [(ngModel)]="jobData.company_name" name="company_name" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Location</mat-label>
+          <input matInput [(ngModel)]="jobData.location" name="location" required>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Job Type</mat-label>
+            <mat-select [(ngModel)]="jobData.job_type" name="job_type" required>
+              <mat-option *ngFor="let type of jobTypes" [value]="type.value">
+                {{type.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Job State</mat-label>
+            <mat-select [(ngModel)]="jobData.job_state" name="job_state" required>
+              <mat-option *ngFor="let state of jobStates" [value]="state.value">
+                {{state.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Salary Range</mat-label>
+          <input matInput [(ngModel)]="jobData.salary_range" name="salary_range" placeholder="e.g. $1000-$2000" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Apply Link</mat-label>
+          <input matInput [(ngModel)]="jobData.apply_link" name="apply_link" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Job Description</mat-label>
+          <textarea matInput [(ngModel)]="jobData.description" name="description" required rows="4"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Requirements</mat-label>
+          <textarea matInput [(ngModel)]="jobData.requirements" name="requirements" required rows="4"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit">Create Job</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+  

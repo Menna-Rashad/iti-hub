@@ -9,6 +9,7 @@ export interface Job {
   requirements: string;
   salary_range?: string;
   apply_link: string;
+  is_available?: boolean;
   created_at: string;
   user_id: number;
   votes_count: number;

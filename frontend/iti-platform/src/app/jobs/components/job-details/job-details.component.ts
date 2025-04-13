@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatChipsModule } from '@angular/material/chips';
 import { JobHeaderComponent } from '../job-header/job-header.component';
 import { CommentListComponent } from '../../../shared/components/comment-list/comment-list.component';
 import { CommentFormComponent } from '../../../shared/components/comment-form/comment-form.component';
@@ -13,16 +15,18 @@ import { CommentService } from '../../../services/comments.service';
 import { Job } from '../../models/job.model';
 import { Comment } from '../../../shared/models/comment.model';
 
+
 @Component({
   selector: 'app-job-details',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
+    MatChipsModule,
     JobHeaderComponent,
     CommentListComponent,
     CommentFormComponent
@@ -33,11 +37,13 @@ import { Comment } from '../../../shared/models/comment.model';
 export class JobDetailsComponent implements OnInit {
   job: Job | null = null;
   loading = true;
+  error: string | null = null;
   comments: Comment[] = [];
   commentsLoading = true;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private jobService: JobService,
     private commentService: CommentService
   ) {}
@@ -47,6 +53,8 @@ export class JobDetailsComponent implements OnInit {
     if (jobId) {
       this.loadJobDetails(+jobId);
       this.loadComments(+jobId);
+    } else {
+      this.router.navigate(['/jobs']);
     }
   }
 
@@ -57,7 +65,8 @@ export class JobDetailsComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading job:', error);
+        console.error('Error loading job details:', error);
+        this.error = 'Failed to load job details';
         this.loading = false;
       }
     });
@@ -78,5 +87,15 @@ export class JobDetailsComponent implements OnInit {
 
   onCommentAdded(comment: Comment): void {
     this.comments = [comment, ...this.comments];
+  }
+
+  getJobTypeLabel(type: string): string {
+    return type === 'full-time' ? 'Full Time' :
+           type === 'part-time' ? 'Part Time' : 'Internship';
+  }
+
+  getJobStateLabel(state: string): string {
+    return state === 'remote' ? 'Remote' :
+           state === 'on-site' ? 'On Site' : 'Hybrid';
   }
 } 

@@ -1,0 +1,59 @@
+.job-create-container {
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+mat-card {
+  padding: 24px;
+}
+
+mat-card-header {
+  margin-bottom: 24px;
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+
+  mat-card {
+    padding: 16px;
+  }
+}

@@ -1,32 +1,77 @@
-<div *ngIf="loading" class="loading-container">
-  <mat-spinner></mat-spinner>
+<div class="job-details-container">
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else if (error) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" routerLink="/jobs">Back to Jobs</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  } @else if (job) {
+    <mat-card class="job-details-card">
+      <mat-card-header>
+        <mat-card-title>{{ job.title }}</mat-card-title>
+        <mat-card-subtitle>{{ job.company_name }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="job-meta">
+          <div class="chip-like-list">
+            <span class="chip-like primary">{{ getJobTypeLabel(job.job_type) }}</span>
+            <span class="chip-like accent">{{ getJobStateLabel(job.job_state) }}</span>
+            @if (job.salary_range) {
+              <span class="chip-like">{{ job.salary_range }}</span>
+            }
+          </div>
+          <div class="location">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ job.location }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="job-content">
+          <h3>Job Description</h3>
+          <p>{{ job.description }}</p>
+
+          <h3>Requirements</h3>
+          <p>{{ job.requirements }}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="job-actions">
+          <a mat-raised-button color="primary" [href]="job.apply_link" target="_blank">
+            <mat-icon>open_in_new</mat-icon>
+            Apply Now
+          </a>
+          <button mat-stroked-button routerLink="/jobs">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Jobs
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="comments-section">
+      <h2>Comments</h2>
+      <app-comment-form
+        [commentableType]="'Job'"
+        [commentableId]="job.id"
+        (commentAdded)="onCommentAdded($event)"
+      ></app-comment-form>
+
+      <app-comment-list
+        [comments]="comments"
+        [loading]="commentsLoading"
+      ></app-comment-list>
+    </div>
+  }
 </div>
-
-<div *ngIf="!loading && job; else notFound">
-  <mat-card class="job-details-card">
-    <!-- باقي تفاصيل الوظيفة -->
-  </mat-card>
-
-  <div class="comments-section">
-    <h2>Comments</h2>
-    <app-comment-form
-      [commentableType]="'Job'"
-      [commentableId]="job.id"
-      (commentAdded)="onCommentAdded($event)"
-    ></app-comment-form>
-
-    <app-comment-list
-      [comments]="comments"
-      [loading]="commentsLoading"
-    ></app-comment-list>
-  </div>
-</div>
-
-<ng-template #notFound>
-  <div class="error-container">
-    <mat-icon class="error-icon">error_outline</mat-icon>
-    <h2>Job not found</h2>
-    <p>The job you're looking for doesn't exist or has been removed.</p>
-    <button mat-button routerLink="/jobs">Back to Jobs</button>
-  </div>
-</ng-template>
