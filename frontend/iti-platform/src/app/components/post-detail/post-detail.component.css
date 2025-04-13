@@ -35,19 +35,19 @@
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #007bff;
+    border: 2px solid #9b1e2f; /* اللون الأحمر الداكن */
 }
 
 .post-title {
-    font-size: 24px;
+    font-size: 28px;  /* تكبير حجم اسم المستخدم */
     font-weight: 600;
     color: #333;
     margin-bottom: 10px;
 }
 
 .post-meta {
-    font-size: 14px;
-    color: #777;
+    font-size: 10px;  /* تصغير حجم التاريخ */
+    color: #888;
 }
 
 .post-content {
@@ -69,7 +69,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #880e4f;
+    background-color: #9C2A2F; /* اللون الأحمر */
     color: white;
     padding: 10px;
     border-radius: 6px;
@@ -77,7 +77,7 @@
 }
 
 .vote-section button:hover {
-    background-color: #6a0c3d;
+    background-color: #7C2327; /* اللون الداكن عند التمرير */
 }
 
 .vote-section button:disabled {
@@ -99,7 +99,7 @@
 }
 
 .comment-form button {
-    background-color: #007bff;
+    background-color: #9C2A2F;
     color: white;
     padding: 8px 15px;
     border-radius: 6px;
@@ -107,7 +107,7 @@
 }
 
 .comment-form button:hover {
-    background-color: #005f8c;
+    background-color: #7C2327;
 }
 
 .comment-card {
@@ -115,7 +115,7 @@
     padding: 12px;
     background: #ffffff;
     border-radius: 10px;
-    border-left: 5px solid #007bff;
+    border-left: 5px solid #9C2A2F; /* نفس اللون الأحمر */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.3s ease;
 }
@@ -181,7 +181,7 @@
 }
 
 .comment-form input:focus {
-    border-color: #007bff;
+    border-color: #9C2A2F;
     outline: none;
 }
 
@@ -193,7 +193,7 @@ button:hover {
 
 /* Links and Text Styles */
 .author-link {
-    color: #007bff;
+    color: #9C2A2F;
     text-decoration: none;
     font-weight: bold;
 }
@@ -201,52 +201,77 @@ button:hover {
 .author-link:hover {
     text-decoration: underline;
 }
+
 .more-options {
     position: absolute;
     right: 10px;
     top: 10px;
     z-index: 10;
-  }
+}
 
 /* زر نسخ رابط البوست */
 .copy-button {
-    background-color: #376aad; /* اللون الأخضر الزاهي */
+    background-color: #9C2A2F;
     color: white;
-    margin-top: 20px; /* مسافة أعلى */
+    margin-top: 20px;
     border-radius: 8px;
-    padding: 10px 20px; /* حواف أعرض ومسافة داخلية أكبر */
+    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* المسافة بين الأيقونة والنص */
+    gap: 10px;
     font-weight: bold;
     font-size: 14px;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* تأثيرات التحويم */
+    transition: background-color 0.3s ease, transform 0.2s ease;
     width: auto;
     cursor: pointer;
 }
 
-/* عند التحويم على الزر */
 .copy-button:hover {
-    background-color: #1f4d91; /* تغيير اللون عند التحويم */
-    transform: scale(1.05); /* تكبير الزر قليلاً */
+    background-color: #7C2327;
+    transform: scale(1.05);
 }
 
-/* عند تعطيل الزر */
 .copy-button:disabled {
-    opacity: 0.6; /* تقليل الشفافية عند تعطيله */
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* تنسيق الأيقونة داخل الزر */
 .copy-button mat-icon {
-    font-size: 18px; /* تكبير الأيقونة قليلاً */
+    font-size: 18px;
 }
 
-/* تعديل المسافة بين الأزرار */
 .vote-section {
     display: flex;
     align-items: center;
     gap: 15px;
     margin-top: 15px;
+}
+
+.follow-btn {
+    background-color: transparent;
+    color: #9C2A2F;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.follow-btn:hover {
+    color: #7C2327;
+}
+
+.follow-btn:focus {
+    outline: none;
+}
+
+.follow-btn:disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
 }
