@@ -18,14 +18,8 @@ class AuthController extends Controller
         'national_id' => 'required|digits:14|unique:users,national_id',
         'linkedin' => 'nullable|url',
         'github' => 'nullable|url',
-        'profilePicture'=> 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        
     ]);
-
-    // معالجة صورة البروفايل لو موجودة
-    $profilePath = null;
-    if ($request->hasFile('profilePicture')) {
-        $profilePath = $request->file('profilePicture')->store('profile_pictures', 'public');
-    }
     
     $user = User::create([
         'name'            => $request->name,
@@ -35,7 +29,7 @@ class AuthController extends Controller
         'role'            => 'user',
         'linkedin'        => $request->linkedin,
         'github'          => $request->github,
-        'profile_picture' => $profilePath ? basename($profilePath) : null,
+       
     ]);
     
 
