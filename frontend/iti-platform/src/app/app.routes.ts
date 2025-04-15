@@ -12,30 +12,35 @@ import { EditPostComponent } from './components/edit-post/edit-post.component';
 import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.component';
 import { MentorGuard } from './auth/mentor.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { MainContentComponent } from './main-content/main-content.component'; // Import MainContentComponent
+import { MainContentComponent } from './main-content/main-content.component';
 import { OpenProjectListComponent } from './components/open-project-list/open-project-list.component';
 import { EditProjectComponent } from './components/edit-project.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ChangePasswordComponent } from './auth/change-password/change-password.component';
 
 export const routes: Routes = [
   // ✅ Auth Routes
   { path: 'register', component: RegisterComponent, title: 'Register' },
   { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'forgot-password', component: ResetPasswordComponent, title: 'Forgot Password' },
+  { path: 'reset-password', component: ChangePasswordComponent, title: 'Reset Password' },
 
   // ✅ Profile
   { path: 'profile/edit', component: ProfileComponent, title: 'Edit Profile' },
   {
     path: 'profile',
-    loadComponent: () => import('./pages/profile-view/profile-view.component').then(m => m.ProfileViewComponent),
+    loadComponent: () =>
+      import('./pages/profile-view/profile-view.component').then(m => m.ProfileViewComponent),
     title: 'Profile'
   },
 
   // ✅ Main Pages
   {
     path: '',
-    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
+    loadComponent: () =>
+      import('./pages/home/home.component').then(m => m.HomeComponent),
     title: 'Home',
   },
-
   { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
   { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
 
@@ -46,7 +51,6 @@ export const routes: Routes = [
     title: 'Mentor Dashboard'
   },
 
-  // ✅ Main Content Route (After login)
   { path: 'main-content', component: MainContentComponent, canActivate: [AuthGuard], title: 'Main Content' },
 
   // ✅ Forum / Posts
@@ -54,37 +58,33 @@ export const routes: Routes = [
   { path: 'posts/create', component: CreatePostComponent },
   { path: 'posts/:id', component: PostDetailComponent },
   { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
+
+  // ✅ Open Projects
   {
     path: 'open-projects',
-    loadComponent: () => import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent)
+    loadComponent: () =>
+      import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent)
   },
   {
-    path: 'edit-post/:id',
-    loadComponent: () => import('./components/edit-post/edit-post.component').then(m => m.EditPostComponent)
-  }
-  ,
-  {
     path: 'open-projects/add',
-    loadComponent: () => import('./components/add-project/add-project.component').then(m => m.AddProjectComponent),
+    loadComponent: () =>
+      import('./components/add-project/add-project.component').then(m => m.AddProjectComponent),
     title: 'Add Project',
   },
   {
     path: 'open-projects/edit/:id',
-    loadComponent: () => import('./components/edit-project.component').then(m => m.EditProjectComponent),
+    loadComponent: () =>
+      import('./components/edit-project.component').then(m => m.EditProjectComponent),
     title: 'Edit Project'
   },
   {
     path: 'open-projects/:id',
     loadComponent: () =>
-      import('./components/project-detail/project-detail.component').then(
-        (m) => m.ProjectDetailComponent
-      ),
+      import('./components/project-detail/project-detail.component').then(m => m.ProjectDetailComponent),
     title: 'Project Details'
   },
   { path: 'open-projects/edit/:id', component: EditProjectComponent, canActivate: [AuthGuard] },
 
-  
   // ✅ Fallback
-  { path: '**', redirectTo: '', pathMatch: 'full' },
- 
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
