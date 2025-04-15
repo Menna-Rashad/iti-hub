@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -29,7 +30,9 @@ Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
 
-
+//reset password routes
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 // ==========================
 // 🔹 Protected Routes (Require Sanctum Authentication)
 // ==========================
