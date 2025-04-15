@@ -17,9 +17,11 @@
           <div class="col-md-7">
             <div class="card-body p-4">
               <form [formGroup]="registrationForm" (ngSubmit)="handleSubmitForm()" novalidate>
-                <!-- Full Name -->
+                <!-- Full Name (Required) -->
                 <div class="mb-3">
-                  <label for="name" class="form-label">Full Name</label>
+                  <label for="name" class="form-label">
+                    Full Name <span class="text-danger">*</span>
+                  </label>
                   <input
                     type="text"
                     id="name"
@@ -34,9 +36,11 @@
                   </div>
                 </div>
   
-                <!-- Email with Icon -->
+                <!-- Email with Icon (Required) -->
                 <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
+                  <label for="email" class="form-label">
+                    Email <span class="text-danger">*</span>
+                  </label>
                   <div class="input-group">
                     <span class="input-group-text bg-transparent">
                       <i class="fas fa-envelope"></i>
@@ -56,9 +60,11 @@
                   </div>
                 </div>
   
-                <!-- Password -->
+                <!-- Password (Required) -->
                 <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
+                  <label for="password" class="form-label">
+                    Password <span class="text-danger">*</span>
+                  </label>
                   <div class="input-group">
                     <input
                       type="password"
@@ -75,9 +81,11 @@
                   </div>
                 </div>
   
-                <!-- Confirm Password -->
+                <!-- Confirm Password (Required) -->
                 <div class="mb-3">
-                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <label for="confirmPassword" class="form-label">
+                    Confirm Password <span class="text-danger">*</span>
+                  </label>
                   <input
                     type="password"
                     id="confirmPassword"
@@ -92,9 +100,11 @@
                   </div>
                 </div>
   
-                <!-- National ID -->
+                <!-- National ID (Required) -->
                 <div class="mb-3">
-                  <label for="national_id" class="form-label">National ID</label>
+                  <label for="national_id" class="form-label">
+                    National ID <span class="text-danger">*</span>
+                  </label>
                   <input
                     type="text"
                     id="national_id"
@@ -109,7 +119,7 @@
                   </div>
                 </div>
   
-                <!-- LinkedIn with Icon -->
+                <!-- LinkedIn with Icon (Optional) -->
                 <div class="mb-3">
                   <label for="linkedin" class="form-label">LinkedIn</label>
                   <div class="input-group">
@@ -129,7 +139,7 @@
                   </div>
                 </div>
   
-                <!-- GitHub with Icon -->
+                <!-- GitHub with Icon (Optional) -->
                 <div class="mb-3">
                   <label for="github" class="form-label">GitHub</label>
                   <div class="input-group">
@@ -149,17 +159,6 @@
                   </div>
                 </div>
   
-                <!-- Profile Picture -->
-                <div class="mb-3">
-                  <label for="profilePicture" class="form-label">Profile Picture</label>
-                  <input
-                    type="file"
-                    id="profilePicture"
-                    (change)="onFileSelected($event)"
-                    accept="image/*"
-                    class="form-control enhanced-file-input"
-                  />
-                </div>
   
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100 enhanced-btn">
