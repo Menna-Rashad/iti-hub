@@ -1,9 +1,8 @@
 <div class="login-container">
-  <div class="login-container">
-    <!-- Logo -->
-    <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo" />
-  
-    <h2>Login</h2>
+  <!-- Logo -->
+  <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo" />
+
+  <h2>Login</h2>
 
   <!-- ✅ Success Message -->
   <div *ngIf="successMessage" class="alert alert-success">
@@ -53,14 +52,15 @@
       <span *ngIf="!isLoading">Login</span>
     </button>
   </form>
-<!-- 🌐 OR Login with Google -->
-<div class="social-login">
-  <p>or continue with</p>
-  <button class="google-btn" (click)="loginWithGoogle()">
-    <img src="assets/google-icon.png" alt="Google" />
-    <span>Continue with Google</span>
-  </button>
-</div>
+
+  <!-- 🌐 OR Login with Google -->
+  <div class="social-login">
+    <p>or continue with</p>
+    <button class="google-btn" (click)="loginWithGoogle()">
+      <img src="assets/google-icon.png" alt="Google" />
+      <span>Continue with Google</span>
+    </button>
+  </div>
 
   <!-- 🔁 Forgot Password Link -->
   <div class="forgot-password">
