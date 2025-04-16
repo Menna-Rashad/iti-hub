@@ -22,6 +22,9 @@ import { AppComponent } from './app.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     PostListComponent,
     PostDetailComponent,
     PostDetailComponent,
+    UserDashboardComponent, 
   ],
   imports: [
     BrowserAnimationsModule,
@@ -45,6 +49,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
+    MatListModule,
+  MatProgressBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
