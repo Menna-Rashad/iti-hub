@@ -12,7 +12,11 @@ class TicketReply extends Model
         'message',
         'attachments',
     ];
-
+    
+    protected $casts = [
+        'attachments' => 'array',
+    ];
+    
     public function ticket()
     {
         return $this->belongsTo(SupportTicket::class, 'support_ticket_id');
