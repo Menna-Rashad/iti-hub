@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\TaskController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -45,6 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //profile page route
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile/update', [ProfileController::class, 'update']);
+
+    // ✅ Dashboard Route
+    Route::get('/user/dashboard', [UserDashboardController::class, 'index']);
+
     // ==========================
     // 🔵 Mentor Dashboard Route (Only accessible by mentors)
     // ==========================
@@ -108,23 +114,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/vote', [VoteController::class, 'handleVote']);
     });
     Route::get('/categories', [CategoryController::class, 'index']);
-// ========================== 
-// 🔰 Top Contributors 
-// ==========================
-Route::prefix('top-contributors')->group(function () {
-    Route::post('/assign-initial-badge/{userId}', [TopContributorsController::class, 'assignInitialBadge']);
-    Route::post('/assign-post-badge/{userId}', [TopContributorsController::class, 'assignPostBadge']);
-    Route::post('/assign-engagement-badge/{userId}', [TopContributorsController::class, 'assignEngagementBadge']);
-    Route::post('/assign-activity-badge/{userId}', [TopContributorsController::class, 'assignActivityBadge']);
-    Route::post('/assign-achievement-badge/{userId}', [TopContributorsController::class, 'assignAchievementBadge']);
-    Route::post('/assign-mentorship-points/{userId}', [TopContributorsController::class, 'assignMentorshipPoints']);
-    Route::get('/all-users-scores', [TopContributorsController::class, 'getAllUsersWithScores']);
+    // ========================== 
+    // 🔰 Top Contributors 
+    // ==========================
+    Route::prefix('top-contributors')->group(function () {
+        Route::post('/assign-initial-badge/{userId}', [TopContributorsController::class, 'assignInitialBadge']);
+        Route::post('/assign-post-badge/{userId}', [TopContributorsController::class, 'assignPostBadge']);
+        Route::post('/assign-engagement-badge/{userId}', [TopContributorsController::class, 'assignEngagementBadge']);
+        Route::post('/assign-activity-badge/{userId}', [TopContributorsController::class, 'assignActivityBadge']);
+        Route::post('/assign-achievement-badge/{userId}', [TopContributorsController::class, 'assignAchievementBadge']);
+        Route::post('/assign-mentorship-points/{userId}', [TopContributorsController::class, 'assignMentorshipPoints']);
+        Route::get('/all-users-scores', [TopContributorsController::class, 'getAllUsersWithScores']);
 
 
-    // ✅ GET Endpoints for displaying user's badges and score
-    Route::get('/badges/{userId}', [TopContributorsController::class, 'getUserBadges']);
-    Route::get('/score/{userId}', [TopContributorsController::class, 'getUserScore']);
-});
+        // ✅ GET Endpoints for displaying user's badges and score
+        Route::get('/badges/{userId}', [TopContributorsController::class, 'getUserBadges']);
+        Route::get('/score/{userId}', [TopContributorsController::class, 'getUserScore']);
+    });
+    Route::prefix('tasks')->controller(TaskController::class)->group(function () {
+        Route::get('/', 'index');           // GET /api/tasks
+        Route::post('/', 'store');          // POST /api/tasks
+        Route::put('/{id}', 'update');      // PUT /api/tasks/{id}
+        Route::delete('/{id}', 'destroy');  // DELETE /api/tasks/{id}
+    });
+
 
     // ==========================
     // 🔴 Admin Dashboard (Protected)
@@ -142,9 +155,9 @@ Route::prefix('top-contributors')->group(function () {
         ]);
     });
 });
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/open-projects', [OpenProjectController::class, 'index']);
-        Route::post('/open-projects', [OpenProjectController::class, 'store']);
-        Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
-        Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/open-projects', [OpenProjectController::class, 'index']);
+    Route::post('/open-projects', [OpenProjectController::class, 'store']);
+    Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
+    Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
 });
