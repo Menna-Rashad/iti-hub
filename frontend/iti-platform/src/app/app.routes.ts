@@ -17,6 +17,7 @@ import { OpenProjectListComponent } from './components/open-project-list/open-pr
 import { EditProjectComponent } from './components/edit-project.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { ChangePasswordComponent } from './auth/change-password/change-password.component';
+import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
 
 export const routes: Routes = [
   // ✅ Auth Routes
@@ -43,6 +44,8 @@ export const routes: Routes = [
   },
   { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
   { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
+  //user dashborad
+  { path: 'user/dashboard', component: UserDashboardComponent ,title: 'user Dashboard'},
 
   {
     path: 'mentor/dashboard',
