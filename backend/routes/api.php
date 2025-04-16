@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\TicketReplyController;
+use App\Http\Controllers\SupportTicketReplyController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -150,7 +152,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/support-tickets', [SupportTicketController::class, 'index']);
     Route::post('/support-tickets', [SupportTicketController::class, 'store']);
     Route::get('/support-tickets/{id}', [SupportTicketController::class, 'show']);
+    // Route::post('/support-tickets/{id}/replies', [TicketReplyController::class, 'store']);
+    // Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
+
 });
+Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
+
 // Route::post('/test-ticket', function (Request $request) {
 //     return response()->json([
 //         'user_id' => Auth::id(),
