@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SupportTicketController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -145,3 +146,15 @@ Route::prefix('top-contributors')->group(function () {
         Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
         Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
 });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/support-tickets', [SupportTicketController::class, 'index']);
+    Route::post('/support-tickets', [SupportTicketController::class, 'store']);
+    Route::get('/support-tickets/{id}', [SupportTicketController::class, 'show']);
+});
+// Route::post('/test-ticket', function (Request $request) {
+//     return response()->json([
+//         'user_id' => Auth::id(),
+//         'data' => $request->all()
+//     ]);
+// });
+
