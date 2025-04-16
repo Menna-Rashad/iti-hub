@@ -57,7 +57,7 @@ export class SidebarComponent {
     this.router.navigate(['/forum']); 
   }    
   navigateToDashboard(): void {
-    this.router.navigate(['/dashboard']); // تأكد من مسار التنقل الصحيح
+    this.router.navigate(['/user/dashboard']); // تأكد من مسار التنقل الصحيح
   }
   
   navigateToChat(): void {
