@@ -1,0 +1,51 @@
+<div class="dashboard-wrapper" *ngIf="dashboardData">
+  <div class="welcome-box">
+    <h2>👋 Welcome, {{ dashboardData.user.name }}</h2>
+    <p>Level: <strong>{{ dashboardData.user.level }}</strong></p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="dashboard-card">
+      <h3>🎯 Mentorship Progress</h3>
+      <p>{{ dashboardData.mentorship.completed }} of {{ dashboardData.mentorship.total }} completed</p>
+      <div class="progress-bar">
+        <div class="progress-fill"
+             [style.width.%]="(dashboardData.mentorship.completed / dashboardData.mentorship.total) * 100"></div>
+      </div>
+    </div>
+
+    <div class="dashboard-card">
+      <h3>📝 Posts & 💬 Comments</h3>
+      <p>Posts: {{ dashboardData.posts.posts }}</p>
+      <p>Comments: {{ dashboardData.posts.comments }}</p>
+    </div>
+
+    <div class="dashboard-card">
+      <h3>✅ To-Do List</h3>
+      <form (submit)="addTask()" class="todo-form">
+        <input [(ngModel)]="newTask" placeholder="Add new task..." name="taskInput" />
+        <button mat-icon-button type="submit">
+          <mat-icon>add</mat-icon>
+        </button>
+      </form>
+      <ul class="todo-list">
+        <li *ngFor="let task of dashboardData.tasks" [ngClass]="task.status">
+          <mat-icon (click)="toggleTask(task)">{{ task.icon }}</mat-icon>
+
+          <!-- Show task title with dynamic class based on status -->
+          <span *ngIf="!task.isEditing" [ngClass]="task.status">{{ task.title }}</span>
+
+          <!-- Editing mode -->
+          <input *ngIf="task.isEditing" [(ngModel)]="task.title" class="edit-input" name="editTask" />
+
+          <button mat-icon-button (click)="task.isEditing ? saveTask(task) : task.isEditing = true" class="edit-btn">
+            <mat-icon>{{ task.isEditing ? 'save' : 'edit' }}</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteTask(task)" class="icon-btn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
