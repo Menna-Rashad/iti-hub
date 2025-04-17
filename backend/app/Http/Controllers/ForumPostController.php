@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use App\Models\Comment;
 use App\Models\Vote;
 use App\Models\User;
 use App\Models\Badge;
+
 
 class ForumPostController extends Controller
 {
@@ -84,11 +86,11 @@ class ForumPostController extends Controller
 
     public function update(Request $request, $id)
 {
-    \Log::info('Update request:', $request->all());
-    \Log::info('✔️ title: ' . $request->input('title'));
-    \Log::info('✔️ content: ' . $request->input('content'));
-    \Log::info('✔️ tags: ' . $request->input('tags'));
-    \Log::info('✔️ category_id: ' . $request->input('category_id'));
+    Log::info('Update request:', $request->all());
+    Log::info('✔️ title: ' . $request->input('title'));
+    Log::info('✔️ content: ' . $request->input('content'));
+    Log::info('✔️ tags: ' . $request->input('tags'));
+    Log::info('✔️ category_id: ' . $request->input('category_id'));
     
     $post = ForumPost::findOrFail($id);
     $this->authorize('update', $post);
