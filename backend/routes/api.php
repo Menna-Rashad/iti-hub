@@ -19,6 +19,7 @@ use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TicketReplyController;
 use App\Http\Controllers\SupportTicketReplyController;
 use App\Http\Controllers\Admin\TicketReplyAdminController;
+use App\Http\Controllers\TicketNotificationController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -172,6 +173,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+
 // Route::post('/admin/support-tickets/{id}/reply', [TicketReplyAdminController::class, 'store']);
 // Route::middleware(['auth:sanctum', 'admin'])->post('/test-admin', function () {
 //     return response()->json(['test' => true]);
