@@ -53,13 +53,36 @@ class SupportTicketController extends Controller
 
     public function show($id)
     {
-        $ticket = SupportTicket::with('replies')->findOrFail($id);
-
-        if ((int) $ticket->user_id !== (int) Auth::id()) {
-
+        $ticket = SupportTicket::with(['replies'])->findOrFail($id);
+    
+        if (Auth::user()->role !== 'admin' && $ticket->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-
-        return $ticket;
+    
+        $ticket->replies->each(function ($reply) {
+            if ($reply->attachments) {
+                $reply->attachments = collect($reply->attachments)->map(function ($file) {
+                    return asset('storage/' . $file);
+                });
+            }
+        });
+    
+        return response()->json($ticket);
     }
+    public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:open,review,closed',
+    ]);
+
+    $ticket = SupportTicket::findOrFail($id);
+    $ticket->status = $request->status;
+    $ticket->save();
+
+    return response()->json([
+        'message' => 'Ticket status updated successfully.',
+        'ticket' => $ticket,
+    ]);
+}
+
 }
