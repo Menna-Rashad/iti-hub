@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupportTicket;
 use App\Models\TicketReply;
+use App\Models\TicketNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -11,47 +12,53 @@ use Illuminate\Support\Facades\Storage;
 class SupportTicketReplyController extends Controller
 {
     public function index($id)
-{
-    $ticket = SupportTicket::findOrFail($id);
+    {
+        $ticket = SupportTicket::findOrFail($id);
 
-    $replies = $ticket->replies()->orderBy('created_at')->get();
+        $replies = $ticket->replies()->orderBy('created_at')->get();
 
-    return response()->json([
-        'ticket_id' => $ticket->id,
-        'replies' => $replies
-    ]);
-}
+        return response()->json([
+            'ticket_id' => $ticket->id,
+            'replies' => $replies
+        ]);
+    }
 
     public function store(Request $request, $id)
     {
-        // ✅ هنا ما بنمنعش الأدمن، لأن المستخدم هو اللي هيستخدم الدالة دي
         $ticket = SupportTicket::findOrFail($id);
-    
+
         $request->validate([
             'message' => 'nullable|string',
             'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,txt,doc,docx|max:20480',
         ]);
-    
+
         $paths = [];
         $files = $request->file('attachments');
-    
+
         if ($files) {
             if (!is_array($files)) {
                 $files = [$files]; 
             }
-    
+
             foreach ($files as $file) {
                 $paths[] = $file->store('ticket_attachments', 'public');
             }
         }
-    
+
         $reply = TicketReply::create([
             'support_ticket_id' => $ticket->id,
             'sender_type' => 'user',
             'message' => $request->input('message'),
             'attachments' => $paths,
         ]);
-    
+
+        // ✅ Create notification for ticket owner
+        TicketNotification::create([
+            'user_id' => $ticket->user_id,
+            'support_ticket_id' => $ticket->id,
+            'message' => '📬 تم الرد على تذكرتك',
+        ]);
+
         return response()->json([
             'message' => 'Reply added successfully',
             'reply' => $reply
@@ -59,81 +66,88 @@ class SupportTicketReplyController extends Controller
     }
 
     public function adminReply(Request $request, $id)
-{
-    \Log::info('adminReply CALLED!');
-\Log::info('User:', ['user' => Auth::user()]);
-    logger('adminReply called');
-    \Log::info('Admin Reply Triggered');
-\Log::info('Auth Role: ' . Auth::user()->role);
-\Log::info('Request Data:', $request->all());
+    {
+        \Log::info('adminReply CALLED!');
+        \Log::info('User:', ['user' => Auth::user()]);
+        logger('adminReply called');
+        \Log::info('Admin Reply Triggered');
+        \Log::info('Auth Role: ' . Auth::user()->role);
+        \Log::info('Request Data:', $request->all());
 
-    if (Auth::user()->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized'], 403);
-    }
-
-    $ticket = SupportTicket::findOrFail($id);
-
-    $request->validate([
-        'message' => 'nullable|string',
-        'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,txt,doc,docx|max:20480',
-    ]);
-
-    $paths = [];
-    $files = $request->file('attachments');
-
-    if ($files) {
-        if (!is_array($files)) {
-            $files = [$files]; 
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        foreach ($files as $file) {
-            $paths[] = $file->store('ticket_attachments', 'public');
+        $ticket = SupportTicket::findOrFail($id);
+
+        $request->validate([
+            'message' => 'nullable|string',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,txt,doc,docx|max:20480',
+        ]);
+
+        $paths = [];
+        $files = $request->file('attachments');
+
+        if ($files) {
+            if (!is_array($files)) {
+                $files = [$files]; 
+            }
+
+            foreach ($files as $file) {
+                $paths[] = $file->store('ticket_attachments', 'public');
+            }
         }
+
+        $reply = TicketReply::create([
+            'support_ticket_id' => $ticket->id,
+            'sender_type' => 'admin',
+            'message' => $request->input('message'),
+            'attachments' => $paths,
+        ]);
+
+        // ✅ Create notification for ticket owner
+        TicketNotification::create([
+            'user_id' => $ticket->user_id,
+            'support_ticket_id' => $ticket->id,
+            'message' => '📬 تم الرد على تذكرتك',
+        ]);
+
+        return response()->json([
+            'message' => 'Admin reply added successfully',
+            'reply' => $reply
+        ], 201);
     }
 
-    $reply = TicketReply::create([
-        'support_ticket_id' => $ticket->id,
-        'sender_type' => 'admin',
-        'message' => $request->input('message'),
-        'attachments' => $paths,
-    ]);
+    public function destroy($id)
+    {
+        $user = Auth::user();
 
-    return response()->json([
-        'message' => 'Admin reply added successfully',
-        'reply' => $reply
-    ], 201);
-}
-public function destroy($id)
-{
-    $user = Auth::user();
-
-    if (!$user || $user->role !== 'admin') {
-        return response()->json(['message' => 'Unauthorized'], 403);
-    }
-
-    $reply = TicketReply::findOrFail($id);
-
-    if (is_array($reply->attachments)) {
-        foreach ($reply->attachments as $path) {
-            \Storage::disk('public')->delete($path);
+        if (!$user || $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
+
+        $reply = TicketReply::findOrFail($id);
+
+        if (is_array($reply->attachments)) {
+            foreach ($reply->attachments as $path) {
+                \Storage::disk('public')->delete($path);
+            }
+        }
+
+        $reply->delete();
+
+        return response()->json(['message' => 'Reply deleted successfully.']);
     }
 
-    $reply->delete();
+    public function getReplies($id)
+    {
+        $ticket = SupportTicket::findOrFail($id);
 
-    return response()->json(['message' => 'Reply deleted successfully.']);
-}
+        $replies = $ticket->replies()->latest()->get();
 
-public function getReplies($id)
-{
-    $ticket = SupportTicket::findOrFail($id);
-    
-    $replies = $ticket->replies()->latest()->get();
-
-    return response()->json([
-        'ticket_id' => $ticket->id,
-        'replies' => $replies
-    ]);
-}
-
+        return response()->json([
+            'ticket_id' => $ticket->id,
+            'replies' => $replies
+        ]);
+    }
 }
