@@ -76,9 +76,13 @@ class User extends Authenticatable
         return $this->hasMany(Badge::class);
     }
 
-    // علاقة الـ User مع الـ Points
     public function points()
     {
         return $this->hasOne(Points::class);
     }
+    public function ticketNotifications()
+{
+    return $this->hasMany(TicketNotification::class);
+}
+
 }
