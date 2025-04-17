@@ -124,5 +124,16 @@ public function destroy($id)
     return response()->json(['message' => 'Reply deleted successfully.']);
 }
 
+public function getReplies($id)
+{
+    $ticket = SupportTicket::findOrFail($id);
+    
+    $replies = $ticket->replies()->latest()->get();
+
+    return response()->json([
+        'ticket_id' => $ticket->id,
+        'replies' => $replies
+    ]);
+}
 
 }
