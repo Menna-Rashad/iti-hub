@@ -15,9 +15,17 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TopContributorsController;
 use App\Http\Controllers\OpenProjectController;
 use App\Http\Controllers\CategoryController;
+
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\TicketReplyController;
+use App\Http\Controllers\SupportTicketReplyController;
+use App\Http\Controllers\Admin\TicketReplyAdminController;
+use App\Http\Controllers\TicketNotificationController;
+
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\TaskController;
+
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -40,9 +48,10 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 // ==========================
 Route::middleware('auth:sanctum')->group(function () {
 
-    // ✅ Authentication Routes
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'getUser']);
+// ✅ Authentication Routes
+Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/user', [AuthController::class, 'getUser']);
+
 
     //profile page route
     Route::get('/profile', [ProfileController::class, 'show']);
@@ -50,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ✅ Dashboard Route
     Route::get('/user/dashboard', [UserDashboardController::class, 'index']);
+
 
     // ==========================
     // 🔵 Mentor Dashboard Route (Only accessible by mentors)
@@ -142,22 +152,65 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==========================
     // 🔴 Admin Dashboard (Protected)
     // ==========================
-    Route::get('/admin/dashboard', function () {
-        $user = Auth::user();
+// ✅ Admin Dashboard - Protected Route
+Route::get('/admin/dashboard', function () {
+    $user = Auth::user();
 
-        if (!$user || $user->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized - You are not an admin'], 403);
-        }
+    if (!$user || $user->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized - You are not an admin'], 403);
+    }
 
-        return response()->json([
-            'message' => 'Welcome to the Admin Dashboard!',
-            'users' => User::all()
-        ]);
-    });
+    return response()->json([
+        'message' => 'Welcome to the Admin Dashboard!',
+        'users' => User::all()
+    ]);
+});
+
+Route::middleware(['auth:sanctum'])->delete('/support-ticket-replies/{id}', [\App\Http\Controllers\SupportTicketReplyController::class, 'destroy']);
+Route::get('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'getReplies']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/support-tickets/{id}/replies', [\App\Http\Controllers\SupportTicketReplyController::class, 'index']);
+});
+
+
+Route::middleware('auth:sanctum')->put('/support-tickets/{id}/status', [\App\Http\Controllers\SupportTicketController::class, 'updateStatus']);
+
+// ✅ Admin Routes Group using 'adminRole' middleware
+Route::middleware('auth:sanctum')->post('/admin/support-tickets/{id}/reply', [SupportTicketReplyController::class, 'adminReply']);
+
+Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/open-projects', [OpenProjectController::class, 'index']);
+        Route::post('/open-projects', [OpenProjectController::class, 'store']);
+        Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
+        Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
+
 });
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/open-projects', [OpenProjectController::class, 'index']);
-    Route::post('/open-projects', [OpenProjectController::class, 'store']);
-    Route::put('/open-projects/{id}', [OpenProjectController::class, 'update']);
-    Route::delete('/open-projects/{id}', [OpenProjectController::class, 'destroy']);
+    Route::get('/support-tickets', [SupportTicketController::class, 'index']);
+    Route::post('/support-tickets', [SupportTicketController::class, 'store']);
+    Route::get('/support-tickets/{id}', [SupportTicketController::class, 'show']);
+    // Route::post('/support-tickets/{id}/replies', [TicketReplyController::class, 'store']);
+    // Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
+
 });
+Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
+// Route::middleware('auth:sanctum')->get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+    Route::put('/ticket-notifications/{id}/read', [TicketNotificationController::class, 'markAsRead']);
+    Route::put('/ticket-notifications/read-all', [TicketNotificationController::class, 'markAllAsRead']);
+    Route::get('/ticket-notifications/unread-count', [TicketNotificationController::class, 'countUnread']);
+});
+
+// Route::post('/admin/support-tickets/{id}/reply', [TicketReplyAdminController::class, 'store']);
+// Route::middleware(['auth:sanctum', 'admin'])->post('/test-admin', function () {
+//     return response()->json(['test' => true]);
+// });
+
+// Route::post('/test-ticket', function (Request $request) {
+//     return response()->json([
+//         'user_id' => Auth::id(),
+//         'data' => $request->all()
+//     ]);
+// });
+
