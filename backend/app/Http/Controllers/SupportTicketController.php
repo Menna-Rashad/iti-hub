@@ -53,7 +53,7 @@ class SupportTicketController extends Controller
 
     public function show($id)
     {
-        $ticket = SupportTicket::with(['replies'])->findOrFail($id);
+        $ticket = SupportTicket::with('replies')->findOrFail($id);
     
         if (Auth::user()->role !== 'admin' && $ticket->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -67,8 +67,12 @@ class SupportTicketController extends Controller
             }
         });
     
-        return response()->json($ticket);
+        return response()->json([
+            'ticket' => $ticket,
+            'replies' => $ticket->replies
+        ]);
     }
+    
     public function updateStatus(Request $request, $id)
 {
     $request->validate([
