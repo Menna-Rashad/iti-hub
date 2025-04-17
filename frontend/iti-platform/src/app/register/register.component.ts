@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent {
   registrationForm: FormGroup;
-  selectedFile: File | null = null;
 
   constructor(private registrationService: RegistrationService, private router: Router) {
     this.registrationForm = new FormGroup({
@@ -28,8 +27,7 @@ export class RegisterComponent {
       confirmPassword: new FormControl('', [Validators.required]),
       national_id: new FormControl('', [Validators.required, Validators.pattern(/^\d{14}$/)]),
       linkedin: new FormControl('', [Validators.pattern(/^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/)]),
-      github: new FormControl('', [Validators.pattern(/^(https?:\/\/)?(www\.)?github\.com\/.*$/)]),
-      profilePicture: new FormControl(null)
+      github: new FormControl('', [Validators.pattern(/^(https?:\/\/)?(www\.)?github\.com\/.*$/)])
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -43,17 +41,6 @@ export class RegisterComponent {
     return this.registrationForm.controls;
   }
 
-  onFileSelected(event: Event) {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      this.selectedFile = fileInput.files[0];
-      this.registrationForm.patchValue({
-        profilePicture: this.selectedFile
-      });
-      this.registrationForm.get('profilePicture')?.updateValueAndValidity();
-    }
-  }
-
   async handleSubmitForm() {
     if (this.registrationForm.invalid) {
       this.registrationForm.markAllAsTouched();
@@ -61,10 +48,8 @@ export class RegisterComponent {
     }
 
     const formValues = this.registrationForm.value;
-    const registrationData: RegistrationData = {
-      ...formValues,
-      profilePicture: this.selectedFile
-    };
+    // RegistrationData now does not contain profilePicture
+    const registrationData: RegistrationData = { ...formValues };
 
     try {
       const response = await this.registrationService.registerUser(registrationData).toPromise();

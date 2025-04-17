@@ -1,111 +1,180 @@
-<div class="container mt-5">
+<div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow-lg border-0 animated-card">
-        <div class="card-header text-white bg-primary text-center py-3">
-          <h3 class="mb-0">Register</h3>
-          <small>Create your account</small>
-        </div>
-        <div class="card-body p-4">
-          <form [formGroup]="registrationForm" (ngSubmit)="handleSubmitForm()" novalidate>
-
-            <!-- Name -->
-            <div class="mb-3">
-              <label for="name" class="form-label">Name</label>
-              <input type="text" id="name" formControlName="name" class="form-control"
-                [class.is-invalid]="FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)" />
-              <div *ngIf="FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)" class="invalid-feedback">
-                <div *ngIf="FormControls['name'].hasError('required')">Name is required.</div>
-                <div *ngIf="FormControls['name'].hasError('minlength')">Name must be at least 3 characters.</div>
-              </div>
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" formControlName="email" class="form-control"
-                [class.is-invalid]="FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)" />
-              <div *ngIf="FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)" class="invalid-feedback">
-                <div *ngIf="FormControls['email'].hasError('required')">Email is required.</div>
-                <div *ngIf="FormControls['email'].hasError('email')">Please enter a valid email address.</div>
-              </div>
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" id="password" formControlName="password" class="form-control"
-                [class.is-invalid]="FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)" />
-              <div *ngIf="FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)" class="invalid-feedback">
-                <div *ngIf="FormControls['password'].hasError('required')">Password is required.</div>
-                <div *ngIf="FormControls['password'].hasError('minlength')">Password must be at least 6 characters.</div>
-              </div>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control"
-                [class.is-invalid]="(FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)" />
-              <div *ngIf="(FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)" class="invalid-feedback">
-                <div *ngIf="FormControls['confirmPassword'].hasError('required')">Confirm password is required.</div>
-                <div *ngIf="registrationForm.hasError('mismatch')">Passwords do not match.</div>
-              </div>
-            </div>
-
-            <!-- National ID -->
-            <div class="mb-3">
-              <label for="national_id" class="form-label">National ID</label>
-              <input type="text" id="national_id" formControlName="national_id" class="form-control"
-                [class.is-invalid]="FormControls['national_id'].invalid && (FormControls['national_id'].dirty || FormControls['national_id'].touched)" />
-              <div *ngIf="FormControls['national_id'].invalid && (FormControls['national_id'].dirty || FormControls['national_id'].touched)" class="invalid-feedback">
-                <div *ngIf="FormControls['national_id'].hasError('required')">National ID is required.</div>
-                <div *ngIf="FormControls['national_id'].hasError('pattern')">National ID must be 14 digits.</div>
-              </div>
-            </div>
-
-            <!-- LinkedIn -->
-            <div class="mb-3">
-              <label for="linkedin" class="form-label">LinkedIn</label>
-              <input type="url" id="linkedin" formControlName="linkedin" class="form-control"
-                [class.is-invalid]="FormControls['linkedin'].invalid && (FormControls['linkedin'].dirty || FormControls['linkedin'].touched)" />
-              <div *ngIf="FormControls['linkedin'].hasError('pattern')" class="invalid-feedback">
-                Please enter a valid LinkedIn URL.
-              </div>
-            </div>
-
-            <!-- GitHub -->
-            <div class="mb-3">
-              <label for="github" class="form-label">GitHub</label>
-              <input type="url" id="github" formControlName="github" class="form-control"
-                [class.is-invalid]="FormControls['github'].invalid && (FormControls['github'].dirty || FormControls['github'].touched)" />
-              <div *ngIf="FormControls['github'].hasError('pattern')" class="invalid-feedback">
-                Please enter a valid GitHub URL.
-              </div>
-            </div>
-
-            <!-- Profile Picture -->
-            <div class="mb-3">
-              <label for="profilePicture" class="form-label">Profile Picture</label>
-              <input
-              type="file"
-              id="profilePicture"
-              (change)="onFileSelected($event)"
-              accept="image/*"
-              class="form-control"
-            />
-            
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
-          </form>
-
-          <!-- Already have an account -->
-          <div class="text-center mt-3">
-            <small>Already have an account? <a routerLink="/login">Login</a></small>
+    <div class="col-lg-8">
+      <div class="card shadow border-0 split-card">
+        <div class="row g-0">
+          <!-- Left Panel: Image with Welcome Message -->
+          <div class="col-md-5 side-panel d-flex flex-column justify-content-center align-items-center text-center p-4">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhO49u8S1UtMLTsY100cZJT0KvogvW_jLMnA&s" 
+                 class="img-fluid mb-3" 
+                 alt="Welcome Image" />
+            <h2 class="text-white mb-3">Welcome!</h2>
+            <p class="text-white">
+              Join our vibrant community and start your journey today.
+            </p>
           </div>
-        </div>
+          <!-- Right Panel: Registration Form -->
+          <div class="col-md-7">
+            <div class="card-body p-4">
+              <form [formGroup]="registrationForm" (ngSubmit)="handleSubmitForm()" novalidate>
+                <!-- Full Name (Required) -->
+                <div class="mb-3">
+                  <label for="name" class="form-label">
+                    Full Name <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    formControlName="name"
+                    class="form-control enhanced-input"
+                    [class.is-invalid]="FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)"
+                  />
+                  <div *ngIf="FormControls['name'].invalid && (FormControls['name'].dirty || FormControls['name'].touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="FormControls['name'].hasError('required')">Name is required.</div>
+                    <div *ngIf="FormControls['name'].hasError('minlength')">Name must be at least 3 characters.</div>
+                  </div>
+                </div>
+  
+                <!-- Email with Icon (Required) -->
+                <div class="mb-3">
+                  <label for="email" class="form-label">
+                    Email <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                    <input
+                      type="email"
+                      id="email"
+                      formControlName="email"
+                      class="form-control enhanced-input"
+                      [class.is-invalid]="FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)"
+                    />
+                  </div>
+                  <div *ngIf="FormControls['email'].invalid && (FormControls['email'].dirty || FormControls['email'].touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="FormControls['email'].hasError('required')">Email is required.</div>
+                    <div *ngIf="FormControls['email'].hasError('email')">Please enter a valid email address.</div>
+                  </div>
+                </div>
+  
+                <!-- Password (Required) -->
+                <div class="mb-3">
+                  <label for="password" class="form-label">
+                    Password <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input
+                      type="password"
+                      id="password"
+                      formControlName="password"
+                      class="form-control enhanced-input"
+                      [class.is-invalid]="FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)"
+                    />
+                  </div>
+                  <div *ngIf="FormControls['password'].invalid && (FormControls['password'].dirty || FormControls['password'].touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="FormControls['password'].hasError('required')">Password is required.</div>
+                    <div *ngIf="FormControls['password'].hasError('minlength')">Password must be at least 6 characters.</div>
+                  </div>
+                </div>
+  
+                <!-- Confirm Password (Required) -->
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">
+                    Confirm Password <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    class="form-control enhanced-input"
+                    [class.is-invalid]="(FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)"
+                  />
+                  <div *ngIf="(FormControls['confirmPassword'].invalid || registrationForm.hasError('mismatch')) && (FormControls['confirmPassword'].dirty || FormControls['confirmPassword'].touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="FormControls['confirmPassword'].hasError('required')">Confirm password is required.</div>
+                    <div *ngIf="registrationForm.hasError('mismatch')">Passwords do not match.</div>
+                  </div>
+                </div>
+  
+                <!-- National ID (Required) -->
+                <div class="mb-3">
+                  <label for="national_id" class="form-label">
+                    National ID <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="national_id"
+                    formControlName="national_id"
+                    class="form-control enhanced-input"
+                    [class.is-invalid]="FormControls['national_id'].invalid && (FormControls['national_id'].dirty || FormControls['national_id'].touched)"
+                  />
+                  <div *ngIf="FormControls['national_id'].invalid && (FormControls['national_id'].dirty || FormControls['national_id'].touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="FormControls['national_id'].hasError('required')">National ID is required.</div>
+                    <div *ngIf="FormControls['national_id'].hasError('pattern')">National ID must be 14 digits.</div>
+                  </div>
+                </div>
+  
+                <!-- LinkedIn with Icon (Optional) -->
+                <div class="mb-3">
+                  <label for="linkedin" class="form-label">LinkedIn</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-linkedin text-white">
+                      <i class="fab fa-linkedin"></i>
+                    </span>
+                    <input
+                      type="url"
+                      id="linkedin"
+                      formControlName="linkedin"
+                      class="form-control enhanced-input"
+                      [class.is-invalid]="FormControls['linkedin'].invalid && (FormControls['linkedin'].dirty || FormControls['linkedin'].touched)"
+                    />
+                  </div>
+                  <div *ngIf="FormControls['linkedin'].hasError('pattern')" class="invalid-feedback">
+                    Please enter a valid LinkedIn URL.
+                  </div>
+                </div>
+  
+                <!-- GitHub with Icon (Optional) -->
+                <div class="mb-3">
+                  <label for="github" class="form-label">GitHub</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-dark text-white">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <input
+                      type="url"
+                      id="github"
+                      formControlName="github"
+                      class="form-control enhanced-input"
+                      [class.is-invalid]="FormControls['github'].invalid && (FormControls['github'].dirty || FormControls['github'].touched)"
+                    />
+                  </div>
+                  <div *ngIf="FormControls['github'].hasError('pattern')" class="invalid-feedback">
+                    Please enter a valid GitHub URL.
+                  </div>
+                </div>
+  
+  
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 enhanced-btn">
+                  Create Account
+                </button>
+              </form>
+              <!-- Login Link -->
+              <div class="text-center mt-3">
+                <small>
+                  Already a member?
+                  <a routerLink="/login" class="login-link">Sign in</a>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div> 
       </div>
     </div>
   </div>

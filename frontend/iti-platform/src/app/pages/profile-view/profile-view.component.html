@@ -1,55 +1,161 @@
-<div class="container py-5">
-  <div class="card shadow-lg border-0">
-    <div class="card-body text-center">
+<!-- Container for the entire page -->
+<div class="d-flex flex-column flex-md-row vh-100">
 
-      <!-- ✅ Profile Picture -->
-      <img
-        *ngIf="previewUrl"
-        [src]="previewUrl"
-        class="rounded-circle shadow"
-        style="width: 120px; height: 120px; object-fit: cover;"
-        alt="Profile Picture"
-      />
-      <h3 class="mt-3">{{ profile?.name }}</h3>
-      <p class="text-muted">{{ profile?.role | titlecase }}</p>
+  <!-- 1) Minimal Left Sidebar -->
+  <aside class="bg-white border-end sidebar d-flex flex-column align-items-center p-3">
+    <!-- Logo / Icon Placeholder -->
+    <div class="mb-5">
+      <div class="sidebar-icon mb-2">
+        <i class="bi bi-grid fs-3"></i>
+      </div>
+    </div>
+    <!-- Nav Icons (placeholders) -->
+    <div class="flex-grow-1 d-flex flex-column gap-4">
+      <a href="#" class="text-decoration-none text-secondary sidebar-item">
+        <i class="bi bi-house-door fs-4"></i>
+      </a>
+      <a href="#" class="text-decoration-none text-secondary sidebar-item">
+        <i class="bi bi-star fs-4"></i>
+      </a>
+      <a href="#" class="text-decoration-none text-secondary sidebar-item">
+        <i class="bi bi-bell fs-4"></i>
+      </a>
+      <a href="#" class="text-decoration-none text-secondary sidebar-item">
+        <i class="bi bi-gear fs-4"></i>
+      </a>
+    </div>
+    <div class="mt-auto">
+      <a href="#" class="text-decoration-none text-secondary sidebar-item">
+        <i class="bi bi-box-arrow-left fs-4"></i>
+      </a>
+    </div>
+  </aside>
 
-      <hr />
+  <!-- 2) Main Content (Top Bar + Profile Card) -->
+  <div class="flex-fill d-flex flex-column">
 
-      <!-- ✅ Info Section -->
-      <div class="row justify-content-center text-start">
-        <div class="col-md-6">
+    <!-- Top Bar -->
+    <nav class="top-bar d-flex align-items-center justify-content-between px-4 py-3">
+      <div>
+        <h5 class="mb-0 fw-normal topbar-heading">Welcome, {{ profile?.name || '—' }}</h5>
+        <small class="topbar-date">June 2023</small>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <!-- Search Box -->
+        <div class="input-group search-box">
+          <span class="input-group-text bg-transparent border-end-0">
+            <i class="bi bi-search text-muted"></i>
+          </span>
+          <!-- (Optional search input can be added here) -->
+        </div>
+        <!-- User Avatar Placeholder -->
+        <div class="user-avatar bg-light d-flex align-items-center justify-content-center rounded-circle">
+          <i class="bi bi-person-fill fs-5 text-secondary"></i>
+        </div>
+      </div>
+    </nav>
 
-          <p><strong>Email:</strong> {{ profile?.email }}</p>
-          <p><strong>National ID:</strong> {{ profile?.national_id }}</p>
+    <!-- 3) Main Profile Card Container -->
+    <div class="flex-fill overflow-auto bg-light p-4">
 
-          <p *ngIf="profile?.linkedin">
-            <strong>LinkedIn:</strong>
-            <a [href]="profile.linkedin" target="_blank" rel="noopener">
-              {{ profile.linkedin }}
-            </a>
-          </p>
+      <div class="container-fluid">
+        <div class="card shadow-sm border-0 profile-card">
 
-          <p *ngIf="profile?.github">
-            <strong>GitHub:</strong>
-            <a [href]="profile.github" target="_blank" rel="noopener">
-              {{ profile.github }}
-            </a>
-          </p>
+          <!-- Subtle Gradient Header -->
+          <div class="card-header gradient-header p-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <!-- Profile Picture (or fallback icon) -->
+              <img
+                *ngIf="profile?.pictureUrl || previewUrl"
+                [src]="previewUrl || profile?.pictureUrl"
+                alt="Profile"
+                class="rounded-circle border border-2 border-white"
+                style="width: 60px; height: 60px; object-fit: cover;"
+              />
+              <div>
+                <h6 class="text-white mb-0">
+                  {{ profile?.name || 'Full Name' }}
+                </h6>
+                <small class="text-white">
+                  {{ profile?.email || 'Email Address' }}
+                </small>
+              </div>
+            </div>
+            <!-- Edit Button -->
+            <button class="btn btn-light btn-sm" [routerLink]="['/profile/edit']">
+              <i class="bi bi-pencil-fill me-1"></i> Edit
+            </button>
+          </div>
 
-          <p *ngIf="profile?.bio">
-            <strong>Bio:</strong> {{ profile.bio }}
-          </p>
+          <!-- Two-Column Form Layout -->
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <!-- Full Name -->
+                <div>
+                  <label class="fw-semibold mb-1">Full Name</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.name || '—' }}
+                  </div>
+                </div>
+                <!-- Nick Name (maps to national_id) -->
+                <div class="mt-3">
+                  <label class="fw-semibold mb-1">Nick Name</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.national_id || '—' }}
+                  </div>
+                </div>
+                <!-- Gender (maps to role) -->
+                <div class="mt-3">
+                  <label class="fw-semibold mb-1">Gender</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.role || '—' }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <!-- Country (maps to linkedin) -->
+                <div>
+                  <label class="fw-semibold mb-1">Country</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.linkedin || '—' }}
+                  </div>
+                </div>
+                <!-- Language (maps to bio) -->
+                <div class="mt-3">
+                  <label class="fw-semibold mb-1">Language</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.bio || '—' }}
+                  </div>
+                </div>
+                <!-- Time Zone (maps to github) -->
+                <div class="mt-3">
+                  <label class="fw-semibold mb-1">Time Zone</label>
+                  <div class="form-control-plaintext border p-2 rounded">
+                    {{ profile?.github || '—' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- My Email Address -->
+            <div class="mt-4">
+              <label class="fw-semibold mb-1">My email address</label>
+              <div class="form-control-plaintext border p-2 rounded">
+                {{ profile?.email || '—' }}
+              </div>
+              <button class="btn btn-outline-primary btn-sm mt-2">
+                + Add more emails
+              </button>
+            </div>
+          </div>
 
         </div>
       </div>
 
-      <!-- ✅ Edit Button -->
-      <div class="mt-4">
-        <button class="btn btn-primary" [routerLink]="['/profile/edit']">
-          <i class="bi bi-pencil-fill me-1"></i> Edit Profile
-        </button>
-      </div>
+    </div> <!-- /flex-fill overflow-auto -->
 
-    </div>
-  </div>
+  </div> <!-- /Main content col -->
+
 </div>
