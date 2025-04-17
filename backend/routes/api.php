@@ -147,7 +147,7 @@ Route::get('/admin/dashboard', function () {
 });
 
 Route::middleware(['auth:sanctum'])->delete('/support-ticket-replies/{id}', [\App\Http\Controllers\SupportTicketReplyController::class, 'destroy']);
-
+Route::get('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'getReplies']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/support-tickets/{id}/replies', [\App\Http\Controllers\SupportTicketReplyController::class, 'index']);
 });
