@@ -8,10 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class SupportTicketController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return SupportTicket::where('user_id', Auth::id())->latest()->get();
+        $query = SupportTicket::with('user');
+    
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+    
+        $tickets = $query->latest()->get();
+    
+        return response()->json([
+            'tickets' => $tickets
+        ]);
     }
+    
 
     public function store(Request $request)
     {
