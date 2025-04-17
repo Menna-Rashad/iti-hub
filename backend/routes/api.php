@@ -173,7 +173,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 Route::post('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'store']);
-Route::middleware('auth:sanctum')->get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+// Route::middleware('auth:sanctum')->get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/ticket-notifications', [TicketNotificationController::class, 'index']);
+    Route::put('/ticket-notifications/{id}/read', [TicketNotificationController::class, 'markAsRead']);
+    Route::put('/ticket-notifications/read-all', [TicketNotificationController::class, 'markAllAsRead']);
+    Route::get('/ticket-notifications/unread-count', [TicketNotificationController::class, 'countUnread']);
+});
 
 // Route::post('/admin/support-tickets/{id}/reply', [TicketReplyAdminController::class, 'store']);
 // Route::middleware(['auth:sanctum', 'admin'])->post('/test-admin', function () {
