@@ -3,8 +3,8 @@ import { JobService } from '../services/job.service';
 
 @Component({
   selector: 'app-job',
-  templateUrl: './job.component.html',
-  styleUrls: ['./job.component.css'],
+  templateUrl: './jobs.component.html',
+  styleUrls: ['./jobs.component.css'],
 })
 export class JobComponent implements OnInit {
   jobs: any[] = [];

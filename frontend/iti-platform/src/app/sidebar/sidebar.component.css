@@ -218,3 +218,43 @@ mat-badge {
     opacity: 1;
   }
 }
+.layout-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 240px;
+  background: #1f1f1f;
+  color: white;
+  padding-top: 1rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.profile-area {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.mat-icon {
+  margin-right: 8px;
+}
+
+a.mat-list-item {
+  color: white;
+  font-weight: 500;
+  transition: background 0.2s ease-in-out;
+}
+
+a.mat-list-item:hover {
+  background-color: #333;
+}
+
+.active-link {
+  background-color: #6200ea;
+}
