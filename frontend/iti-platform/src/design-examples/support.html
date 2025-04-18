@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITIHub - Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #901B20;
+      --primary-dark: #6B1418;
+      --secondary: #F3F4F6;
+      --background: #FFFFFF;
+      --background-alt: #F7F7F7;
+      --text-primary: #1F2A44;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --error: #DC2626;
+      --border: #D1D5DB;
+      --border-light: #E5E7EB;
+      --font-family: 'Inter', Arial, sans-serif;
+      --font-size-base: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-xs: 0.75rem;
+      --font-size-h1: 2rem;
+      --font-size-h2: 1.5rem;
+      --font-size-h3: 1.25rem;
+      --font-weight-light: 300;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --line-height-base: 1.5;
+      --line-height-heading: 1.2;
+      --letter-spacing-heading: 0.02em;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --border-radius-sm: 4px;
+      --border-radius-md: 8px;
+      --border-width: 1px;
+      --border-width-focus: 2px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-duration: 200ms;
+      --transition-easing: ease-in-out;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-family); font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--text-primary); background-color: var(--background); }
+    h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h2 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h3 { font-size: var(--font-size-h3); font-weight: var(--font-weight-medium); line-height: var(--line-height-heading); margin-bottom: var(--space-sm); }
+    p { margin-bottom: var(--space-md); }
+    small { font-size: var(--font-size-sm); color: var(--text-secondary); }
+    a { color: var(--primary); text-decoration: none; transition: color var(--transition-duration) var(--transition-easing); }
+    a:hover { color: var(--primary-dark); text-decoration: underline; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-base); font-weight: var(--font-weight-medium); border-radius: var(--border-radius-md); border: none; cursor: pointer; transition: background-color var(--transition-duration) var(--transition-easing), color var(--transition-duration) var(--transition-easing), transform var(--transition-duration) var(--transition-easing); }
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
+    .btn-outline { background-color: transparent; border: var(--border-width) solid var(--border); color: var(--text-primary); }
+    .btn-outline:hover { background-color: var(--background-alt); border-color: var(--primary); color: var(--primary); }
+    input, textarea { width: 100%; padding: var(--space-sm); font-size: var(--font-size-base); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--background); transition: border-color var(--transition-duration) var(--transition-easing); }
+    input:focus, textarea:focus { outline: none; border: var(--border-width-focus) solid var(--primary); }
+    .card { background-color: var(--background); border: var(--border-width) solid var(--border-light); border-radius: var(--border-radius-md); box-shadow: var(--shadow-md); padding: var(--space-md); transition: box-shadow var(--transition-duration) var(--transition-easing); }
+    .card:hover { box-shadow: var(--shadow-lg); }
+    .nav { background-color: var(--secondary); padding: var(--space-md); position: sticky; top: 0; z-index: 1000; }
+    .nav a { color: var(--text-primary); font-weight: var(--font-weight-medium); padding: var(--space-sm); border-radius: var(--border-radius-sm); }
+    .nav a:hover { background-color: rgba(144, 27, 32, 0.1); color: var(--primary); text-decoration: none; }
+    .alert { padding: var(--space-md); border-radius: var(--border-radius-md); margin-bottom: var(--space-md); }
+    .alert-success { background-color: var(--success); color: #FFFFFF; }
+    .m-0 { margin: 0; }
+    .mt-3 { margin-top: var(--space-md); }
+    .p-3 { padding: var(--space-md); }
+    .text-center { text-align: center; }
+    .text-sm { font-size: var(--font-size-sm); }
+    .accordion { cursor: pointer; }
+    .accordion-content { display: none; }
+    .accordion.active .accordion-content { display: block; }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      h3 { font-size: 1rem; }
+      .btn { padding: var(--space-xs) var(--space-sm); }
+      .card { padding: var(--space-sm); }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input, textarea { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="color: var(--primary); font-size: 1.5rem; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);">ITIHub</h1>
+      <div style="display: flex; gap: 1rem;">
+        <a href="home.html">Home</a>
+        <a href="tracks.html">Tracks</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+        <a href="support.html">Support</a>
+      </div>
+      <input type="text" placeholder="Search FAQs..." style="max-width: 200px;" aria-label="Search">
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section style="background-color: var(--background-alt); padding: var(--space-2xl) var(--space-md); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h1>Get Support</h1>
+      <p>Find answers to your questions or contact our team for help.</p>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faqs" style="padding: var(--space-2xl) var(--space-md);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="text-center">Frequently Asked Questions</h2>
+      <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+        <div class="card accordion">
+          <h3>How do I apply for ITI?</h3>
+          <div class="accordion-content">
+            <p class="text-sm">Follow the roadmap: register, upload documents, take exams, attend interviews, and await acceptance.</p>
+          </div>
+        </div>
+        <div class="card accordion">
+          <h3>What exams are required?</h3>
+          <div class="accordion-content">
+            <p class="text-sm">You’ll take an IQ test, English test, and track-specific technical test.</p>
+          </div>
+        </div>
+        <div class="card accordion">
+          <h3>Can I change my track?</h3>
+          <div class="accordion-content">
+            <p class="text-sm">Yes, before interviews, you can request a track change via your ITI account.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form -->
+  <section id="contact" style="padding: var(--space-2xl) var(--space-md); background-color: var(--background-alt);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="text-center">Contact Us</h2>
+      <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <input type="text" placeholder="Name" aria-label="Name">
+        <input type="email" placeholder="Email" aria-label="Email" style="margin-top: var(--space-sm);">
+        <textarea rows="5" placeholder="Your Question" aria-label="Question" style="margin-top: var(--space-sm);"></textarea>
+        <button class="btn btn-primary mt-3">Submit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Chat (Mock) -->
+  <button class="btn btn-primary" style="position: fixed; bottom: var(--space-2xl); right: var(--space-md);" onclick="alert('Live chat coming soon!')">Open Chat</button>
+
+  <!-- Footer -->
+  <footer style="background-color: var(--secondary); color: var(--text-primary); padding: var(--space-lg); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="text-sm">© 2025 ITIHub. All rights reserved.</p>
+      <div style="margin-top: var(--space-sm);">
+        <a href="#faqs" style="color: var(--text-primary); margin: 0 var(--space-sm);">FAQs</a>
+        <a href="#contact" style="color: var(--text-primary); margin: 0 var(--space-sm);">Contact</a>
+        <a href="#social" style="color: var(--text-primary); margin: 0 var(--space-sm);">Follow Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Feedback Button -->
+  <button class="btn btn-outline" style="position: fixed; bottom: var(--space-md); right: var(--space-md);" onclick="alert('Feedback form coming soon!')">Feedback</button>
+
+  <script>
+    document.querySelectorAll('.accordion').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITIHub - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #901B20; /* ITI Red */
+      --primary-dark: #6B1418;
+      --secondary: #F3F4F6; /* Light Gray, replacing dark gray */
+      --background: #FFFFFF;
+      --background-alt: #F7F7F7;
+      --text-primary: #1F2A44;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --error: #DC2626;
+      --border: #D1D5DB;
+      --border-light: #E5E7EB;
+      --font-family: 'Inter', Arial, sans-serif;
+      --font-size-base: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-xs: 0.75rem;
+      --font-size-h1: 2rem;
+      --font-size-h2: 1.5rem;
+      --font-size-h3: 1.25rem;
+      --font-weight-light: 300;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --line-height-base: 1.5;
+      --line-height-heading: 1.2;
+      --letter-spacing-heading: 0.02em;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --border-radius-sm: 4px;
+      --border-radius-md: 8px;
+      --border-width: 1px;
+      --border-width-focus: 2px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-duration: 200ms;
+      --transition-easing: ease-in-out;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-family); font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--text-primary); background-color: var(--background); }
+    h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h2 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h3 { font-size: var(--font-size-h3); font-weight: var(--font-weight-medium); line-height: var(--line-height-heading); margin-bottom: var(--space-sm); }
+    p { margin-bottom: var(--space-md); }
+    small { font-size: var(--font-size-sm); color: var(--text-secondary); }
+    a { color: var(--primary); text-decoration: none; transition: color var(--transition-duration) var(--transition-easing); }
+    a:hover { color: var(--primary-dark); text-decoration: underline; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-base); font-weight: var(--font-weight-medium); border-radius: var(--border-radius-md); border: none; cursor: pointer; transition: background-color var(--transition-duration) var(--transition-easing), color var(--transition-duration) var(--transition-easing), transform var(--transition-duration) var(--transition-easing); }
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
+    .btn-outline { background-color: transparent; border: var(--border-width) solid var(--border); color: var(--text-primary); }
+    .btn-outline:hover { background-color: var(--background-alt); border-color: var(--primary); color: var(--primary); }
+    input { width: 100%; padding: var(--space-sm); font-size: var(--font-size-base); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--background); transition: border-color var(--transition-duration) var(--transition-easing); }
+    input:focus { outline: none; border: var(--border-width-focus) solid var(--primary); }
+    .card { background-color: var(--background); border: var(--border-width) solid var(--border-light); border-radius: var(--border-radius-md); box-shadow: var(--shadow-md); padding: var(--space-md); transition: box-shadow var(--transition-duration) var(--transition-easing); }
+    .card:hover { box-shadow: var(--shadow-lg); }
+    .nav { background-color: var(--secondary); padding: var(--space-md); position: sticky; top: 0; z-index: 1000; }
+    .nav a { color: var(--text-primary); font-weight: var(--font-weight-medium); padding: var(--space-sm); border-radius: var(--border-radius-sm); }
+    .nav a:hover { background-color: rgba(144, 27, 32, 0.1); color: var(--primary); text-decoration: none; }
+    .alert { padding: var(--space-md); border-radius: var(--border-radius-md); margin-bottom: var(--space-md); }
+    .alert-success { background-color: var(--success); color: #FFFFFF; }
+    .m-0 { margin: 0; }
+    .mt-3 { margin-top: var(--space-md); }
+    .p-3 { padding: var(--space-md); }
+    .text-center { text-align: center; }
+    .text-sm { font-size: var(--font-size-sm); }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: Viterbi Mono, monospace1.25rem; }
+      h3 { font-size: 1rem; }
+      .btn { padding: var(--space-xs) var(--space-sm); }
+      .card { padding: var(--space-sm); }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="color: var(--primary); font-size: 1.5rem; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);">ITIHub</h1>
+      <div style="display: flex; gap: 1rem;">
+        <a href="#home">Home</a>
+        <a href="#tracks">Tracks</a>
+        <a href="#resources">Resources</a>
+        <a href="#community">Community</a>
+        <a href="#support">Support</a>
+      </div>
+      <input type="text" placeholder="Search FAQs..." style="max-width: 200px;" aria-label="Search">
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section style="background-color: var(--background-alt); padding: var(--space-2xl) var(--space-md); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h1>Your Guide to ITI Scholarships</h1>
+      <p>Navigate the ITI application process with ease. Find resources, connect with peers, and prepare confidently.</p>
+      <a href="#roadmap" class="btn btn-primary mt-3">Get Started</a>
+    </div>
+  </section>
+
+  <!-- Application Roadmap -->
+  <section id="roadmap" style="padding: var(--space-2xl) var(--space-md);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="text-center">Application Roadmap</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: space-between;">
+        <div class="card" style="flex: 1; min-width: 180px; max-width: 220px; text-align: center;">
+          <h3>Register</h3>
+          <p class="text-sm">Create your ITI account</p>
+          <a href="#" class="btn btn-primary">Learn More</a>
+        </div>
+        <div class="card" style="flex: 1; min-width: 180px; max-width: 220px; text-align: center;">
+          <h3>Upload Documents</h3>
+          <p class="text-sm">Submit required files</p>
+          <a href="#" class="btn btn-primary">Learn More</a>
+        </div>
+        <div class="card" style="flex: 1; min-width: 180px; max-width: 220px; text-align: center;">
+          <h3>Exams</h3>
+          <p class="text-sm">Take IQ, English, and technical tests</p>
+          <a href="#" class="btn btn-primary">Learn More</a>
+        </div>
+        <div class="card" style="flex: 1; min-width: 180px; max-width: 220px; text-align: center;">
+          <h3>Interviews</h3>
+          <p class="text-sm">Attend technical and final interviews</p>
+          <a href="#" class="btn btn-primary">Learn More</a>
+        </div>
+        <div class="card" style="flex: 1; min-width: 180px; max-width: 220px; text-align: center;">
+          <h3>Acceptance</h3>
+          <p class="text-sm">Receive your acceptance letter</p>
+          <a href="#" class="btn btn-primary">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track Popularity (Chart Placeholder) -->
+  <section style="padding: var(--space-2xl) var(--space-md);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="text-center">Track Popularity</h2>
+      <p class="text-center text-sm" style="color: var(--primary);">Fun Fact: Full Stack is the most applied track, but Cybersecurity has the highest acceptance rate!</p>
+      <div style="height: 400px; background-color: var(--background-alt); border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; margin-top: var(--space-md);">
+        <p>[Chart Placeholder: Bar chart showing track applications, styled with ITI red]</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links -->
+  <section style="background-color: var(--background-alt); padding: var(--space-2xl) var(--space-md);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="text-center">Explore ITIHub</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-md);">
+        <div class="card">
+          <h3>Tracks</h3>
+          <p class="text-sm">Explore ITI tracks like Full Stack, AI, and Cybersecurity.</p>
+          <a href="#tracks" class="btn btn-primary">Browse Tracks</a>
+        </div>
+        <div class="card">
+          <h3>Resources</h3>
+          <p class="text-sm">Access study materials for exams and interviews.</p>
+          <a href="#resources" class="btn btn-primary">Find Resources</a>
+        </div>
+        <div class="card">
+          <h3>Community</h3>
+          <p class="text-sm">Connect with peers and alumni for advice.</p>
+          <a href="#community" class="btn btn-primary">Join Community</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background-color: var(--secondary); color: var(--text-primary); padding: var(--space-lg); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="text-sm">© 2025 ITIHub. All rights reserved.</p>
+      <div style="margin-top: var(--space-sm);">
+        <a href="#faqs" style="color: var(--text-primary); margin: 0 var(--space-sm);">FAQs</a>
+        <a href="#contact" style="color: var(--text-primary); margin: 0 var(--space-sm);">Contact</a>
+        <a href="#social" style="color: var(--text-primary); margin: 0 var(--space-sm);">Follow Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Feedback Button -->
+  <button class="btn btn-outline" style="position: fixed; bottom: var(--space-md); right: var(--space-md);" onclick="alert('Feedback form coming soon!')">Feedback</button>
+
+  <!-- Onboarding Modal (Mock) -->
+  <div id="onboarding-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
+    <div class="card" style="max-width: 500px; text-align: center;">
+      <h3>Welcome to ITIHub!</h3>
+      <p class="text-sm">Explore the roadmap, browse tracks, and join our community to ace your ITI application.</p>
+      <button class="btn btn-primary mt-3" onclick="document.getElementById('onboarding-modal').style.display='none'">Start Tour</button>
+      <button class="btn btn-outline mt-3" onclick="document.getElementById('onboarding-modal').style.display='none'">Skip</button>
+    </div>
+  </div>
+
+  <script>
+    // Mock onboarding modal display (to be handled in Angular)
+    window.onload = () => {
+      if (!localStorage.getItem('onboardingSeen')) {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+        localStorage.setItem('onboardingSeen', 'true');
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* .icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    fill: red;
+    stroke: red;
+    vertical-align: middle;
+  }
+   */
+  /* button.mat-menu-item:hover .icon {
+    fill: red;
+  } */
+  
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    stroke: currentColor; /* علشان تبقى ماشية مع اللون التلقائي */
+  }
+  
