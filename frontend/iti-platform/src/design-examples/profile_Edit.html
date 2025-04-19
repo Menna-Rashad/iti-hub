@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - ITIHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #901B20;
+      --primary-dark: #6B1418;
+      --secondary: #F3F4F6;
+      --background: #FFFFFF;
+      --background-alt: #F7F7F7;
+      --text-primary: #1F2A44;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --error: #DC2626;
+      --border: #D1D5DB;
+      --border-light: #E5E7EB;
+      --google-blue: #4285F4;
+      --font-family: 'Inter', Arial, sans-serif;
+      --font-size-base: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-xs: 0.75rem;
+      --font-size-h1: 2rem;
+      --font-size-h2: 1.5rem;
+      --font-size-h3: 1.25rem;
+      --font-weight-light: 300;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --line-height-base: 1.5;
+      --line-height-heading: 1.2;
+      --letter-spacing-heading: 0.02em;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --border-radius-sm: 4px;
+      --border-radius-md: 8px;
+      --border-width: 1px;
+      --border-width-focus: 2px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-duration: 200ms;
+      --transition-easing: ease-in-out;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-family); font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--text-primary); background-color: var(--background); }
+    h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h2 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h3 { font-size: var(--font-size-h3); font-weight: var(--font-weight-medium); line-height: var(--line-height-heading); margin-bottom: var(--space-sm); }
+    p { margin-bottom: var(--space-md); }
+    small { font-size: var(--font-size-sm); color: var(--text-secondary); }
+    a { color: var(--primary); text-decoration: none; transition: color var(--transition-duration) var(--transition-easing); }
+    a:hover { color: var(--primary-dark); text-decoration: underline; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-base); font-weight: var(--font-weight-medium); border-radius: 6px; border: none; cursor: pointer; transition: background-color var(--transition-duration) var(--transition-easing), color var(--transition-duration) var(--transition-easing), transform var(--transition-duration) var(--transition-easing), box-shadow var(--transition-duration) var(--transition-easing); }
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .btn-outline { background-color: transparent; border: var(--border-width) solid var(--border); color: var(--text-primary); }
+    .btn-outline:hover { background-color: var(--background-alt); border-color: var(--primary); color: var(--primary); transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    input { width: 100%; padding: var(--space-sm); font-size: var(--font-size-base); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-md); background-color: var(--background); color: var(--text-primary); transition: border-color var(--transition-duration) var(--transition-easing), box-shadow var(--transition-duration) var(--transition-easing); }
+    input:focus { outline: none; border: var(--border-width-focus) solid var(--primary); box-shadow: 0 0 0 3px rgba(144, 27, 32, 0.1); }
+    input[readonly] { background-color: var(--background-alt); cursor: not-allowed; }
+    .nav input { padding: var(--space-sm); font-size: var(--font-size-sm); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--background); color: var(--text-primary); max-width: 200px; }
+    .nav input:focus { outline: none; border: var(--border-width-focus) solid var(--primary); box-shadow: 0 0 0 3px rgba(144, 27, 32, 0.1); }
+    .profile-picture-group { display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md); }
+    .profile-picture-group img { width: 80px; height: 80px; border-radius: 50%; border: var(--border-width) solid var(--border); object-fit: cover; }
+    .profile-picture-group input[type="file"] { display: none; }
+    .profile-picture-group .btn-outline { font-size: var(--font-size-sm); }
+    .name-group { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md); }
+    .name-group input { flex: 1; }
+    .instructor-verified {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background-color: var(--success);
+      color: #FFFFFF;
+      border-radius: 50%;
+      font-size: 10px;
+      line-height: 1;
+    }
+    .checkbox-group { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+    .checkbox-group input[type="checkbox"] { width: 1.25rem; height: 1.25rem; border: var(--border-width) solid var(--border); border-radius: var(--border-radius-sm); cursor: pointer; }
+    .checkbox-group input[type="checkbox"]:focus { outline: none; border: var(--border-width-focus) solid var(--primary); box-shadow: 0 0 0 3px rgba(144, 27, 32, 0.1); }
+    .checkbox-group label { font-size: var(--font-size-base); color: var(--text-primary); cursor: pointer; }
+    .card { background-color: var(--background); border: var(--border-width) solid var(--border-light); border-radius: var(--border-radius-md); box-shadow: var(--shadow-md); padding: var(--space-md); transition: box-shadow var(--transition-duration) var(--transition-easing); }
+    .card:hover { box-shadow: var(--shadow-lg); }
+    .nav { background-color: var(--secondary); padding: var(--space-md); position: sticky; top: 0; z-index: 1000; }
+    .nav a { color: var(--text-primary); font-weight: var(--font-weight-medium); padding: var(--space-sm); border-radius: var(--border-radius-sm); }
+    .nav a:hover { background-color: rgba(144, 27, 32, 0.1); color: var(--primary); text-decoration: none; }
+    .alert { padding: var(--space-md); border-radius: var(--border-radius-md); margin-bottom: var(--space-md); }
+    .alert-success { background-color: var(--success); color: #FFFFFF; }
+    .m-0 { margin: 0; }
+    .mt-3 { margin-top: var(--space-md); }
+    .p-3 { padding: var(--space-md); }
+    .text-center { text-align: center; }
+    .text-sm { font-size: var(--font-size-sm); }
+    .accordion { cursor: pointer; padding: var(--space-sm) var(--space-md); border-radius: var(--border-radius-sm); }
+    .accordion-content { display: none; }
+    .accordion.active .accordion-content { display: block; }
+
+    /* Profile-specific styles */
+    .profile-section { padding: var(--space-2xl) var(--space-md); background-color: var(--background-alt); }
+    .profile-form, .settings-form { display: flex; flex-direction: column; gap: var(--space-md); }
+
+    /* Media Queries */
+    @media (max-width: 480px) {
+      .profile-section { padding: var(--space-lg) var(--space-md); }
+      .card { padding: var(--space-sm); }
+      .profile-form input, .settings-form input, .profile-form button, .settings-form button { font-size: var(--font-size-sm); }
+      .btn-primary, .btn-outline { padding: var(--space-xs) var(--space-sm); }
+      h1 { font-size: 1.5rem; }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input { max-width: 100%; }
+      .profile-picture-group img { width: 60px; height: 60px; }
+      .instructor-verified { width: 14px; height: 14px; font-size: 9px; }
+    }
+    @media (max-width: 768px) and (min-width: 481px) {
+      .profile-section { padding: var(--space-xl) var(--space-md); }
+      .card { padding: var(--space-md); }
+      h1 { font-size: 1.75rem; }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input { max-width: 100%; }
+    }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .profile-section { padding: var(--space-xl) var(--space-md); }
+    }
+    @media (min-width: 1201px) {
+      .profile-section { padding: var(--space-2xl) var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="color: var(--primary); font-size: 1.5rem; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);">ITIHub</h1>
+      <div style="display: flex; gap: 1rem;">
+        <a href="home.html">Home</a>
+        <a href="tracks.html">Tracks</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+        <a href="support.html">Support</a>
+        <a href="#" onclick="handleLogout()">Logout</a>
+      </div>
+      <input type="text" placeholder="Search FAQs..." style="max-width: 200px;" aria-label="Search">
+    </div>
+  </nav>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h1 class="text-center">Your Profile</h1>
+      <p class="text-center">Manage your personal details and settings.</p>
+      <div class="card" style="max-width: 600px; margin: 0 auto; margin-top: var(--space-lg);">
+        <h3>Personal Information</h3>
+        <form class="profile-form" action="#">
+          <div class="profile-picture-group">
+            <img id="profile-picture-preview" src="https://via.placeholder.com/80?text=Profile" alt="Profile Picture Preview">
+            <label for="profile-picture" class="btn btn-outline">Upload Profile Picture</label>
+            <input type="file" id="profile-picture" accept="image/*" aria-label="Upload Profile Picture" onchange="handleProfilePicture(event)">
+          </div>
+          <div class="name-group">
+            <input type="text" id="name" placeholder="Enter your name" aria-label="Name" value="John Doe" required>
+            <span class="instructor-verified" title="Verified Instructor" aria-label="Verified Instructor">✔</span>
+          </div>
+          <input type="email" id="email" placeholder="Enter your email address" aria-label="Email Address" value="john.doe@example.com" readonly>
+          <input type="text" id="national-id" placeholder="Enter your national ID" aria-label="National ID" value="12345678901234" readonly>
+        </form>
+        <h3 style="margin-top: var(--space-lg);">Change your password?</h3>
+        <form class="settings-form" action="#">
+          <input type="password" id="new-password" placeholder="Enter new password" aria-label="New Password">
+          <input type="password" id="confirm-password" placeholder="Confirm new password" aria-label="Confirm Password">
+          <div class="checkbox-group">
+            <input type="checkbox" id="notifications" aria-label="Receive Notifications">
+            <label for="notifications">Receive email notifications</label>
+          </div>
+          <button type="submit" class="btn btn-primary" onclick="handleSaveProfile()">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background-color: var(--secondary); color: var(--text-primary); padding: var(--space-lg); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="text-sm">© 2025 ITIHub. All rights reserved.</p>
+      <div style="margin-top: var(--space-sm);">
+        <a href="#faqs" style="color: var(--text-primary); margin: 0 var(--space-sm);">FAQs</a>
+        <a href="#contact" style="color: var(--text-primary); margin: 0 var(--space-sm);">Contact</a>
+        <a href="#social" style="color: var(--text-primary); margin: 0 var(--space-sm);">Follow Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function handleProfilePicture(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('profile-picture-preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    function handleSaveProfile() {
+      // Placeholder for profile save API call
+      console.log('Saving profile changes');
+    }
+    function handleLogout() {
+      // Placeholder for logout API call
+      console.log('Logging out');
+    }
+  </script>
+</body>
+</html>
