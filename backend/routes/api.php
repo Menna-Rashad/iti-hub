@@ -24,6 +24,9 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Admin\UserAdminController;
+use App\Http\Controllers\Admin\SupportTicketAdminController;
+use App\Http\Controllers\Admin\PostAdminController;
+use App\Http\Controllers\Admin\TaskAdminController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -48,8 +51,25 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin')->group(function () {
+        Route::get('/tasks', [\App\Http\Controllers\Admin\TaskAdminController::class, 'index']);
+        Route::delete('/tasks/{id}', [\App\Http\Controllers\Admin\TaskAdminController::class, 'destroy']);    
+        Route::get('/comments', [\App\Http\Controllers\Admin\CommentAdminController::class, 'index']);
+        Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentAdminController::class, 'destroy']);    
         Route::get('/users', [\App\Http\Controllers\Admin\UserAdminController::class, 'index']);
+        Route::put('/users/{id}/role', [\App\Http\Controllers\Admin\UserAdminController::class, 'updateRole']);
         Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserAdminController::class, 'destroy']);
+        Route::get('/posts', [\App\Http\Controllers\Admin\PostAdminController::class, 'index']);
+        Route::delete('/posts/{id}', [\App\Http\Controllers\Admin\PostAdminController::class, 'destroy']);
+
+    });
+    Route::prefix('admin')->group(function () {
+        Route::put('/support-tickets/{id}/edit', [SupportTicketAdminController::class, 'updateTicket']);
+        Route::get('/support-tickets', [\App\Http\Controllers\Admin\SupportTicketAdminController::class, 'index']);
+    });
+    Route::prefix('admin')->group(function () {
+        Route::get('/ticket-replies', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'index']);
+        Route::post('/support-tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'store']);
+        Route::delete('/ticket-replies/{id}', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'destroy']);
     });
     
     // ✅ Authentication Routes
@@ -183,6 +203,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/support-tickets/{id}/replies',   [SupportTicketReplyController::class, 'index']);
     Route::put('/support-tickets/{id}/status',    [SupportTicketController::class, 'updateStatus']);
+    Route::delete('/admin/support-tickets/{id}', [SupportTicketController::class, 'destroy']);
 
     Route::post('/admin/support-tickets/{id}/reply', [SupportTicketReplyController::class, 'adminReply']);
 
