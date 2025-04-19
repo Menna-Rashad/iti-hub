@@ -1,90 +1,60 @@
-<mat-toolbar class="custom-toolbar" color="primary">
-  <!-- Logo -->
+
+<mat-toolbar class="nav">
   <a routerLink="/" class="logo-link">
-    <img src="assets/iti-logo.png" alt="ITI Logo" class="logo-img" />
-    <span class="logo-text">ITI HUB</span>
+    <span class="logo-text">ITIHub</span>
   </a>
 
   <span class="spacer"></span>
 
-  <!-- Desktop Links -->
   <div class="nav-links">
-    <!-- Home Link (conditionally show for logged-in users) -->
+    <a mat-button routerLink="/">Home</a>
+    <a mat-button routerLink="/tracks">Tracks</a>
+    <a mat-button routerLink="/resources">Resources</a>
+    <a mat-button routerLink="/community">Community</a>
+    <a mat-button routerLink="/support">Support</a>
+
+    <!-- Dark Mode -->
+    <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
+      {{ icon }}
+    </button>
+
+    <!-- Profile -->
     <ng-container *ngIf="isLoggedIn">
-      <a mat-button routerLink="/main-content">
-        <mat-icon>home</mat-icon>
-        <span>Home</span>
-      </a>
-
-    </ng-container>
-      <a mat-button routerLink="/open-projects">
-        <mat-icon>folder</mat-icon>
-        <span>Open Projects</span>
-      </a>
-        
-
-    <a mat-button routerLink="/mentorship">
-      <mat-icon>school</mat-icon>
-      <span>Mentorship</span>
-    </a>
-
-    <a mat-button routerLink="/api/jobs">
-      <mat-icon>work</mat-icon>
-      <span>Jobs</span>
-    </a>
-
-    <!-- Dark Mode Toggle -->
-    <li class="nav-item">
-      <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode">
-        {{ icon }}
-      </button>
-    </li>
-
-    <!-- Profile Menu (if logged in) -->
-    <ng-container *ngIf="isLoggedIn">
-      <button mat-button [matMenuTriggerFor]="profileMenu">
+      <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
         <img [src]="userImage" alt="Profile" class="user-avatar" />
         <span class="ms-2">{{ userName }}</span>
       </button>
-
       <mat-menu #profileMenu="matMenu">
         <button mat-menu-item routerLink="/profile">
-          <mat-icon>visibility</mat-icon>
-          View Profile
-
+          <mat-icon>person</mat-icon> View Profile
         </button>
         <button mat-menu-item routerLink="/profile/edit">
-          <mat-icon>edit</mat-icon>
-          Edit Profile
+          <mat-icon>edit</mat-icon> Edit Profile
         </button>
         <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          Logout
+          <mat-icon>logout</mat-icon> Logout
         </button>
       </mat-menu>
     </ng-container>
 
-    <!-- Login/Register (if not logged in) -->
     <ng-container *ngIf="!isLoggedIn">
       <a mat-button routerLink="/login">Login</a>
       <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
     </ng-container>
-
-
   </div>
 
-  <!-- Burger menu icon -->
+  <!-- Burger Menu for Mobile -->
   <button class="menu-icon" mat-icon-button (click)="toggleMenu()">
     <mat-icon>menu</mat-icon>
   </button>
 </mat-toolbar>
 
-<!-- Mobile Menu -->
 <div class="mobile-menu" *ngIf="isMenuOpen">
-  <a routerLink="/main-content">Home</a>
-  <a routerLink="/open-projects">Open Projects</a>
-  <a routerLink="/mentorship">Mentorship</a>
-  <a routerLink="/api/jobs">Jobs</a>
+  <a routerLink="/">Home</a>
+  <a routerLink="/tracks">Tracks</a>
+  <a routerLink="/resources">Resources</a>
+  <a routerLink="/community">Community</a>
+  <a routerLink="/support">Support</a>
 
   <ng-container *ngIf="isLoggedIn">
     <a routerLink="/profile">View Profile</a>
