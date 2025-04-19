@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Storage;
 
 class TicketReplyAdminController extends Controller
 {
+    public function index()
+{
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $replies = TicketReply::with('ticket', 'ticket.user')->latest()->get();
+
+    return response()->json($replies);
+}
+
     public function store(Request $request, $id)
     {
         if (auth()->user()->role !== 'admin') {
@@ -48,4 +59,23 @@ class TicketReplyAdminController extends Controller
             'reply' => $reply
         ], 201);
     }
+    public function destroy($id)
+{
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $reply = TicketReply::findOrFail($id);
+
+    if (is_array($reply->attachments)) {
+        foreach ($reply->attachments as $file) {
+            Storage::disk('public')->delete($file);
+        }
+    }
+
+    $reply->delete();
+
+    return response()->json(['message' => 'Reply deleted successfully']);
+}
+
 }
