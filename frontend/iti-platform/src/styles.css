@@ -152,6 +152,23 @@ body.dark-mode .mobile-menu a {
   color: #ffffff !important; /* أبيض واضح */
 }
 
+/* ✨ Focus styling for forms */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary-dark) !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 76, 90, 0.25) !important;
+  outline: none;
+}
+
+/* Optional: Also enhance hover if needed */
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--color-primary);
+}
+
+
 /* وللتأكيد على وضوح العناصر بالكامل داخل التولبار */
 body.dark-mode .mat-toolbar a,
 body.dark-mode .mat-toolbar .mat-icon,

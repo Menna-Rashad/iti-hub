@@ -1,59 +1,70 @@
 <div class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-10">
-      <div class="card shadow border-0 rounded-4 overflow-hidden">
+      <div
+        class="card shadow border-0 rounded-4 overflow-hidden"
+        style="background-color: var(--color-surface); border: 1px solid var(--color-text-light);"
+      >
         <div class="row g-0">
 
-          <!-- Left Panel: Visual Section -->
-          <div class="col-md-5 side-panel d-flex flex-column justify-content-center align-items-center text-center p-4"
-               style="background-color: var(--color-primary); color: white;">
+          <!-- Left Panel -->
+          <div
+            class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-4"
+            style="background-color: var(#FFFFFF); color: #0056b3;"
+          >
             <img
               *ngIf="previewUrl"
               [src]="previewUrl"
-              alt="Preview"
+              alt="Profile"
               class="rounded-circle shadow mb-3"
-              style="width: 130px; height: 130px; object-fit: cover; border: 3px solid white;"
+              style="width: 130px; height: 130px; object-fit: cover; border: 3px solid #0056b3;"
             />
             <div *ngIf="!previewUrl" class="text-white-50 mb-3">No profile picture</div>
-            <h4 class="mb-1">Update Your Info</h4>
-            <p class="text-white-50 small">Keep your profile up-to-date to enjoy a better experience.</p>
+            <h2 class="mb-2 fw-bold" style="color: var(--color-primary-dark);">Welcome back!</h2>
+            <p class=" small" style="color: var(--color-primary-dark);" >Keep your profile up to date to get the most from ITIHub.</p>
           </div>
 
-          <!-- Right Panel: Form Section -->
-          <div class="col-md-7 bg-white">
+          <!-- Right Panel -->
+          <div class="col-md-7" style="background-color: var(--color-background);">
             <div class="card-body p-4">
-              <h4 class="mb-4 text-center" style="color: var(--color-primary);">Edit Profile</h4>
+              <h3 class="mb-4 text-center fw-bold" style="color: var(--color-primary);">Edit Profile</h3>
 
               <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
                 <div class="row g-3">
 
                   <!-- Name -->
                   <div class="col-12">
-                    <label class="form-label">Name</label>
+                    <label class="form-label" style="color: var(--color-text);">Name</label>
                     <input type="text" class="form-control" formControlName="name" />
-                    <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="text-danger small">
+                    <div
+                      *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+                      class="text-danger small"
+                    >
                       Name is required.
                     </div>
                   </div>
 
                   <!-- Email -->
                   <div class="col-12">
-                    <label class="form-label">Email</label>
+                    <label class="form-label" style="color: var(--color-text);">Email</label>
                     <input type="email" class="form-control" formControlName="email" />
-                    <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-danger small">
+                    <div
+                      *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+                      class="text-danger small"
+                    >
                       Valid email is required.
                     </div>
                   </div>
 
                   <!-- National ID -->
                   <div class="col-12">
-                    <label class="form-label">National ID</label>
+                    <label class="form-label" style="color: var(--color-text);">National ID</label>
                     <input type="text" class="form-control" formControlName="national_id" />
                   </div>
 
                   <!-- Role -->
                   <div class="col-12">
-                    <label class="form-label">Role</label>
+                    <label class="form-label" style="color: var(--color-text);">Role</label>
                     <select class="form-select" formControlName="role">
                       <option value="">Select role</option>
                       <option value="student">Student</option>
@@ -63,27 +74,42 @@
 
                   <!-- Bio -->
                   <div class="col-12">
-                    <label class="form-label">Bio</label>
+                    <label class="form-label" style="color: var(--color-text);">Bio</label>
                     <textarea class="form-control" formControlName="bio" rows="3"></textarea>
                   </div>
 
-                
-
-                  <!-- File Upload -->
+                  <!-- LinkedIn -->
                   <div class="col-12">
-                    <label class="form-label">Profile Picture</label>
+                    <label class="form-label" style="color: var(--color-text);">LinkedIn</label>
+                    <input type="url" class="form-control" formControlName="linkedin" />
+                  </div>
+
+                  <!-- GitHub -->
+                  <div class="col-12">
+                    <label class="form-label" style="color: var(--color-text);">GitHub</label>
+                    <input type="url" class="form-control" formControlName="github" />
+                  </div>
+
+                  <!-- Upload -->
+                  <div class="col-12">
+                    <label class="form-label" style="color: var(--color-text);">Profile Picture</label>
                     <input type="file" class="form-control" (change)="onFileSelected($event)" />
                   </div>
 
                   <!-- Submit -->
                   <div class="col-12">
-                    <button type="submit" class="btn w-100" style="background-color: var(--color-primary); color: #fff;">
+                    <button
+                      type="submit"
+                      class="btn w-100 fw-medium"
+                      style="background-color: var(--color-primary-dark); color: #fff;"
+                    >
                       Update Profile
                     </button>
                   </div>
 
                 </div>
               </form>
+
             </div>
           </div>
 
