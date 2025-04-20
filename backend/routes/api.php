@@ -30,9 +30,9 @@ use App\Http\Controllers\TaskController;
 
 // ✅ User Authentication
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-
-// ✅ Test Route (For Debugging)
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('signed');
+Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
 Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
