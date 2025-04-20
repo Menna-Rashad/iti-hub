@@ -41,6 +41,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verification_token',
     ];
 
     /**
@@ -67,10 +68,16 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
+
     public function badges()
     {
         return $this->hasMany(Badge::class);
@@ -80,9 +87,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Points::class);
     }
-    public function ticketNotifications()
-{
-    return $this->hasMany(TicketNotification::class);
-}
 
+    public function ticketNotifications()
+    {
+        return $this->hasMany(TicketNotification::class);
+    }
 }
