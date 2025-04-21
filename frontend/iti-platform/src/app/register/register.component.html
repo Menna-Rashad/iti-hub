@@ -118,11 +118,20 @@
                     <div *ngIf="FormControls['national_id'].hasError('pattern')">National ID must be 14 digits.</div>
                   </div>
                 </div>
+  
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100 enhanced-btn">
                   Create Account
                 </button>
               </form>
+
+              <!-- Google Register Button (برا الـ form) -->
+              <div class="text-center mt-3">
+                <button mat-raised-button color="accent" type="button" (click)="registerWithGoogle()" [disabled]="isLoading">
+                  {{ isLoading ? 'Registering...' : 'Register with Google' }}
+                </button>
+              </div>
+
               <!-- Login Link -->
               <div class="text-center mt-3">
                 <small>
