@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule, Router } from '@angular/router';
 import { AuthStateService } from '../services/auth-state.service';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -18,7 +18,9 @@ import { AuthStateService } from '../services/auth-state.service';
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-    RouterModule
+    RouterModule,
+    RouterLink
+
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
