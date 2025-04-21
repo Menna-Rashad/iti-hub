@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 
 @Component({
   selector: 'app-forgot-password',
+  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
