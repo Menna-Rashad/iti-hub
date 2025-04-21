@@ -33,6 +33,12 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('signed');
 Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
+Route::post('/google-login', [AuthController::class, 'googleLogin']); // موجود بالفعل
+Route::post('/google-register', [AuthController::class, 'googleRegister']); // أضفت هنا
+// ✅ Google manual login/register (بديل لـ Socialite)
+Route::post('/google-manual-register', [AuthController::class, 'googleManualRegister']);
+Route::post('/google-manual-login',    [AuthController::class, 'googleManualLogin']);
+
 Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
