@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-mentorship',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './mentorship.component.html',
   styleUrls: ['./mentorship.component.css'],
