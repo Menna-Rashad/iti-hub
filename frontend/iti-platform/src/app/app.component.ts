@@ -1,24 +1,23 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-// import { LoginComponent } from './login/login.component';
-// import { FormsModule } from '@angular/forms'; // <-- Import FormsModule here
-// import { MentorshipComponent } from './mentorship/mentorship.component'; // <-- Import the MentorshipComponent here
-import { NavbarComponent } from './navbar/navbar.component'; // <-- Import the NavbarComponent here
-
-// import { BrowserModule } from '@angular/platform-browser';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router, RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './navbar/navbar.component';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent, CommonModule],
   template: `
-    <app-navbar></app-navbar>
+   
     <router-outlet></router-outlet>
   `,
   styleUrls: ['./app.component.css']
 })
-
 export class AppComponent {
-  title = 'iti-hub';
+  constructor(public router: Router) {}
+
+  get showNavbar(): boolean {
+    const currentPath = this.router.url.split('?')[0].replace(/\/$/, ''); // remove query params and trailing slash
+    return !['/login', '/register'].includes(currentPath);
+  }
 }
