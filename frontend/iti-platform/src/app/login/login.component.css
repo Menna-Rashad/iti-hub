@@ -76,8 +76,9 @@ input[matInput] {
 button[mat-raised-button] {
   width: 100%;
   padding: 12px;
-  background-color: #0f6486; /* لون ITI الأحمر */
-  color: white;
+  border-color: rgb(82, 3, 3);
+  background-color: #C8102E !important;
+  color: rgb(0, 0, 0);
   font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
@@ -156,3 +157,34 @@ mat-progress-spinner {
   width: 20px;
   margin-right: 10px;
 }
+.login-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 auto 16px auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+mat-form-field.error .mat-form-field-outline {
+  stroke: #f44336 !important;
+}
+
+mat-form-field.error.mat-form-field-invalid .mat-form-field-outline {
+  border-color: #f44336 !important;
+}
+/* لو حصل خطأ بناءً على ngClass */
+mat-form-field.error .mat-form-field-outline {
+  stroke: #f44336 !important;
+  border-color: #f44336 !important;
+}
+
+/* نلغي أي تلوين تلقائي من Angular Material قبل الضغط */
+::ng-deep .mat-form-field-invalid .mat-form-field-outline {
+  border-color: inherit !important;
+}
+::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-start,
+::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-end {
+  border-color: inherit !important;
+}
+
