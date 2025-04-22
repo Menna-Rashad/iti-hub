@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit {
   isLoading: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
+  formSubmitted = false;
+
 
   constructor(
     private authService: AuthService,
@@ -63,6 +65,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
+    this.formSubmitted = true;
     if (!this.email || !this.password) {
       this.showNotification('⚠️ Please enter your email and password!', 'error');
       return;
