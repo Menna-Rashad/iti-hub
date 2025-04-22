@@ -1,69 +1,25 @@
-<div class="login-container">
-  <!-- Logo -->
-  <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo" />
+<mat-card class="login-card">
+  <h2>🔒 Login</h2>
 
-  <h2>Login</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" [(ngModel)]="email" required>
+  </mat-form-field>
 
-  <!-- ✅ Success Message -->
-  <div *ngIf="successMessage" class="alert alert-success">
-    {{ successMessage }}
-  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" [(ngModel)]="password" required>
+  </mat-form-field>
 
-  <!-- ❌ Error Message -->
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-  </div>
+  <button mat-raised-button color="primary" (click)="login()" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Sign in</span>
+    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
+  </button>
 
-  <!-- 🔐 Login Form -->
-  <form (ngSubmit)="login()" novalidate>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input
-        matInput
-        type="email"
-        id="email"
-        [(ngModel)]="email"
-        name="email"
-        required
-        placeholder="Enter your email"
-      />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        id="password"
-        [(ngModel)]="password"
-        name="password"
-        required
-        placeholder="Enter your password"
-      />
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
-      <mat-progress-spinner
-        *ngIf="isLoading"
-        diameter="20"
-        mode="indeterminate"
-        color="accent"
-      ></mat-progress-spinner>
-      <span *ngIf="!isLoading">Login</span>
-    </button>
-  </form>
-
-  <!-- 🌐 OR Login with Google -->
-  <div class="social-login">
-    <p>or continue with</p>
-    <button class="google-btn" (click)="loginWithGoogle()">
-      <img src="assets/google-icon.png" alt="Google" />
-      <span>Continue with Google</span>
-    </button>
-  </div>
-
-  <!-- 🔁 Forgot Password Link -->
   <div class="forgot-password">
-    <a href="#" (click)="navigateToResetPassword($event)">Forgot Username / Password?</a>
+    <a href="#" (click)="navigateToResetPassword($event)">Forgot Password?</a>
   </div>
-</div>
+
+  <!-- زر تسجيل الدخول بـ Google -->
+  <div id="google-login-button"></div>
+</mat-card>
