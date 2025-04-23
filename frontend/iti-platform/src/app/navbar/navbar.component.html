@@ -3,12 +3,14 @@
     <h1 class="logo-heading">ITIHub</h1>
 
     <div class="nav-links">
-      <a mat-button routerLink="/">Home</a>
-      <a mat-button routerLink="/tracks">Tracks</a>
-      <a mat-button routerLink="/resources">Resources</a>
-      <a mat-button routerLink="/community">Community</a>
-      <a mat-button routerLink="/support">Support</a>
+      <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button routerLink="/tracks" routerLinkActive="active-link">Tracks</a>
+      <a mat-button routerLink="/resources" routerLinkActive="active-link">Resources</a>
+      <a mat-button routerLink="/community" routerLinkActive="active-link">Community</a>
+      <a mat-button routerLink="/support" routerLinkActive="active-link">Support</a>
+      
 
+      <!-- temporarily hiding the dark mode toggle button for now -->
       <!-- <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
         {{ icon }}
       </button> -->

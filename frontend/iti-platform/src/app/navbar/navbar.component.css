@@ -1,9 +1,8 @@
 /* ✅ Navbar Base */
-h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
 
 .nav {
   background-color: var(--secondary);
-  padding: var(--space-md);
+  padding: var(--space-md) auto;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -25,6 +24,10 @@ h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-
   font-size: 1.5rem;
   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
   margin: 0;
+  font-size: var(--font-size-h1); 
+  font-weight: var(--font-weight-bold); 
+  line-height: var(--line-height-heading); 
+  letter-spacing: var(--letter-spacing-heading); 
 }
 
 /* ✅ Navbar Links */
@@ -40,7 +43,6 @@ h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-
   padding: var(--space-sm);
   border-radius: var(--border-radius-sm);
   min-height: 44px;
-  /* line-height: 190%; */
   transition: background-color var(--transition-duration) var(--transition-easing),
               color var(--transition-duration) var(--transition-easing);
   display: flex;
@@ -52,8 +54,14 @@ h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-
   background-color: rgba(144, 27, 32, 0.1);
   color: var(--primary);
   text-decoration: none;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.active-link {
+  color: var(--primary);
+  background-color: transparent;
+  border-bottom: 2px solid var(--primary);
+  font-weight: var(--font-weight-bold);
 }
 
 /* ✅ Profile */
