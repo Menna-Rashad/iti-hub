@@ -3,7 +3,6 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { MentorshipComponent } from './mentorship/mentorship.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { JobComponent } from './jobs/jobs.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
