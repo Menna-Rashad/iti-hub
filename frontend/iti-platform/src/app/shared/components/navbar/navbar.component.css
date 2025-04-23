@@ -1,12 +1,20 @@
 /* ✅ Navbar Base */
 
 .nav {
-  background-color: var(--secondary);
-  padding: var(--space-md) auto;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
+  background-color: var(--secondary);
+  padding: var(--space-md) var(--space-xl);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
+
+body {
+  padding-top: 64px; /* أو حسب ارتفاع النافبار */
+}
+
 
 /* ✅ Container Layout */
 .container {
