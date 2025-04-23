@@ -1,52 +1,46 @@
-
 <mat-toolbar class="nav">
-  <a routerLink="/" class="logo-link">
-    <span class="logo-text">ITIHub</span>
-  </a>
+  <div class="container">
+    <h1 class="logo-heading">ITIHub</h1>
 
-  <span class="spacer"></span>
+    <div class="nav-links">
+      <a mat-button routerLink="/">Home</a>
+      <a mat-button routerLink="/tracks">Tracks</a>
+      <a mat-button routerLink="/resources">Resources</a>
+      <a mat-button routerLink="/community">Community</a>
+      <a mat-button routerLink="/support">Support</a>
 
-  <div class="nav-links">
-    <a mat-button routerLink="/">Home</a>
-    <a mat-button routerLink="/tracks">Tracks</a>
-    <a mat-button routerLink="/resources">Resources</a>
-    <a mat-button routerLink="/community">Community</a>
-    <a mat-button routerLink="/support">Support</a>
+      <!-- <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
+        {{ icon }}
+      </button> -->
 
-    <!-- Dark Mode -->
-    <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
-      {{ icon }}
+      <ng-container *ngIf="isLoggedIn">
+        <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
+          <img [src]="userImage" alt="Profile" class="user-avatar" />
+          <span class="ms-2">{{ userName }}</span>
+        </button>
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon> View Profile
+          </button>
+          <button mat-menu-item routerLink="/profile/edit">
+            <mat-icon>edit</mat-icon> Edit Profile
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon> Logout
+          </button>
+        </mat-menu>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoggedIn">
+        <a mat-button routerLink="/login">Login</a>
+        <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
+      </ng-container>
+    </div>
+
+    <button class="menu-icon" mat-icon-button (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
     </button>
-
-    <!-- Profile -->
-    <ng-container *ngIf="isLoggedIn">
-      <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
-        <img [src]="userImage" alt="Profile" class="user-avatar" />
-        <span class="ms-2">{{ userName }}</span>
-      </button>
-      <mat-menu #profileMenu="matMenu">
-        <button mat-menu-item routerLink="/profile">
-          <mat-icon>person</mat-icon> View Profile
-        </button>
-        <button mat-menu-item routerLink="/profile/edit">
-          <mat-icon>edit</mat-icon> Edit Profile
-        </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon> Logout
-        </button>
-      </mat-menu>
-    </ng-container>
-
-    <ng-container *ngIf="!isLoggedIn">
-      <a mat-button routerLink="/login">Login</a>
-      <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
-    </ng-container>
   </div>
-
-  <!-- Burger Menu for Mobile -->
-  <button class="menu-icon" mat-icon-button (click)="toggleMenu()">
-    <mat-icon>menu</mat-icon>
-  </button>
 </mat-toolbar>
 
 <div class="mobile-menu" *ngIf="isMenuOpen">
