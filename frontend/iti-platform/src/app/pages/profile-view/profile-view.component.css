@@ -31,7 +31,7 @@ html, body {
 .sidebar-item {
   display: block;
   margin: 1rem 0;
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 
 /* --- 2) Top Bar --- */
@@ -42,12 +42,12 @@ html, body {
 
 .top-bar h5 {
   font-weight: 500;
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 
 .top-bar small,
 .topbar-date {
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 
 .search-box .form-control {
@@ -73,7 +73,7 @@ html, body {
 
 /* Gradient Header using primary color */
 .gradient-header {
-  background: linear-gradient(to right, rgb(124,12,12), rgb(164,32,32));
+  background: linear-gradient(to right, var(--primary-dark), var(--primary));
   border-bottom: 1px solid #ddd;
 }
 
@@ -95,14 +95,14 @@ html, body {
 
 /* Label styling inside the card body */
 .fw-semibold {
-  font-weight: 600 !important;
-  color: rgb(124,12,12);
+  font-weight: var(--font-weight-medium) !important;
+  color: var(--text-primary);
 }
 
 /* The read-only fields replicate the screenshot’s input boxes with faint border */
 .form-control-plaintext.border {
   background-color: #fff;
-  color: rgb(124,12,12);
+  color: var(--text-secondary);
 }
 
 /* Adjust spacing so it matches screenshot’s style more closely */
@@ -117,8 +117,8 @@ html, body {
 
 /* “Add more emails” button style using primary color */
 .btn-outline-primary {
-  border: 1px solid rgb(124,12,12);
-  color: rgb(124,12,12);
+  border: 1px solid var(--primary);
+  color: var(--primary);
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -126,19 +126,19 @@ html, body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 .btn-outline-primary:hover {
-  background-color: rgb(124,12,12);
+  background-color: var(--primary);
   color: #fff;
 }
 
 /* Adjust remaining text colors in the card body */
 .profile-name {
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 .profile-role {
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 .profile-info p {
-  color: rgb(124,12,12);
+  color: var(--primary);
 }
 
 /* --- Responsive Adjustments --- */
