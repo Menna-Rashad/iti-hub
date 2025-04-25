@@ -1,208 +1,190 @@
-:root {
-  --primary-color: #3f51b5;
-  --hover-color: #303f9f;
-  --radius: 14px;
-  --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --text-color: #333;
-  --background-gradient: linear-gradient(135deg, #eef2ff, #ffffff);
+/* src/app/login/login.component.css */
+
+/* الأساسيات للتأكد إن كل حاجة مظبوطة */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* خلفية متدرجة خفيفة */
 }
 
-body {
-  background: var(--background-gradient);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  color: var(--text-color);
-}
-
-.login-container {
-  max-width: 450px;
-  margin: 2vh auto;
-  padding:10px 10px;
-  background-color: #fff;
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: 0.3s ease;
-  animation: fade-in 0.6s ease-out;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Logo */
-.login-logo {
-  width: 65px;
-  height: 65px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Title */
-.login-container h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 28px;
-}
-
-/* Form Fields */
-.full-width {
+/* تصميم الكارد */
+.login-card {
   width: 100%;
-  margin-bottom: 22px;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ظل ناعم لعمق */
+  background: #ffffff; /* خلفية بيضاء */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* تأثير عند الـ Hover */
+.login-card:hover {
+  transform: translateY(-5px); /* رفع بسيط */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* العنوان */
+h2 {
+  text-align: center;
+  color: #000000; /* اللون الأحمر بتاع ITI */
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* مسافة بين الـ Icon والنص */
+}
+
+/* تصميم الـ Form Fields */
 mat-form-field {
   width: 100%;
+  margin-bottom: 20px;
 }
 
-/* Button */
+/* تخصيص الـ Label */
+mat-label {
+  color: #333; /* لون داكن للنص */
+  font-weight: 500;
+}
+
+/* تخصيص الـ Input */
+input[matInput] {
+  color: #333;
+  font-size: 16px;
+}
+
+/* الـ Outline لما يكون فيه Focus */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #C8102E !important; /* لون الـ Outline أحمر */
+}
+
+/* لون الـ Label لما يكون فيه Focus */
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #C8102E !important;
+}
+
+/* الـ Underline لما يكون فيه Focus */
+::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: #C8102E !important;
+}
+
+/* تصميم الـ Button */
 button[mat-raised-button] {
   width: 100%;
-  height: 48px;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  border-radius: var(--radius);
-  box-shadow: 0 6px 16px rgba(63, 81, 181, 0.15);
-  transition: background-color 0.3s, box-shadow 0.3s;
+  padding: 12px;
+  border-color: rgb(82, 3, 3);
+  background-color: #C8102E !important;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* مسافة بين النص والـ Spinner */
 }
 
-button[mat-raised-button]:hover {
-  background-color: var(--hover-color);
-  box-shadow: 0 8px 24px rgba(63, 81, 181, 0.25);
+/* تأثير الـ Hover على الـ Button */
+button[mat-raised-button]:hover:not([disabled]) {
+  background-color: #FF6F61; /* درجة أحمر أفتح */
+  transform: scale(1.02); /* تكبير بسيط */
 }
 
+/* الـ Button لما يكون Disabled */
+button[mat-raised-button][disabled] {
+  background-color: #cccccc;
+  color: #666;
+}
+
+/* تصميم الـ Spinner */
 mat-progress-spinner {
-  vertical-align: middle;
-  margin-right: 10px;
+  display: inline-block;
 }
 
-/* Alerts */
-.alert {
-  padding: 14px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.alert-success {
-  background-color: #e6f4ea;
-  color: #2e7d32;
-}
-
-.alert-danger {
-  background-color: #fdecea;
-  color: #c62828;
-}
-
-/* Forgot Password */
+/* رابط Forgot Password */
 .forgot-password {
-  margin-top: 18px;
-  font-size: 14px;
+  text-align: center;
+  margin-top: 15px;
 }
 
 .forgot-password a {
-  color: var(--primary-color);
+  color: #000000; /* لون ITI */
   text-decoration: none;
+  font-size: 14px;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .forgot-password a:hover {
+  color: #FF6F61; /* درجة أفتح */
   text-decoration: underline;
-  color: var(--hover-color);
 }
 
-/* Divider */
-.divider {
-  margin: 25px 0 15px;
-  text-align: center;
-  position: relative;
-}
-
-.divider span {
-  background: #fff;
-  padding: 0 10px;
-  color: #888;
-  font-size: 13px;
-  position: relative;
-  z-index: 1;
-}
-
-.divider::before {
-  content: "";
-  height: 1px;
-  background: #ddd;
-  width: 100%;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  z-index: 0;
-}
-
-/* Social Login */
-.social-login {
-  margin-top: 25px;
+/* زر تسجيل الدخول بـ Google */
+#google-login-button {
+  margin-top: 20px;
   text-align: center;
 }
 
-.social-login p {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.google-btn {
-  background: #ffffff;
-  border: 1px solid #ddd;
-  padding: 10px 16px;
-  width: 100%;
-  border-radius: 8px;
-  display: flex;
+/* إذا كنتِ بتستخدمي زر مخصص لـ Google، ممكن نصممه كده */
+.google-login-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  color: #333;
+  font-size: 16px;
   font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.google-btn img {
+.google-login-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #C8102E; /* لون ITI عند الـ Hover */
+}
+
+.google-login-btn img {
   width: 20px;
-  height: 20px;
+  margin-right: 10px;
+}
+.login-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 auto 16px auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+mat-form-field.error .mat-form-field-outline {
+  stroke: #f44336 !important;
 }
 
-.google-btn:hover {
-  background-color: #f5f5f5;
+mat-form-field.error.mat-form-field-invalid .mat-form-field-outline {
+  border-color: #f44336 !important;
+}
+/* لو حصل خطأ بناءً على ngClass */
+mat-form-field.error .mat-form-field-outline {
+  stroke: #f44336 !important;
+  border-color: #f44336 !important;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 30px 20px;
-    margin: 50px 15px;
-  }
-
-  .login-container h2 {
-    font-size: 24px;
-  }
-
-  .login-logo {
-    width: 55px;
-    height: 55px;
-    margin-bottom: 10px;
-  }
+/* نلغي أي تلوين تلقائي من Angular Material قبل الضغط */
+::ng-deep .mat-form-field-invalid .mat-form-field-outline {
+  border-color: inherit !important;
 }
+::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-start,
+::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-end {
+  border-color: inherit !important;
+}
+

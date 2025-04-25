@@ -30,4 +30,8 @@ export class AuthService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get(`${this.apiUrl}/user`, { headers });
   }
+  googleLogin(id_token: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/google-login`, { id_token });
+  }
+  
 }
