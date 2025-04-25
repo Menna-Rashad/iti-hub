@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { AuthStateService } from '../services/auth-state.service';
-import { Router, ActivatedRoute } from '@angular/router'; // ✅ Updated here
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private authState: AuthStateService,
-    private route: ActivatedRoute // ✅ Added this
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -74,36 +74,34 @@ export class LoginComponent implements OnInit {
 
         console.log('🚀 Full API Response:', response);
 
-        if (response.token) {
+        if (response.token && response.user) {
           console.log('🔑 Received Token:', response.token);
+
+          // ✅ Save token and full user data including profile_picture
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
+
           this.authState.setLoggedIn(true);
 
-          if (response.user?.id) {
-            localStorage.setItem('user_id', response.user.id);
-          }
-          if (response.user?.role) {
-            localStorage.setItem('role', response.user.role);
-          }
+          // ✅ Notify navbar to reload user data immediately
+          window.dispatchEvent(new Event('storage'));
 
           this.showNotification('🎉 Login successful! Redirecting...', 'success');
+
           this.email = '';
           this.password = '';
 
-          const userRole = response.user?.role;
           let redirectPath = '/main-content';
-
-          if (userRole === 'admin') {
+          if (response.user.role === 'admin') {
             redirectPath = '/admin/dashboard';
-          } else if (userRole === 'mentor') {
+          } else if (response.user.role === 'mentor') {
             redirectPath = '/mentor/dashboard';
           }
 
           setTimeout(() => {
             this.router.navigate([redirectPath]);
           }, 1000);
-          
+
         } else {
           console.warn('⚠️ No token received from backend!');
           this.showNotification('⚠️ Failed to log in. Please try again.', 'error');

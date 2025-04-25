@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
     // Apply saved dark mode preference
     this.isDarkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', this.isDarkMode);
-
+  
     // Check the authentication status
     this.authState.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
@@ -52,18 +52,25 @@ export class NavbarComponent implements OnInit {
         this.userName = '';
       }
     });
+  
+    // ✅ Listen for localStorage updates (زي لما نغير الصورة)
+    window.addEventListener('storage', () => {
+      this.fetchUser();
+    });
   }
+  
 
   fetchUser(): void {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const user = JSON.parse(storedUser);
       this.userImage = user.profile_picture
-        ? `http://127.0.0.1:8000/profile_pictures/${user.profile_picture}`
-        : 'assets/user.png'; // Default profile picture if no image
+        ? `http://127.0.0.1:8000/profile_pictures/${user.profile_picture}?t=${new Date().getTime()}`
+        : 'assets/user.png';
       this.userName = user.name || 'User';
     }
   }
+  
 
   logout(): void {
     localStorage.removeItem('auth_token');
