@@ -76,16 +76,21 @@ export class PostDetailComponent implements OnInit {
 
   loadPost(id: string) {
     this.api.getPost(id).subscribe(post => {
+      if (post.user?.profile_picture) {
+        post.user.profile_picture = `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`;
+      } else {
+        post.user.profile_picture = this.defaultAvatar;
+      }
+  
       this.post = post;
       console.log('current_user_vote for post:', post.current_user_vote);
       post.comments?.forEach((c: any) => console.log(`Comment ${c.id} vote:`, c.current_user_vote));
-
+  
       const userId = localStorage.getItem('user_id');
       this.isFollowing = post.user_id === userId; 
       this.canEdit = userId !== null && post.user_id == userId;
       this.visibleComments = post.comments?.slice(0, 3);
   
-      // ✅ ضمان وجود current_user_vote (fallback)
       if (!this.post.current_user_vote) {
         this.post.current_user_vote = null;
       }
@@ -99,6 +104,7 @@ export class PostDetailComponent implements OnInit {
       }
     });
   }
+  
   
 
   onVoteUpdated(event: {
