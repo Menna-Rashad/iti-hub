@@ -15,6 +15,9 @@ import { RouterModule } from '@angular/router';
 import { ForumService } from '../../services/forum.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-buttons.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CopyButtonComponent } from '../../shared/components/copy-button/copy-button.component';
 
 @Component({
   selector: 'app-post-detail',
@@ -30,6 +33,9 @@ import { Clipboard } from '@angular/cdk/clipboard';
     MatInputModule,
     RouterModule,
     MatMenuModule,
+    VoteButtonsComponent,
+    MatTooltipModule,
+    CopyButtonComponent
   ],
 })
 export class PostDetailComponent implements OnInit {
@@ -71,12 +77,55 @@ export class PostDetailComponent implements OnInit {
   loadPost(id: string) {
     this.api.getPost(id).subscribe(post => {
       this.post = post;
+      console.log('current_user_vote for post:', post.current_user_vote);
+      post.comments?.forEach((c: any) => console.log(`Comment ${c.id} vote:`, c.current_user_vote));
+
       const userId = localStorage.getItem('user_id');
       this.isFollowing = post.user_id === userId; 
       this.canEdit = userId !== null && post.user_id == userId;
       this.visibleComments = post.comments?.slice(0, 3);
+  
+      // ✅ ضمان وجود current_user_vote (fallback)
+      if (!this.post.current_user_vote) {
+        this.post.current_user_vote = null;
+      }
+  
+      if (this.post.comments?.length) {
+        this.post.comments.forEach((comment: any) => {
+          if (!comment.current_user_vote) {
+            comment.current_user_vote = null;
+          }
+        });
+      }
     });
   }
+  
+
+  onVoteUpdated(event: {
+    targetType: 'post' | 'comment';
+    targetId: number;
+    newCounts: { upvotes: number; downvotes: number };
+    action: 'added' | 'removed';
+  }) {
+    if (event.targetType === 'post' && this.post?.id === event.targetId) {
+      this.post.upvotes = event.newCounts.upvotes;
+      this.post.downvotes = event.newCounts.downvotes;
+    }
+  }
+  
+  onCommentVoteUpdated(comment: any, event: {
+    targetType: 'post' | 'comment';
+    targetId: number;
+    newCounts: { upvotes: number; downvotes: number };
+    action: 'added' | 'removed';
+  }) {
+    if (event.targetType === 'comment' && event.targetId === comment.id) {
+      comment.upvotes = event.newCounts.upvotes;
+      comment.downvotes = event.newCounts.downvotes;
+    }
+  }
+  
+  
 
   toggleFollow() {
     this.isFollowing = !this.isFollowing;

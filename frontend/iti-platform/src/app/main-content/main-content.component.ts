@@ -21,7 +21,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TopContributorsComponent } from '../top-contributors/top-contributors.component';
-
+import { CopyButtonComponent } from '../shared/components/copy-button/copy-button.component';
+import { VoteButtonsComponent } from '../shared/components/vote-buttons/vote-buttons.component';
 @Component({
   selector: 'app-main-content',
   standalone: true,
@@ -38,6 +39,8 @@ import { TopContributorsComponent } from '../top-contributors/top-contributors.c
     MatInputModule,
     SidebarComponent,
     TopContributorsComponent,
+    CopyButtonComponent,
+    VoteButtonsComponent
   ],
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.css'],
@@ -89,6 +92,20 @@ export class MainContentComponent implements OnInit {
       error: (err) => console.error(err),
     });
   }
+
+  onVoteUpdated(event: {
+    targetType: 'post' | 'comment';
+    targetId: number;
+    newCounts: { upvotes: number; downvotes: number };
+    action: 'added' | 'removed';
+  }) {
+    const updatedPost = this.filteredPosts.find(p => p.id === event.targetId);
+    if (updatedPost) {
+      updatedPost.upvotes = event.newCounts.upvotes;
+      updatedPost.downvotes = event.newCounts.downvotes;
+    }
+  }
+  
 
   loadPosts(): void {
     this.forumService.getPosts().subscribe({

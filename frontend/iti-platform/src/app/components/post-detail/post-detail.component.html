@@ -44,22 +44,19 @@
       </div>
 
       <!-- VOTE SECTION -->
-      <div class="vote-section">
-        <button mat-icon-button color="primary" (click)="handleVote('post', post.id, 'upvote')" [disabled]="isVoting">
-          <mat-icon>arrow_upward</mat-icon>
-        </button>
-        <span>{{ post.upvotes }}</span>
-
-        <button mat-icon-button color="warn" (click)="handleVote('post', post.id, 'downvote')" [disabled]="isVoting">
-          <mat-icon>arrow_downward</mat-icon>
-        </button>
-        <span>{{ post.downvotes }}</span>
-      </div>
-
+      
+      <app-vote-buttons
+        [targetType]="'post'"
+        [targetId]="post.id"
+        [upvotes]="post.upvotes"
+        [downvotes]="post.downvotes"
+        [currentVote]="post.current_user_vote"
+        (voteUpdated)="onVoteUpdated($event)">
+      </app-vote-buttons>
+    
       <!-- Copy Post Button (Below Content) -->
-      <button mat-raised-button color="accent" (click)="copyPost(post)" class="copy-button">
-        <mat-icon>content_copy</mat-icon>
-      </button>
+      <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.id"></app-copy-button>
+
 
     </mat-card-content>
   </mat-card>
@@ -90,17 +87,16 @@
         </div>
 
         <!-- Vote Section for Comment -->
-        <div class="vote-section">
-          <button mat-icon-button color="primary" (click)="handleVote('comment', comment.id, 'upvote')" [disabled]="isVoting">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <span>{{ comment.upvotes }}</span>
+        <app-vote-buttons
+          [targetType]="'comment'"
+          [targetId]="comment.id"
+          [upvotes]="comment.upvotes"
+          [downvotes]="comment.downvotes"
+          [currentVote]="comment.current_user_vote"
+          (voteUpdated)="onCommentVoteUpdated(comment, $event)">
+        </app-vote-buttons>
 
-          <button mat-icon-button color="warn" (click)="handleVote('comment', comment.id, 'downvote')" [disabled]="isVoting">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-          <span>{{ comment.downvotes }}</span>
-        </div>
+
       </mat-card-content>
     </mat-card>
 

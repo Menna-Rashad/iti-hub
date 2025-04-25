@@ -211,26 +211,24 @@ button:hover {
 
 /* زر نسخ رابط البوست */
 .copy-button {
-    background-color: #9C2A2F;
-    color: white;
+    color: var(--primary);
     margin-top: 20px;
     border-radius: 8px;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    /* padding: 10px 20px; */
+    display: inline-block;
     font-weight: bold;
-    font-size: 14px;
+    font-size: var(--font-size-base);
     transition: background-color 0.3s ease, transform 0.2s ease;
-    width: auto;
+    /* width: 50px; */
     cursor: pointer;
+    background-color: transparent;
+    text-align: center;
 }
 
-.copy-button:hover {
+/* .copy-button:hover {
     background-color: #7C2327;
     transform: scale(1.05);
-}
+} */
 
 .copy-button:disabled {
     opacity: 0.6;
