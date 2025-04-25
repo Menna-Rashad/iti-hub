@@ -110,17 +110,24 @@ export class MainContentComponent implements OnInit {
   loadPosts(): void {
     this.forumService.getPosts().subscribe({
       next: (res) => {
-        this.posts = res;
-        this.filteredPosts = res;
+        this.posts = res.map((post: any) => {
+          if (post.user?.profile_picture) {
+            post.user.profile_picture = `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`;
+          } else {
+            post.user.profile_picture = this.defaultAvatar;
+          }
+          return post;
+        });
+        this.filteredPosts = this.posts;
   
         res.forEach((post: any) => {
-          console.log('Post User:', post.user); // تحقق من أن بيانات المستخدم موجودة
           this.loadComments(post.id);
         });
       },
       error: (err) => console.error('Error loading posts:', err),
     });
   }
+  
   
 toggleFollow(post: any): void {
   this.isFollowing[post.id] = !this.isFollowing[post.id];
