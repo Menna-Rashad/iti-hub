@@ -188,3 +188,20 @@ mat-form-field.error .mat-form-field-outline {
   border-color: inherit !important;
 }
 
+mat-form-field {
+  --field-height: 38px !important;
+  font-size: 14px;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  min-height: var(--field-height);
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+::ng-deep input.mat-input-element {
+  height: var(--field-height);
+  padding: 4px 8px !important;
+  line-height: 1.4;
+  font-size: 14px;
+}
