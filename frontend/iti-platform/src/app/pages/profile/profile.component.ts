@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ProfileService } from '../../services/profile.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -19,7 +20,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private profileService: ProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -80,6 +82,8 @@ export class ProfileComponent implements OnInit {
     this.profileService.updateProfile(formData).subscribe({
       next: (res) => {
         this.toastr.success('تم التحديث بنجاح 🎉');
+        this.router.navigate(['/profile']);
+
   
         // ✅ نحدث localStorage بالبيانات الجديدة
         const oldUserString = localStorage.getItem('user');

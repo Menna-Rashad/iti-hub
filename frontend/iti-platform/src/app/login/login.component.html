@@ -1,28 +1,36 @@
 <mat-card class="login-card">
-  <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo">
-  <h2> Login</h2>
+  <img src="assets/iti-logo.png" alt="ITI Logo" class="login-logo" />
+  <h2>Login</h2>
 
-  <mat-form-field appearance="outline"
-  [ngClass]="{'error': formSubmitted && !email}">
-  <mat-label>Email</mat-label>
-  <input matInput type="email" [(ngModel)]="email" name="email" required>
-</mat-form-field>
+  <!-- Email -->
+  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !email}">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" [(ngModel)]="email" name="email" required />
+  </mat-form-field>
 
-<mat-form-field appearance="outline"
-  [ngClass]="{'error': formSubmitted && !password}">
-  <mat-label>Password</mat-label>
-  <input matInput type="password" [(ngModel)]="password" name="password" required>
-</mat-form-field>
+  <!-- Password -->
+  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !password}">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" [(ngModel)]="password" name="password" required />
+  </mat-form-field>
 
-  <button mat-raised-button color="primary" (click)="login()" [disabled]="isLoading">
+  <!-- Forgot Password -->
+  <div class="text-start mb-2" style="margin-top: -30px; margin-bottom: 30px;">
+    <a href="#" (click)="navigateToResetPassword($event)" style="font-size: 13px;">Forgot Password?</a>
+  </div>
+
+  <!-- Sign In Button -->
+  <button mat-raised-button style="color: white; background-color: var(--primary) !important; border: none;" (click)="login()" [disabled]="isLoading">
     <span *ngIf="!isLoading">Sign in</span>
     <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
   </button>
 
-  <div class="forgot-password">
-    <a href="#" (click)="navigateToResetPassword($event)">Forgot Password?</a>
-  </div>
+  <!-- Google Login -->
+  <div id="google-login-button" style="margin-top: 20px;"></div>
 
-  <!-- زر تسجيل الدخول بـ Google -->
-  <div id="google-login-button"></div>
+  <!-- Sign Up Link -->
+  <div class="text-center mt-3">
+    <span>Don't have an account?</span>
+    <a routerLink="/register" style="color: var(--primary); font-weight: 500;"> Sign Up</a>
+  </div>
 </mat-card>
