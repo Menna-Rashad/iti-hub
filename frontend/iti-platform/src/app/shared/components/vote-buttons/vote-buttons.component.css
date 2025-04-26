@@ -1,5 +1,5 @@
 .vote-container {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     background-color: #f6f7f8; /* رمادي خفيف زي Reddit */
@@ -30,13 +30,13 @@
   .vote-container button:hover .vote-icon path{
       /* transform: scale(1.1); */
       fill: none;
-      stroke: #ff4500;
+      stroke: var(--primary);
       stroke-width: 2; 
   }
   .vote-container button.active .vote-icon path{
-      fill: #ff4500;
+      fill: var(--primary);
       /* stroke: none; */
-      stroke: #ff4500;
+      stroke: var(--primary);
   }
   .vote-container button{
       padding: 2px;

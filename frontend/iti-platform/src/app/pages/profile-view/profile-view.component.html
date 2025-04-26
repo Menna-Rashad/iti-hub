@@ -2,7 +2,7 @@
   <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: var(--color-surface);">
 
     <!-- Header Section -->
-    <div class="d-flex flex-column flex-md-row align-items-center p-4 gap-4" style="background-color: var(--color-primary); color: white;">
+    <div class="d-flex flex-column flex-md-row align-items-center p-4 gap-4" style="background-color: var(--primary); color: white;">
       <img
         *ngIf="previewUrl"
         [src]="previewUrl"
@@ -12,10 +12,10 @@
       />
       <div>
         <h3 class="mb-1 fw-bold" style="color: #fff;">{{ profile?.name }}</h3>
-        <p class="mb-0" style="color: var(--color-text-light); opacity: 0.9;">{{ profile?.role | titlecase }}</p>
+        <p class="mb-0" style="color: #fff; opacity: 0.9;">{{ profile?.role | titlecase }}</p>
       </div>
       <div class="ms-auto">
-        <a routerLink="/profile/edit" class="btn btn-light text-danger fw-semibold">
+        <a routerLink="/profile/edit" class="btn btn-light fw-semibold" style="color: var(--primary) !important;">
           <i class="bi bi-pencil-fill me-2"></i>Edit Profile
         </a>
       </div>

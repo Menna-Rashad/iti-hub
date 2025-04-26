@@ -49,6 +49,10 @@
     font-size: 10px;  /* تصغير حجم التاريخ */
     color: #888;
 }
+.post-date{
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
 
 .post-content {
     font-size: 16px;
@@ -69,7 +73,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #9C2A2F; /* اللون الأحمر */
+    background-color: var(--primary); /* اللون الأحمر */
     color: white;
     padding: 10px;
     border-radius: 6px;
@@ -77,7 +81,7 @@
 }
 
 .vote-section button:hover {
-    background-color: #7C2327; /* اللون الداكن عند التمرير */
+    background-color: var(--primary); /* اللون الداكن عند التمرير */
 }
 
 .vote-section button:disabled {
@@ -99,7 +103,7 @@
 }
 
 .comment-form button {
-    background-color: #9C2A2F;
+    background-color: var(--primary);
     color: white;
     padding: 8px 15px;
     border-radius: 6px;
@@ -107,7 +111,7 @@
 }
 
 .comment-form button:hover {
-    background-color: #7C2327;
+    background-color: var(--primary);
 }
 
 .comment-card {
@@ -181,7 +185,7 @@
 }
 
 .comment-form input:focus {
-    border-color: #9C2A2F;
+    border-color: var(--primary);
     outline: none;
 }
 
@@ -193,7 +197,8 @@ button:hover {
 
 /* Links and Text Styles */
 .author-link {
-    color: #9C2A2F;
+    color: var(--primary);
+    font-size: var(--font-size-h2);
     text-decoration: none;
     font-weight: bold;
 }
@@ -211,26 +216,24 @@ button:hover {
 
 /* زر نسخ رابط البوست */
 .copy-button {
-    background-color: #9C2A2F;
-    color: white;
+    color: var(--primary);
     margin-top: 20px;
     border-radius: 8px;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    /* padding: 10px 20px; */
+    display: inline-block;
     font-weight: bold;
-    font-size: 14px;
+    font-size: var(--font-size-base);
     transition: background-color 0.3s ease, transform 0.2s ease;
-    width: auto;
+    /* width: 50px; */
     cursor: pointer;
+    background-color: transparent;
+    text-align: center;
 }
 
-.copy-button:hover {
+/* .copy-button:hover {
     background-color: #7C2327;
     transform: scale(1.05);
-}
+} */
 
 .copy-button:disabled {
     opacity: 0.6;
@@ -250,7 +253,7 @@ button:hover {
 
 .follow-btn {
     background-color: transparent;
-    color: #9C2A2F;
+    color: var(--primary);
     font-weight: 600;
     padding: 0;
     margin: 0;
@@ -264,7 +267,7 @@ button:hover {
 }
 
 .follow-btn:hover {
-    color: #7C2327;
+    color: var(--primary-dark);
 }
 
 .follow-btn:focus {

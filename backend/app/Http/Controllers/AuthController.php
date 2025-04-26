@@ -76,12 +76,18 @@ class AuthController extends Controller
             'message' => 'Login successful',
             'token' => $token,
             'user' => [
+
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
+                'profile_picture' => $user->profile_picture,
+                'national_id' => $user->national_id,
+                'linkedin' => $user->linkedin,
+                'github' => $user->github,
+                'bio' => $user->bio,
             ],
-        ]);
+        ],200);
     }
 
     public function googleLogin(Request $request)

@@ -13,7 +13,6 @@ import { ChangePasswordComponent } from './auth/change-password/change-password.
 // Main Pages
 import { MentorshipComponent } from './mentorship/mentorship.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { JobComponent } from './jobs/jobs.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
@@ -29,71 +28,33 @@ import { AuthGuard } from './guards/auth.guard';
 import { MentorGuard } from './auth/mentor.guard';
 
 export const routes: Routes = [
-  // ✅ MAIN Layout Routes - لازم تيجي الأول
+  // ✅ MAIN Layout Routes
   {
     path: '',
     component: MainLayoutComponent,
     children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./pages/home/home.component').then(m => m.HomeComponent),
-        title: 'Home'
-      },
+      { path: '', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent), title: 'Home' },
       { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
       { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
       { path: 'user/dashboard', component: UserDashboardComponent, title: 'User Dashboard' },
-      {
-        path: 'mentor/dashboard',
-        component: MentorDashboardComponent,
-        canActivate: [MentorGuard],
-        title: 'Mentor Dashboard'
-      },
-      {
-        path: 'main-content',
-        component: MainContentComponent,
-        canActivate: [AuthGuard],
-        title: 'Main Content'
-      },
-      { path: 'profile/edit', component: ProfileComponent, title: 'Edit Profile' },
-      {
-        path: 'profile',
-        loadComponent: () =>
-          import('./pages/profile-view/profile-view.component').then(m => m.ProfileViewComponent),
-        title: 'Profile'
-      },
+      { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
+      { path: 'community', component: MainContentComponent, canActivate: [AuthGuard], title: 'Community' },
 
       // ✅ Forum / Posts
       { path: 'posts', component: PostListComponent },
-      { path: 'posts/create', component: CreatePostComponent },
+      { path: 'posts/create', component: CreatePostComponent, canActivate: [AuthGuard] },
       { path: 'posts/:id', component: PostDetailComponent },
       { path: 'posts/edit/:id', component: EditPostComponent, canActivate: [AuthGuard] },
 
       // ✅ Open Projects
-      {
-        path: 'open-projects',
-        loadComponent: () =>
-          import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent)
-      },
-      {
-        path: 'open-projects/add',
-        loadComponent: () =>
-          import('./components/add-project/add-project.component').then(m => m.AddProjectComponent),
-        title: 'Add Project'
-      },
-      {
-        path: 'open-projects/edit/:id',
-        loadComponent: () =>
-          import('./components/edit-project.component').then(m => m.EditProjectComponent),
-        title: 'Edit Project',
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'open-projects/:id',
-        loadComponent: () =>
-          import('./components/project-detail/project-detail.component').then(m => m.ProjectDetailComponent),
-        title: 'Project Details'
-      }
+      { path: 'open-projects', loadComponent: () => import('./components/open-project-list/open-project-list.component').then(m => m.OpenProjectListComponent) },
+      { path: 'open-projects/add', loadComponent: () => import('./components/add-project/add-project.component').then(m => m.AddProjectComponent), canActivate: [AuthGuard] },
+      { path: 'open-projects/edit/:id', loadComponent: () => import('./components/edit-project.component').then(m => m.EditProjectComponent), canActivate: [AuthGuard] },
+      { path: 'open-projects/:id', loadComponent: () => import('./components/project-detail/project-detail.component').then(m => m.ProjectDetailComponent), title: 'Project Details' },
+
+      // ✅ Profile
+      { path: 'profile', loadComponent: () => import('./pages/profile-view/profile-view.component').then(m => m.ProfileViewComponent), title: 'Profile' },
+      { path: 'profile/edit', component: ProfileComponent, canActivate: [AuthGuard], title: 'Edit Profile' },
     ]
   },
 

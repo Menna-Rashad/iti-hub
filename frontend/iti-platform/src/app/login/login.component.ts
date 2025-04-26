@@ -15,6 +15,7 @@ declare const google: any;
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [
@@ -36,7 +37,6 @@ export class LoginComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
   formSubmitted = false;
-
 
   constructor(
     private authService: AuthService,
@@ -79,15 +79,34 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response: any) => {
-        if (response.token) {
+        const startTime = Date.now(); // temporary solution for undefined startTime
+        const endTime = Date.now();
+        const timeTaken = endTime - startTime;
+        console.log(`API Request took ${timeTaken} ms`);
+
+        if (timeTaken > 2000) {
+          console.warn(`⚠️ The request took too long: ${timeTaken} ms`);
+        }
+
+        console.log('🚀 Full API Response:', response);
+
+        if (response.token && response.user) {
+          console.log('🔑 Received Token:', response.token);
+
+          // ✅ Save token and full user data including profile_picture
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
+
           this.authState.setLoggedIn(true);
+
+          // ✅ Notify navbar to reload user data immediately
+          window.dispatchEvent(new Event('storage'));
 
           if (response.user?.id) localStorage.setItem('user_id', response.user.id);
           if (response.user?.role) localStorage.setItem('role', response.user.role);
 
           this.showNotification('🎉 Login successful! Redirecting...', 'success');
+
           this.email = '';
           this.password = '';
 
@@ -152,3 +171,4 @@ export class LoginComponent implements OnInit {
     });
   }
 }
+  

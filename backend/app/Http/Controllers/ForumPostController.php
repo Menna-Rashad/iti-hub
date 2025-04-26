@@ -20,7 +20,17 @@ class ForumPostController extends Controller
     public function index()
     {
         try {
-            $forumPosts = ForumPost::with(['comments.user', 'votes.user', 'category' ])->get();
+            $userId = auth()->id();
+
+            $forumPosts = ForumPost::with(['comments.user', 'votes', 'category', 'user'])->get();
+
+            // أضيف لكل بوست التصويت الحالي للمستخدم
+            $forumPosts->each(function ($post) use ($userId) {
+                $post->current_user_vote = $post->votes
+                    ->where('user_id', $userId)
+                    ->first()
+                    ?->vote_type ?? null;
+            });
 
             return response()->json($forumPosts);
         } catch (\Exception $e) {
@@ -30,6 +40,7 @@ class ForumPostController extends Controller
             ], 500);
         }
     }
+
 
     public function store(Request $request)
     {
@@ -62,26 +73,36 @@ class ForumPostController extends Controller
     }
 
     public function show(string $id)
-    {
-        try {
-            $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user'])->findOrFail($id);
-            $forumPost->refreshVoteCounts();
-    
-            $forumPost->media = $forumPost->media ?? [];
-            return response()->json($forumPost->toArray(), 200);
-            
-        } catch (\Exception $e) {
-            $forumPost->media = $forumPost->media ?? []; // fallback لو null
-            return response()->json($forumPost->toArray(), 200); // يخلي media ترجع array دايمًا
+{
+    try {
+        $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user', 'comments.votes'])->findOrFail($id);
+        $forumPost->refreshVoteCounts();
 
-            return response()->json([
-                'message' => 'خطأ في الخادم',
-                'error' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ], 500);
+        // ✅ أضف التصويت الحالي للمستخدم على البوست
+        $forumPost->current_user_vote = $forumPost->votes()
+            ->where('user_id', auth()->id())
+            ->value('vote_type');
+
+        // ✅ أضف التصويت الحالي لكل كومنت في البوست
+        foreach ($forumPost->comments as $comment) {
+            $comment->current_user_vote = $comment->votes()
+                ->where('user_id', auth()->id())
+                ->value('vote_type');
         }
+
+        $forumPost->media = $forumPost->media ?? [];
+        return response()->json($forumPost->toArray(), 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'خطأ في الخادم',
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
+        ], 500);
     }
+}
+
     
 
     public function update(Request $request, $id)

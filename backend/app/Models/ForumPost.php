@@ -67,4 +67,10 @@ class ForumPost extends Model
     {
         return $this->hasManyThrough(Badge::class, User::class, 'user_id', 'user_id');
     }
+
+    public function currentUserVote()
+{
+    return $this->morphOne(Vote::class, 'votable')->where('user_id', auth()->id());
+}
+
 }
