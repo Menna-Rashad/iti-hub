@@ -1,0 +1,21 @@
+<div class="admin-layout d-flex">
+    <!-- Sidebar -->
+    <aside class="sidebar p-3">
+      <h4 class="sidebar-title">ITI Admin</h4>
+      <nav class="nav flex-column">
+        <a routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">📊 Statistics</a>
+        <a routerLink="/admin/dashboard/users" routerLinkActive="active">👤 Users</a>
+        <a routerLink="/admin/dashboard/posts" routerLinkActive="active">📝 Posts</a>
+        <a routerLink="/admin/dashboard/comments" routerLinkActive="active">💬 Comments</a>
+        <a routerLink="/admin/dashboard/tickets" routerLinkActive="active">🎫 Tickets</a>
+        <a routerLink="/admin/dashboard/logs" routerLinkActive="active">🗂️ Admin Logs</a>
+        <!-- <a routerLink="/admin/dashboard/tasks" routerLinkActive="active">📋 Tasks</a> -->
+      </nav>
+    </aside>
+  
+    <!-- Main Content -->
+    <main class="main-content p-4 w-100">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  
