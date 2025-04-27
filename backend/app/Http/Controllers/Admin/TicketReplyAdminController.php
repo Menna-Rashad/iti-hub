@@ -7,6 +7,7 @@ use App\Models\SupportTicket;
 use App\Models\TicketReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AdminLog;
 
 class TicketReplyAdminController extends Controller
 {
@@ -54,6 +55,11 @@ class TicketReplyAdminController extends Controller
             'attachments' => $paths,
         ]);
 
+        AdminLog::create([
+            'admin_id' => auth()->id(),
+            'action' => "Admin replied to support ticket ID: {$ticket->id}",
+        ]);
+        
         return response()->json([
             'message' => 'Admin reply added successfully',
             'reply' => $reply
@@ -72,7 +78,11 @@ class TicketReplyAdminController extends Controller
             Storage::disk('public')->delete($file);
         }
     }
-
+    AdminLog::create([
+        'admin_id' => auth()->id(),
+        'action' => "Deleted ticket reply ID: {$id}",
+    ]);
+    
     $reply->delete();
 
     return response()->json(['message' => 'Reply deleted successfully']);
