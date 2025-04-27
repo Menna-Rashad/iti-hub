@@ -1,0 +1,163 @@
+<h3>🎫 Manage Support Tickets</h3>
+
+<!-- 🔎 Search -->
+<div class="row g-3 align-items-center mt-3 mb-4">
+  <div class="col-md-10">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="🔎 Search tickets..."
+      [(ngModel)]="searchTerm"
+      (input)="filterTickets()"
+    />
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterTickets()">
+      <option value="">All Statuses</option>
+      <option value="open">Open</option>
+      <option value="in_review">In Review</option>
+      <option value="closed">Closed</option>
+    </select>
+  </div>
+  
+  <div class="col-md-2">
+    <button class="btn btn-secondary w-100" (click)="clearSearch()">Reset</button>
+  </div>
+</div>
+
+<!-- 📋 Tickets Table -->
+<div class="table-responsive fade-in">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ticket of filteredTickets">
+        <td>{{ ticket.id }}</td>
+        <td>{{ ticket.title }}</td>
+        <td>
+          <span class="badge"
+            [ngClass]="{
+              'bg-success': ticket.status === 'open',
+              'bg-warning text-dark': ticket.status === 'in_review',
+              'bg-danger': ticket.status === 'closed'
+            }">
+            {{ ticket.status.replace('_', ' ') | titlecase }}
+          </span>
+        </td>
+        <td>{{ ticket.created_at | date:'medium' }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-2" (click)="openModal(ticket)">👁️ View</button>
+          <select class="form-select form-select-sm d-inline w-auto" (change)="updateTicketStatus(ticket.id, getSelectValue($event))">
+            <option disabled selected>Change Status</option>
+            <option value="open">Open</option>
+            <option value="in_review">In Review</option>
+            <option value="closed">Closed</option>
+          </select>
+          <button class="btn btn-sm btn-danger mt-2" (click)="deleteTicket(ticket.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 📄 Ticket Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content animate-slide-down p-4" (click)="$event.stopPropagation()" style="border-radius: 10px; max-height: 90vh; overflow-y: auto;">
+    <div class="modal-header mb-3">
+      <h5>📄 Ticket Details</h5>
+      <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- 🎯 Ticket Details -->
+      <p class="mb-2"><strong>📝 Title:</strong> {{ selectedTicket.title }}</p>
+      <p class="mb-2"><strong>🧾 Description:</strong> {{ selectedTicket.description || 'No description available.' }}</p>
+      <p class="mb-2"><strong>📊 Status:</strong> {{ selectedTicket.status.replace('_', ' ') | titlecase }}</p>
+      <p class="mb-2">
+        <strong>🎯 Priority:</strong>
+        <span class="badge bg-danger" *ngIf="selectedTicket.priority === 'high'">High</span>
+        <span class="badge bg-warning text-dark" *ngIf="selectedTicket.priority === 'medium'">Medium</span>
+        <span class="badge bg-secondary" *ngIf="selectedTicket.priority === 'low'">Low</span>
+      </p>
+      <p class="mb-2"><strong>🏷️ Category:</strong> {{ selectedTicket.category || 'No Category' }}</p>
+      <p class="mb-2"><strong>📅 Created At:</strong> {{ selectedTicket.created_at | date:'medium' }}</p>
+
+      <hr>
+
+      <!-- 📝 Reply Section -->
+      <div class="mb-3">
+        <button class="btn btn-info w-100" (click)="toggleReplyBox()">✍️ Reply as Admin</button>
+      </div>
+
+      <div *ngIf="showReplyBox" class="mb-3">
+        <textarea
+          class="form-control mb-2"
+          [(ngModel)]="adminReplyMessage"
+          placeholder="✏️ Type your reply here..."
+          rows="4"
+        ></textarea>
+
+        <input
+          type="file"
+          (change)="handleFileInput($event)"
+          multiple
+          class="form-control mb-2"
+        />
+
+        <button class="btn btn-success w-100" (click)="sendAdminReply()">🚀 Send Reply</button>
+      </div>
+
+      <hr>
+
+      <!-- 🗨️ Replies List -->
+      <h5>🗨️ Ticket Replies:</h5>
+
+      <div *ngIf="ticketReplies.length > 0; else noReplies">
+        <div *ngFor="let reply of ticketReplies" class="p-2 my-2 border rounded">
+          <p><strong>{{ reply.sender_type | titlecase }}:</strong> {{ reply.message || 'No message' }}</p>
+
+     <!-- Attachments -->
+     <div *ngIf="reply.attachments?.length > 0" class="mt-2">
+        <p><strong>📎 Attachments:</strong></p>
+        <div class="d-flex flex-wrap gap-2">
+          <div *ngFor="let file of reply.attachments" class="d-flex align-items-center gap-2">
+            <ng-container *ngIf="isImage(file); else fileLink">
+              <img [src]="extractFileUrl(file)" alt="attachment" style="width: 120px; height: auto; border-radius: 8px; border: 1px solid #ccc;">
+            </ng-container>
+            <ng-template #fileLink>
+              <a [href]="extractFileUrl(file)" target="_blank" class="text-primary text-decoration-underline">
+                {{ extractFileName(file) }}
+              </a>
+            </ng-template>
+      
+            <a [href]="extractFileUrl(file)" download class="btn btn-sm btn-outline-success">
+              ⬇️ Download
+            </a>
+          </div>
+        </div>
+      </div>
+      
+  
+
+          <p class="text-muted" style="font-size: 12px;">📅 {{ reply.created_at | date:'medium' }}</p>
+        </div>
+      </div>
+
+      <ng-template #noReplies>
+        <p class="text-muted">No replies yet.</p>
+      </ng-template>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

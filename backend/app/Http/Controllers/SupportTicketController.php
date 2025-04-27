@@ -87,7 +87,7 @@ class SupportTicketController extends Controller
     public function updateStatus(Request $request, $id)
 {
     $request->validate([
-        'status' => 'required|in:open,review,closed',
+        'status' => 'required|in:open,in_review,closed',
     ]);
 
     $ticket = SupportTicket::findOrFail($id);
@@ -98,6 +98,46 @@ class SupportTicketController extends Controller
         'message' => 'Ticket status updated successfully.',
         'ticket' => $ticket,
     ]);
+}
+public function updateTicket(Request $request, $id)
+{
+    $ticket = SupportTicket::findOrFail($id);
+
+    $request->validate([
+        'priority' => 'nullable|in:low,medium,high',
+        'category' => 'nullable|string|max:100',
+    ]);
+
+    $ticket->update($request->only(['priority', 'category']));
+
+    return response()->json([
+        'message' => 'Ticket updated successfully',
+        'ticket' => $ticket
+    ]);
+}
+public function destroy($id)
+{
+    $user = auth()->user();
+
+    if (!$user || $user->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $ticket = SupportTicket::findOrFail($id);
+
+    // Delete all related replies & their attachments (optional)
+    foreach ($ticket->replies as $reply) {
+        if (is_array($reply->attachments)) {
+            foreach ($reply->attachments as $path) {
+                \Storage::disk('public')->delete($path);
+            }
+        }
+        $reply->delete();
+    }
+
+    $ticket->delete();
+
+    return response()->json(['message' => 'Support ticket deleted successfully']);
 }
 
 }

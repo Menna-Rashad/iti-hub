@@ -1,0 +1,68 @@
+<h3>💬 Manage Comments</h3>
+
+<div class="row g-3 align-items-center mt-3 mb-4">
+  <div class="col-md-10">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="🔎 Search comments or users..."
+      [(ngModel)]="searchTerm"
+      (input)="filterComments()"
+    />
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-secondary w-100" (click)="clearSearch()">Reset</button>
+  </div>
+</div>
+
+<div class="table-responsive fade-in">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Content</th>
+        <th>User</th>
+        <th>Post Title</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let comment of filteredComments">
+        <td>{{ comment.id }}</td>
+        <td>
+          <span (click)="openModal(comment)" style="cursor: pointer;">
+            {{ comment.content.length > 100 ? (comment.content | slice:0:100) + '...' : comment.content }}
+          </span>
+        </td>
+        <td>{{ comment.user?.name || 'Unknown' }}</td>
+        <td>
+            {{ getPostTitle(comment.post_id) | slice:0:50 }}{{ getPostTitle(comment.post_id).length > 50 ? '...' : '' }}
+          </td>
+            <td>{{ comment.created_at | date:'medium' }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" (click)="deleteComment(comment.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal for Viewing Full Comment -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content animate-slide-down" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5>📝 Comment Details</h5>
+      <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Content:</strong> {{ selectedComment?.content }}</p>
+      <p><strong>User:</strong> {{ selectedComment?.user?.name || 'Unknown' }}</p>
+      <p><strong>Post ID:</strong> {{ selectedComment?.post_id }}</p>
+      <p><strong>Created At:</strong> {{ selectedComment?.created_at | date:'medium' }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(JobSeeder::class);
 
         $this->call(CategorySeeder::class);
+        $this->call(DummyDashboardSeeder::class);
 
     }
 }
