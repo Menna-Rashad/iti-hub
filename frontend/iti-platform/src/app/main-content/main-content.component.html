@@ -27,7 +27,7 @@
       <div class="post-header">
         <div class="post-author">
           <div class="user-info">
-          <img [src]="post.user?.profile_picture || defaultAvatar" alt="User Avatar" class="user-avatar">
+            <img [src]="post.user?.profile_picture" (error)="post.user.profile_picture = defaultAvatar" alt="User Avatar" class="user-avatar">
             <span>{{ post.user?.name || 'Unknown User' }}</span> <!-- عرض اسم صاحب البوست -->
             <button mat-button class="follow-btn" (click)="toggleFollow(post)">
               {{ isFollowing[post.id] ? 'Unfollow' : 'Follow' }} <!-- التفاعل مع زر المتابعة -->
@@ -73,15 +73,23 @@
       <!-- ✅ Tag-style Category -->
       <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
 
-      <!-- ✅ Like & Copy -->
+      <!-- ✅ Voting & Copy -->
       <div class="likes-section">
-        <button (click)="vote(post.id, 'upvote')" [disabled]="loadingVotes[post.id]">👍 {{ post.upvotes || 0 }}</button>
-        <button (click)="vote(post.id, 'downvote')" [disabled]="loadingVotes[post.id]">👎 {{ post.downvotes || 0 }}</button>
+        <app-vote-buttons
+          [targetType]="'post'"
+          [targetId]="post.id"
+          [upvotes]="post.upvotes"
+          [downvotes]="post.downvotes"
+          [currentVote]="post.current_user_vote"
+          (voteUpdated)="onVoteUpdated($event)">
+        </app-vote-buttons>
+
+        <!-- <button (click)="vote(post.id, 'upvote')" [disabled]="loadingVotes[post.id]">👍 {{ post.upvotes || 0 }}</button>
+        <button (click)="vote(post.id, 'downvote')" [disabled]="loadingVotes[post.id]">👎 {{ post.downvotes || 0 }}</button> -->
 
         <!-- ✅ Copy with Tooltip -->
-        <button mat-icon-button [matTooltip]="'Copy post link'" (click)="copyLink(post.id)">
-          <mat-icon>content_copy</mat-icon>
-        </button>
+        <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.id"></app-copy-button>
+
       </div>
 
       <a [routerLink]="['/posts', post.id]">View Discussion</a>

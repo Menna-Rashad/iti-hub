@@ -13,12 +13,19 @@ class CommentController extends Controller
     public function index($forumPostId): JsonResponse
     {
         $comments = Comment::where('post_id', $forumPostId)
-            ->with('user') // رجع بيانات اليوزر
-            ->orderBy('created_at', 'desc') // الترتيب من الأحدث
+            ->with(['user', 'votes']) // جِب الفوتس
+            ->orderBy('created_at', 'desc')
             ->get();
+
+        foreach ($comments as $comment) {
+            $comment->current_user_vote = $comment->votes()
+                ->where('user_id', auth()->id())
+                ->value('vote_type');
+        }
 
         return response()->json($comments);
     }
+
 
     // إضافة كومنت جديد
     public function store(Request $request, $postId): JsonResponse
