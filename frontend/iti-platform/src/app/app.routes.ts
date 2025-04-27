@@ -43,7 +43,44 @@ export const routes: Routes = [
     title: 'Home',
   },
   { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
-  { path: 'admin/dashboard', component: AdminDashboardComponent, title: 'Admin Dashboard' },
+  {
+    path: 'admin/dashboard',
+    loadComponent: () =>
+      import('./admin-dashboard-new/admin-dashboard-new.component').then(m => m.AdminDashboardNewComponent),
+    title: 'Admin Dashboard',
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./admin-dashboard/statistics/statistics.component').then(m => m.StatisticsComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./admin-dashboard/users/users.component').then(m => m.UsersComponent),
+      },
+      {
+        path: 'posts',
+        loadComponent: () =>
+          import('./admin-dashboard/posts/posts.component').then(m => m.PostsComponent),
+      },
+      {
+        path: 'comments',
+        loadComponent: () =>
+          import('./admin-dashboard/comments/comments.component').then(m => m.CommentsComponent),
+      },
+      {
+        path: 'tickets',
+        loadComponent: () =>
+          import('./admin-dashboard/tickets/tickets.component').then(m => m.TicketsComponent)
+      },
+      {
+        path: 'logs',
+        loadComponent: () =>
+          import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent)
+      }      
+  ]
+  },
   //user dashborad
   { path: 'user/dashboard', component: UserDashboardComponent ,title: 'user Dashboard'},
 
