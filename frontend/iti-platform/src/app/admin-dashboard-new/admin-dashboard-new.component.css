@@ -1,0 +1,65 @@
+.admin-layout {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .sidebar {
+    width: 230px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgb(124, 12, 12), rgb(164, 32, 32));
+    color: white;
+    position: sticky;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  
+  .sidebar-title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .sidebar .nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: block;
+    transition: background-color 0.2s ease;
+  }
+  
+  .sidebar .nav a:hover,
+  .sidebar .nav a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .main-content {
+    background-color: #fff;
+    min-height: 100vh;
+    border-top-left-radius: 10px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .admin-dashboard {
+    padding: 20px;
+  }
+  
+  .statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-card {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
