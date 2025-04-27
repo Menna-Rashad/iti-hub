@@ -86,7 +86,7 @@ export class CreatePostComponent implements OnInit {
     });
 
     this.forumService.createPost(formData).subscribe({
-      next: () => this.router.navigate(['/main-content']),
+      next: () => this.router.navigate(['/community']),
       error: () => alert('Failed to create post.')
     });
   }

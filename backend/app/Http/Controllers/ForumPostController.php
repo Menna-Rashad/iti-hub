@@ -95,33 +95,34 @@ class ForumPostController extends Controller
     public function show(string $hashid)
     {
         try {
-            // ✅ أول حاجة نفك التشفير
             $decoded = Hashids::decode($hashid);
-    
+
             if (empty($decoded)) {
                 return response()->json(['message' => 'Invalid post id'], 404);
             }
-    
-            $id = $decoded[0]; // هنا خدنا أول قيمة بعد فك التشفير
-    
-            // ✅ بعدين نكمل شغلنا الطبيعي
+
+            $id = $decoded[0];
+
             $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user', 'comments.votes'])->findOrFail($id);
             $forumPost->refreshVoteCounts();
-    
+
+            // ✅ أضيف الـ hashid هنا
+            $forumPost->hash_id = $hashid;
+
             $forumPost->current_user_vote = $forumPost->votes()
                 ->where('user_id', auth()->id())
                 ->value('vote_type');
-    
+
             foreach ($forumPost->comments as $comment) {
                 $comment->current_user_vote = $comment->votes()
                     ->where('user_id', auth()->id())
                     ->value('vote_type');
             }
-    
+
             $forumPost->media = $forumPost->media ?? [];
-    
+
             return response()->json($forumPost->toArray(), 200);
-    
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'خطأ في الخادم',
@@ -135,58 +136,76 @@ class ForumPostController extends Controller
 
     
 
-    public function update(Request $request, $id)
-{
-    Log::info('Update request:', $request->all());
-    Log::info('✔️ title: ' . $request->input('title'));
-    Log::info('✔️ content: ' . $request->input('content'));
-    Log::info('✔️ tags: ' . $request->input('tags'));
-    Log::info('✔️ category_id: ' . $request->input('category_id'));
-    
-    $post = ForumPost::findOrFail($id);
-    $this->authorize('update', $post);
-
-    // 🛡️ Validate
-    $request->validate([
-        'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200'
-    ]);
-
-    // ✅ استخدم input بدال has
-    $post->title = $request->input('title', $post->title);
-    $post->content = $request->input('content', $post->content);
-    $post->tags = $request->input('tags', $post->tags);
-    $post->category_id = $request->input('category_id', $post->category_id);
-
-    // ✅ Handle media
-    $mediaFiles = $request->allFiles()['media'] ?? [];
-    if (!is_array($mediaFiles)) {
-        $mediaFiles = [$mediaFiles];
-    }
-
-    $newMediaPaths = [];
-    foreach ($mediaFiles as $file) {
-        if ($file && $file->isValid()) {
-            $newMediaPaths[] = $file->store('posts_media', 'public');
-        }
-    }
-
-    $existingMedia = json_decode($request->input('existing_media') ?? '[]');
-    $post->media = array_merge($existingMedia, $newMediaPaths);
-    $post->save();
-
-    return response()->json($post->toArray(), 200);
-}
-
-
-
-
-    public function destroy(string $id)
+    public function update(Request $request, $hashid)
     {
-        $forumPost = ForumPost::findOrFail($id);
-        $forumPost->delete();
+        $decoded = Hashids::decode($hashid);
+    
+        if (empty($decoded)) {
+            return response()->json(['message' => 'Invalid post id'], 404);
+        }
+    
+        $id = $decoded[0];
+    
+        $post = ForumPost::findOrFail($id);
+        $this->authorize('update', $post);
+    
+        Log::info('Update request:', $request->all());
+        Log::info('✔️ title: ' . $request->input('title'));
+        Log::info('✔️ content: ' . $request->input('content'));
+        Log::info('✔️ tags: ' . $request->input('tags'));
+        Log::info('✔️ category_id: ' . $request->input('category_id'));
+        
+        $request->validate([
+            'media.*' => 'file|mimes:jpg,jpeg,png,gif,mp4,mp3,zip,pdf,docx,doc,ppt,pptx|max:51200'
+        ]);
+    
+        $post->title = $request->input('title', $post->title);
+        $post->content = $request->input('content', $post->content);
+        $post->tags = $request->input('tags', $post->tags);
+        $post->category_id = $request->input('category_id', $post->category_id);
+    
+        $mediaFiles = $request->allFiles()['media'] ?? [];
+        if (!is_array($mediaFiles)) {
+            $mediaFiles = [$mediaFiles];
+        }
+    
+        $newMediaPaths = [];
+        foreach ($mediaFiles as $file) {
+            if ($file && $file->isValid()) {
+                $newMediaPaths[] = $file->store('posts_media', 'public');
+            }
+        }
+    
+        $existingMedia = json_decode($request->input('existing_media') ?? '[]');
+        $post->media = array_merge($existingMedia, $newMediaPaths);
+        $post->save();
+    
+        return response()->json($post->toArray(), 200);
+    }
+    
 
+
+
+    public function destroy(string $hashid)
+    {
+        $decoded = Hashids::decode($hashid);
+    
+        if (empty($decoded)) {
+            return response()->json(['message' => 'Invalid post id'], 404);
+        }
+    
+        $id = $decoded[0];
+    
+        $forumPost = ForumPost::findOrFail($id);
+    
+        $this->authorize('delete', $forumPost); // 👈 اضيفي authorization قبل الحذف، حماية.
+    
+        $forumPost->delete();
+    
         return response()->json(['message' => 'Post deleted successfully']);
     }
+    
+
 
     public function search(Request $request)
     {

@@ -56,7 +56,7 @@ export class ApiService {
   deletePost(postId: string): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.apiUrl}/forum/posts/${postId}`, { headers });  // تأكد من الرابط الصحيح
+    return this.http.delete(`${this.apiUrl}/forum/posts/${postId}`, { headers });
   }   
   
 }

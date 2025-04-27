@@ -48,6 +48,7 @@ export class PostDetailComponent implements OnInit {
   isVoting = false;
   isAddingComment = false;
   isFollowing: boolean = false;
+  hashid: string = '';
 
   defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
 
@@ -66,13 +67,14 @@ export class PostDetailComponent implements OnInit {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (id) this.loadPost(id);
+        this.hashid = this.route.snapshot.paramMap.get('id') || '';
+        if (this.hashid) this.loadPost(this.hashid);
       });
-
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.loadPost(id);
+  
+    this.hashid = this.route.snapshot.paramMap.get('id') || '';
+    if (this.hashid) this.loadPost(this.hashid);
   }
+  
 
   loadPost(id: string) {
     this.api.getPost(id).subscribe(post => {
@@ -83,27 +85,17 @@ export class PostDetailComponent implements OnInit {
       }
   
       this.post = post;
-      console.log('current_user_vote for post:', post.current_user_vote);
-      post.comments?.forEach((c: any) => console.log(`Comment ${c.id} vote:`, c.current_user_vote));
+      this.post.hashid = this.hashid; // 👈 نثبتله الهاشيد اللي جاي من ال URL
+  
+      console.log('Post loaded:', this.post);
   
       const userId = localStorage.getItem('user_id');
-      this.isFollowing = post.user_id === userId; 
+      this.isFollowing = post.user_id === userId;
       this.canEdit = userId !== null && post.user_id == userId;
       this.visibleComments = post.comments?.slice(0, 3);
-  
-      if (!this.post.current_user_vote) {
-        this.post.current_user_vote = null;
-      }
-  
-      if (this.post.comments?.length) {
-        this.post.comments.forEach((comment: any) => {
-          if (!comment.current_user_vote) {
-            comment.current_user_vote = null;
-          }
-        });
-      }
     });
   }
+  
   
   
 
@@ -189,12 +181,12 @@ export class PostDetailComponent implements OnInit {
   }
 
   goToEdit() {
-    this.router.navigate(['/posts/edit', this.post.id]);
+    this.router.navigate(['/posts/edit', this.hashid]);
   }
 
   deletePost() {
-    this.api.deletePost(this.post.id).subscribe({
-      next: () => this.router.navigate(['/main-content']),
+    this.api.deletePost(this.hashid).subscribe({
+      next: () => this.router.navigate(['/community']),
       error: (err) => console.error('Error deleting post:', err)
     });
   }
@@ -215,10 +207,11 @@ export class PostDetailComponent implements OnInit {
     return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
 
-  copyPost(post: any) {
-    const postUrl = `${window.location.origin}/posts/${post.id}`; 
-    this.clipboard.copy(postUrl); 
-    alert('Post link copied to clipboard!'); 
+  copyPost() {
+    const postUrl = `${window.location.origin}/posts/${this.post.hashid}`; 
+    this.clipboard.copy(postUrl);
+    alert('Post link copied to clipboard!');
   }
+     
   
 }

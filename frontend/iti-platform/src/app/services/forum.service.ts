@@ -43,11 +43,12 @@ export class ForumService {
     return this.http.post(`${this.apiUrl}/posts/${postId}`, data, { headers });
   }
   
-  deletePost(postId: number): Observable<any> {
+  deletePost(postId: string): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.apiUrl}/posts/${postId}`, { headers });
   }
+  
 
   searchPosts(query: string): Observable<any> {
     const token = localStorage.getItem('auth_token');

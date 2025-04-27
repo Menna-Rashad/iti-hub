@@ -275,9 +275,9 @@ toggleFollow(post: any): void {
   }
   
 
-  deletePost(postId: number): void {
+  deletePost(postId: string): void {
     if (confirm('🗑 Are you sure you want to delete this post?')) {
-      this.forumService.deletePost(postId).subscribe({
+      this.forumService.deletePost(postId.toString()).subscribe({
         next: () => {
           this.loadPosts();
           this.toastr.success('Post deleted successfully.');
