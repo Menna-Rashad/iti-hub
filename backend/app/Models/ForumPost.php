@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Vinkla\Hashids\Facades\Hashids;
 
 class ForumPost extends Model
 {
@@ -69,8 +70,12 @@ class ForumPost extends Model
     }
 
     public function currentUserVote()
-{
+    {
     return $this->morphOne(Vote::class, 'votable')->where('user_id', auth()->id());
-}
+    }
 
+    public function getHashIdAttribute()
+    {
+        return Hashids::encode($this->id);
+    }
 }

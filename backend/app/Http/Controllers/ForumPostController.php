@@ -11,6 +11,8 @@ use App\Models\Comment;
 use App\Models\Vote;
 use App\Models\User;
 use App\Models\Badge;
+use Vinkla\Hashids\Facades\Hashids; // 👈 لازم فوق فايل الكونترولر تتأكدي انه موجود
+
 
 
 class ForumPostController extends Controller
@@ -32,7 +34,24 @@ class ForumPostController extends Controller
                     ?->vote_type ?? null;
             });
 
+            $forumPosts = $forumPosts->map(function ($post) {
+                return [
+                    'id' => $post->hash_id, // هنبعت الـ hash_id بدل الـ id العادي
+                    'user' => $post->user,
+                    'category' => $post->category,
+                    'title' => $post->title,
+                    'content' => $post->content,
+                    'upvotes' => $post->upvotes,
+                    'downvotes' => $post->downvotes,
+                    'created_at' => $post->created_at,
+                    'updated_at' => $post->updated_at,
+                    'media' => $post->media,
+                    'tags' => $post->tags,
+                ];
+            });
+            
             return response()->json($forumPosts);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error loading posts',
@@ -72,36 +91,47 @@ class ForumPostController extends Controller
         return response()->json($forumPost, 201);
     }
 
-    public function show(string $id)
-{
-    try {
-        $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user', 'comments.votes'])->findOrFail($id);
-        $forumPost->refreshVoteCounts();
 
-        // ✅ أضف التصويت الحالي للمستخدم على البوست
-        $forumPost->current_user_vote = $forumPost->votes()
-            ->where('user_id', auth()->id())
-            ->value('vote_type');
-
-        // ✅ أضف التصويت الحالي لكل كومنت في البوست
-        foreach ($forumPost->comments as $comment) {
-            $comment->current_user_vote = $comment->votes()
+    public function show(string $hashid)
+    {
+        try {
+            // ✅ أول حاجة نفك التشفير
+            $decoded = Hashids::decode($hashid);
+    
+            if (empty($decoded)) {
+                return response()->json(['message' => 'Invalid post id'], 404);
+            }
+    
+            $id = $decoded[0]; // هنا خدنا أول قيمة بعد فك التشفير
+    
+            // ✅ بعدين نكمل شغلنا الطبيعي
+            $forumPost = ForumPost::with(['comments.user', 'votes', 'category', 'user', 'comments.votes'])->findOrFail($id);
+            $forumPost->refreshVoteCounts();
+    
+            $forumPost->current_user_vote = $forumPost->votes()
                 ->where('user_id', auth()->id())
                 ->value('vote_type');
+    
+            foreach ($forumPost->comments as $comment) {
+                $comment->current_user_vote = $comment->votes()
+                    ->where('user_id', auth()->id())
+                    ->value('vote_type');
+            }
+    
+            $forumPost->media = $forumPost->media ?? [];
+    
+            return response()->json($forumPost->toArray(), 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'خطأ في الخادم',
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
         }
-
-        $forumPost->media = $forumPost->media ?? [];
-        return response()->json($forumPost->toArray(), 200);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'خطأ في الخادم',
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ], 500);
     }
-}
+    
 
     
 
