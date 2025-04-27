@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AdminLog; 
 
 class UserAdminController extends Controller
 {
@@ -38,6 +39,11 @@ class UserAdminController extends Controller
     $user->role = $request->role;
     $user->save();
 
+    AdminLog::create([
+        'admin_id' => auth()->id(),
+        'action' => "Changed role for user ID: {$user->id} to {$user->role}",
+    ]);
+
     return response()->json(['message' => 'User role updated successfully', 'user' => $user]);
 }
 
@@ -57,6 +63,11 @@ class UserAdminController extends Controller
 
         $user->delete();
 
+        AdminLog::create([
+            'admin_id' => auth()->id(),
+            'action' => "Deleted user with ID: {$user->id}",
+        ]);
+        
         return response()->json(['message' => 'User deleted successfully']);
     }
 }
