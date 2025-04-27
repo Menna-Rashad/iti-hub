@@ -87,7 +87,7 @@ class SupportTicketController extends Controller
     public function updateStatus(Request $request, $id)
 {
     $request->validate([
-        'status' => 'required|in:open,review,closed',
+        'status' => 'required|in:open,in_review,closed',
     ]);
 
     $ticket = SupportTicket::findOrFail($id);
