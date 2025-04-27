@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\Admin\SupportTicketAdminController;
 use App\Http\Controllers\Admin\PostAdminController;
 use App\Http\Controllers\Admin\TaskAdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -51,6 +52,11 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin')->group(function () {
+        Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);
+        Route::put('/users/{id}', [UserAdminController::class, 'update']);
+        Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+        Route::get('/logs', [\App\Http\Controllers\Admin\AdminLogController::class, 'index']);
+
         Route::get('/tasks', [\App\Http\Controllers\Admin\TaskAdminController::class, 'index']);
         Route::delete('/tasks/{id}', [\App\Http\Controllers\Admin\TaskAdminController::class, 'destroy']);    
         Route::get('/comments', [\App\Http\Controllers\Admin\CommentAdminController::class, 'index']);
@@ -70,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/ticket-replies', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'index']);
         Route::post('/support-tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'store']);
         Route::delete('/ticket-replies/{id}', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'destroy']);
+        Route::get('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'getReplies']);
+
     });
     
     // ✅ Authentication Routes
@@ -177,24 +185,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==========================
     // 🔴 Admin Dashboard
     // ==========================
-    Route::get('/admin/dashboard', function () {
-        $user = Auth::user();
+    // Route::get('/admin/dashboard', function () {
+    //     $user = Auth::user();
     
-        if (!$user || $user->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized - You are not an admin'], 403);
-        }
+    //     if (!$user || $user->role !== 'admin') {
+    //         return response()->json(['message' => 'Unauthorized - You are not an admin'], 403);
+    //     }
     
-        return response()->json([
-            'message' => 'Welcome to the Admin Dashboard!',
-            'users'   => \App\Models\User::all(),
-            'stats'   => [
-                'total_users' => \App\Models\User::count(),
-                'admins'      => \App\Models\User::where('role', 'admin')->count(),
-                'tickets'     => \App\Models\SupportTicket::count(),
-                'open_tickets' => \App\Models\SupportTicket::where('status', 'open')->count(),
-            ],
-        ]);
-    });
+    //     return response()->json([
+    //         'message' => 'Welcome to the Admin Dashboard!',
+    //         'users'   => \App\Models\User::all(),
+    //         'stats'   => [
+    //             'total_users' => \App\Models\User::count(),
+    //             'admins'      => \App\Models\User::where('role', 'admin')->count(),
+    //             'tickets'     => \App\Models\SupportTicket::count(),
+    //             'open_tickets' => \App\Models\SupportTicket::where('status', 'open')->count(),
+    //         ],
+    //     ]);
+    // });
     
 
     // Support‑ticket replies
