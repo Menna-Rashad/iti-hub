@@ -7,9 +7,21 @@ use App\Models\SupportTicket;
 use App\Models\TicketReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\AdminLog;
 
 class TicketReplyAdminController extends Controller
 {
+    public function index()
+{
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $replies = TicketReply::with('ticket', 'ticket.user')->latest()->get();
+
+    return response()->json($replies);
+}
+
     public function store(Request $request, $id)
     {
         if (auth()->user()->role !== 'admin') {
@@ -43,9 +55,37 @@ class TicketReplyAdminController extends Controller
             'attachments' => $paths,
         ]);
 
+        AdminLog::create([
+            'admin_id' => auth()->id(),
+            'action' => "Admin replied to support ticket ID: {$ticket->id}",
+        ]);
+        
         return response()->json([
             'message' => 'Admin reply added successfully',
             'reply' => $reply
         ], 201);
     }
+    public function destroy($id)
+{
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $reply = TicketReply::findOrFail($id);
+
+    if (is_array($reply->attachments)) {
+        foreach ($reply->attachments as $file) {
+            Storage::disk('public')->delete($file);
+        }
+    }
+    AdminLog::create([
+        'admin_id' => auth()->id(),
+        'action' => "Deleted ticket reply ID: {$id}",
+    ]);
+    
+    $reply->delete();
+
+    return response()->json(['message' => 'Reply deleted successfully']);
+}
+
 }

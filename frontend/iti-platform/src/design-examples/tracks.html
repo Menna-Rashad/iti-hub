@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracks - ITIHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #901B20;
+      --primary-dark: #6B1418;
+      --secondary: #F3F4F6;
+      --background: #FFFFFF;
+      --background-alt: #F7F7F7;
+      --text-primary: #1F2A44;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --error: #DC2626;
+      --border: #D1D5DB;
+      --border-light: #E5E7EB;
+      --font-family: 'Inter', Arial, sans-serif;
+      --font-size-base: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-xs: 0.75rem;
+      --font-size-h1: 2rem;
+      --font-size-h2: 1.5rem;
+      --font-size-h3: 1.25rem;
+      --font-weight-light: 300;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --line-height-base: 1.5;
+      --line-height-heading: 1.2;
+      --letter-spacing-heading: 0.02em;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --border-radius-sm: 4px;
+      --border-radius-md: 8px;
+      --border-width: 1px;
+      --border-width-focus: 2px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --transition-duration: 200ms;
+      --transition-easing: ease-in-out;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-family); font-size: var(--font-size-base); line-height: var(--line-height-base); color: var(--text-primary); background-color: var(--background); }
+    h1 { font-size: var(--font-size-h1); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h2 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); margin-bottom: var(--space-md); }
+    h3 { font-size: var(--font-size-h3); font-weight: var(--font-weight-medium); line-height: var(--line-height-heading); margin-bottom: var(--space-sm); }
+    p { margin-bottom: var(--space-md); }
+    small { font-size: var(--font-size-sm); color: var(--text-secondary); }
+    a { color: var(--primary); text-decoration: none; transition: color var(--transition-duration) var(--transition-easing); }
+    a:hover { color: var(--primary-dark); text-decoration: underline; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-base); font-weight: var(--font-weight-medium); border-radius: var(--border-radius-md); border: none; cursor: pointer; transition: background-color var(--transition-duration) var(--transition-easing), color var(--transition-duration) var(--transition-easing), transform var(--transition-duration) var(--transition-easing); }
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
+    .btn-outline { background-color: transparent; border: var(--border-width) solid var(--border); color: var(--text-primary); }
+    .btn-outline:hover { background-color: var(--background-alt); border-color: var(--primary); color: var(--primary); }
+    input, textarea { width: 100%; padding: var(--space-sm); font-size: var(--font-size-base); border: var(--border-width) solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--background); transition: border-color var(--transition-duration) var(--transition-easing); }
+    input:focus, textarea:focus { outline: none; border: var(--border-width-focus) solid var(--primary); }
+    .card { background-color: var(--background); border: var(--border-width) solid var(--border-light); border-radius: var(--border-radius-md); box-shadow: var(--shadow-md); padding: var(--space-md); transition: box-shadow var(--transition-duration) var(--transition-easing); }
+    .card:hover { box-shadow: var(--shadow-lg); }
+    .nav { background-color: var(--secondary); padding: var(--space-md); position: sticky; top: 0; z-index: 1000; }
+    .nav a { color: var(--text-primary); font-weight: var(--font-weight-medium); padding: var(--space-sm); border-radius: var(--border-radius-sm); }
+    .nav a:hover { background-color: rgba(144, 27, 32, 0.1); color: var(--primary); text-decoration: none; }
+    .alert { padding: var(--space-md); border-radius: var(--border-radius-md); margin-bottom: var(--space-md); }
+    .alert-success { background-color: var(--success); color: #FFFFFF; }
+    .m-0 { margin: 0; }
+    .mt-3 { margin-top: var(--space-md); }
+    .p-3 { padding: var(--space-md); }
+    .text-center { text-align: center; }
+    .text-sm { font-size: var(--font-size-sm); }
+    .accordion { cursor: pointer; padding: var(--space-sm) var(--space-md); border-radius: var(--border-radius-sm); }
+    .accordion-content { display: none; padding-left: var(--space-md); }
+    .accordion.active .accordion-content { display: block; }
+
+    /* Tracks-specific styles */
+    .tracks-container {
+      display: flex;
+      min-width: 200px;
+      /* margin: 0 auto; */
+      justify-content: space-between;
+      min-height: calc(100vh - 64px - 80px); /* Adjust for navbar (64px) and footer (80px) */
+    }
+    .tracks-sidebar {
+      width: 260px;
+      background-color: var(--background-alt);
+      padding: var(--space-md) 0;
+      position: sticky;
+      top: 64px; /* Below navbar */
+      max-height: calc(100vh - 64px - 80px); /* Stretch to footer */
+      overflow-y: auto; /* Inner scrolling */
+      border-right: var(--border-width) solid var(--border-light);
+    }
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .sub-accordion { cursor: pointer; padding: var(--space-xs) var(--space-md); }
+    .sub-accordion-content { display: none; padding-left: var(--space-sm); }
+    .sub-accordion.active .sub-accordion-content { display: block; }
+    .track-link {
+      color: var(--text-primary);
+      font-weight: var(--font-weight-regular);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--border-radius-sm);
+      display: block;
+      min-height: 44px; /* WCAG touch target */
+      line-height: 20px;
+      transition: background-color var(--transition-duration) var(--transition-easing),
+                  color var(--transition-duration) var(--transition-easing);
+      white-space: normal;
+      word-break: break-word;
+      font-size: 0.9rem;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      margin-bottom: var(--space-xs);
+    }
+    .track-link:hover, .sub-accordion:hover{
+      background-color: rgba(144, 27, 32, 0.1);
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .track-link.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+    .coming-soon {
+      padding: var(--space-md);
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    .tracks-content {
+      flex: 1;
+      padding: var(--space-lg);
+    }
+    .hero {
+      background-color: var(--background-alt);
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .icon-inline {
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: middle;
+      margin-right: 0.3rem;
+    }
+
+
+    /* Media Queries */
+    @media (max-width: 480px) {
+      .tracks-container {
+        flex-direction: column;
+        padding: var(--space-md);
+      }
+      .tracks-sidebar {
+        width: 100%;
+        position: static;
+        max-height: none;
+        padding: var(--space-sm);
+        border-right: none;
+        border-bottom: var(--border-width) solid var(--border-light);
+      }
+      .track-list {
+        gap: var(--space-xs);
+      }
+      .accordion, .sub-accordion, .track-link {
+        font-size: var(--font-size-sm);
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .sub-accordion-content {
+        padding-left: var(--space-sm);
+      }
+      .tracks-content {
+        padding: var(--space-md);
+      }
+      .hero {
+        padding: var(--space-lg) var(--space-sm);
+      }
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input { max-width: 100%; }
+    }
+    @media (max-width: 768px) and (min-width: 481px) {
+      .tracks-container {
+        flex-direction: column;
+        padding: var(--space-lg) var(--space-md);
+      }
+      .tracks-sidebar {
+        width: 100%;
+        position: static;
+        max-height: none;
+        padding: var(--space-md);
+        border-right: none;
+        border-bottom: var(--border-width) solid var(--border-light);
+      }
+      .tracks-content {
+        padding: var(--space-md);
+      }
+      .hero {
+        padding: var(--space-lg) var(--space-md);
+      }
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+      .nav { display: flex; flex-direction: column; align-items: center; }
+      .nav div { flex-direction: column; gap: var(--space-sm); }
+      input { max-width: 100%; }
+    }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      /* .tracks-container {
+        padding: var(--space-lg) var(--space-md);
+      } */
+      .tracks-sidebar {
+        width: 180px;
+        padding: var(--space-sm) 0;
+      }
+      .tracks-content {
+        padding: var(--space-md);
+      }
+      .hero {
+        padding: var(--space-lg) var(--space-md);
+      }
+    }
+    @media (min-width: 1201px) {
+      /* .tracks-container {
+        padding: var(--space-md);
+      } */
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (identical to applicationRoadmap.html and support.html) -->
+  <nav class="nav">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="color: var(--primary); font-size: 1.5rem; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3); margin-bottom: 0;">ITIHub</h1>
+      <div style="display: flex; gap: 1rem;">
+        <a href="home.html">Home</a>
+        <a href="tracks.html">Tracks</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+        <a href="support.html">Support</a>
+      </div>
+      <input type="text" placeholder="Search FAQs..." style="max-width: 200px;" aria-label="Search">
+    </div>
+  </nav>
+
+  <!-- Tracks Section -->
+  <section style="background-color: var(--background);">
+    <div class="tracks-container">
+      <!-- Sidebar -->
+      <div class="tracks-sidebar">
+        <div class="track-list">
+          <!-- 9 Months Accordion -->
+          <div class="accordion">
+            <h3>9 Months</h3>
+            <div class="accordion-content">
+              <!-- Open Source -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Open Source</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link active"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Open Source Applications Development</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Telecom Applications Development</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Cloud Platform Development</a>
+                </div>
+              </div>
+              <!-- Software Engineering & Development -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Software Engineering & Development</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Enterprise & Web Applications Development (Java, Microsoft)</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Cross-Platform Mobile Applications Development</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Native Mobile Applications Development</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Professional Web Development and Business Intelligence</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Systems Development (PD, SWA, Mobile Cross)</a>
+                </div>
+              </div>
+              <!-- Infrastructure, Networks & Cybersecurity -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Infrastructure, Networks & Cybersecurity</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Cybersecurity</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Cloud Architecture</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Systems Administration</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Infrastructural Network and Security Services</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Wireless Communications</a>
+                </div>
+              </div>
+              <!-- Data & Information Systems -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Data & Information Systems</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Data Science</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Data Management</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>ERP Consulting</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Civil Engineering Informatics</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Geoinformatics (GIS)</a>
+                </div>
+              </div>
+              <!-- Artificial Intelligence & Cognitive Computing -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Artificial Intelligence & Cognitive Computing</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>AI & Machine Learning Engineer</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Cognitive Computing and AI</a>
+                </div>
+              </div>
+              <!-- Quality Assurance & Testing -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Quality Assurance & Testing</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Software Testing and Quality Assurance</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>QA Engineering and Validation</a>
+                </div>
+              </div>
+              <!-- Industrial & Embedded Systems -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Industrial & Embedded Systems</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Embedded Systems</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Embedded Mobile Systems</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Industrial Systems</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Industrial Automation</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Mechatronics</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Digital IC Design</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>VLSI Design Engineering</a>
+                </div>
+              </div>
+              <!-- Digital Arts & Media -->
+              <div class="sub-accordion">
+                <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder icon-inline"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Digital Arts & Media</h4>
+                <div class="sub-accordion-content">
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>2D Animation and Motion Graphics</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>3D Art</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Game Art</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Game Programming</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>VFX Compositing</a>
+                  <a href="#" class="track-link"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-icon lucide-file icon-inline"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Content Development</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 4 Months Accordion -->
+          <div class="accordion">
+            <h3>4 Months</h3>
+            <div class="accordion-content">
+              <p class="coming-soon">Coming Soon</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right content section -->
+      <div class="tracks-content">
+        <!-- Hero section -->
+        <div class="hero">
+          <h1>Tracks</h1>
+          <p>Explore ITI scholarship tracks to find the perfect fit for your career goals.</p>
+        </div>
+       
+        <!-- Dynamic content will be added here based on selected track -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (identical to applicationRoadmap.html and support.html) -->
+  <footer style="background-color: var(--secondary); color: var(--text-primary); padding: var(--space-lg); text-align: center;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="text-sm">© 2025 ITIHub. All rights reserved.</p>
+      <div style="margin-top: var(--space-sm);">
+        <a href="#faqs" style="color: var(--text-primary); margin: 0 var(--space-sm);">FAQs</a>
+        <a href="#contact" style="color: var(--text-primary); margin: 0 var(--space-sm);">Contact</a>
+        <a href="#social" style="color: var(--text-primary); margin: 0 var(--space-sm);">Follow Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Handle top-level accordions
+    document.querySelectorAll('.accordion').forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.sub-accordion, .track-link')) return; // Prevent toggle if clicking sub-items
+        item.classList.toggle('active');
+      });
+    });
+    // Handle sub-accordions
+    document.querySelectorAll('.sub-accordion').forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.track-link')) return; // Prevent toggle if clicking tracks
+        item.classList.toggle('active');
+      });
+    });
+    // Handle track links
+    document.querySelectorAll('.track-link').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.track-link').forEach(link => link.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

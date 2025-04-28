@@ -41,4 +41,10 @@ class Comment extends Model
             'downvotes' => $this->votes()->where('vote_type', 'downvote')->count()
         ]);
     }
+
+    public function currentUserVote()
+{
+    return $this->morphOne(Vote::class, 'votable')->where('user_id', auth()->id());
+}
+
 }

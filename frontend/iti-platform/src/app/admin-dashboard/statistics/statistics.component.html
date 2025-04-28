@@ -1,0 +1,159 @@
+<h3>📊 Dashboard Overview</h3>
+
+<div class="row g-4">
+  <div class="col-md-4" *ngIf="stats">
+    <div class="stat-card card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">👥 Total Users</h5>
+        <p class="display-6 text-primary fw-bold">{{ userCount }}</p> 
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="stat-card card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">📝 Total Posts</h5>
+        <p class="display-6 text-success fw-bold">{{ postCount }}</p> 
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="stat-card card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">💬 Comments</h5>
+
+        <p class="display-6 text-info fw-bold">{{ commentCount }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="stat-card card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">🎫 Open Tickets</h5>
+        <p class="display-6 text-warning fw-bold">{{ openTicketsCount }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-5">
+  <div class="col-md-6">
+    <h5>🎯 Open Tickets Percentage</h5>
+    <div class="progress" style="height: 25px;">
+      <div
+        class="progress-bar bg-warning"
+        role="progressbar"
+        [style.width.%]="openTicketsPercentage"
+        [attr.aria-valuenow]="openTicketsPercentage"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        {{ openTicketsPercentage }}%
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <h5>📝 Comments per Posts</h5>
+    <div class="progress" style="height: 25px;">
+      <div
+        class="progress-bar bg-info"
+        role="progressbar"
+        [style.width.%]="commentsPerPostsPercentage"
+        [attr.aria-valuenow]="commentsPerPostsPercentage"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        {{ commentsPerPostsPercentage }}%
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row mt-5">
+  <div class="col-12">
+    <h4>🧑‍💻 Latest Registered Users</h4>
+    <div class="table-responsive fade-in">
+      <table class="table table-hover table-bordered mt-3">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Joined At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of stats.latest_users">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.created_at | date:'mediumDate' }} {{ user.created_at | date:'shortTime' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-12">
+    <h4>📝 Latest Forum Posts</h4>
+    <div class="table-responsive fade-in">
+      <table class="table table-hover table-bordered mt-3">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let post of stats.latest_posts">
+            <td>{{ post.id }}</td>
+            <td>{{ post.title }}</td>
+            <td>{{ post.created_at | date:'mediumDate' }} {{ post.created_at | date:'shortTime' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-12">
+    <h4>🎫 Latest Support Tickets</h4>
+    <div class="table-responsive fade-in">
+      <table class="table table-hover table-bordered mt-3">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of stats.latest_tickets">
+            <td>{{ ticket.id }}</td>
+            <td>{{ ticket.title }}</td>
+            <td>
+              <span class="badge"
+                [ngClass]="{
+                  'bg-success': ticket.status === 'open',
+                  'bg-warning text-dark': ticket.status === 'in_review',
+                  'bg-danger': ticket.status === 'closed'
+                }">
+                {{ ticket.status.replace('_', ' ') | titlecase }}
+              </span>
+            </td>
+            <td>{{ ticket.created_at | date:'mediumDate' }} {{ ticket.created_at | date:'shortTime' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

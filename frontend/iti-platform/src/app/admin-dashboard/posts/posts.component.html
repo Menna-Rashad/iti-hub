@@ -1,0 +1,78 @@
+<h3>📝 Manage Posts</h3>
+
+<!-- 🔎 Search & Category Filter -->
+<div class="row g-3 align-items-center mt-3 mb-4">
+  <div class="col-md-6">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="🔎 Search posts..."
+      [(ngModel)]="searchTerm"
+    />
+  </div>
+
+  <div class="col-md-4">
+    <select
+    class="form-select"
+    [(ngModel)]="selectedCategory"
+  >
+    <option value="all">All Categories</option>
+    <option *ngFor="let category of categories" [value]="category.name">
+      {{ category.name }}
+    </option>
+  </select>
+  
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-secondary w-100" (click)="clearFilters()">Reset</button>
+  </div>
+</div>
+
+<!-- 📋 Posts Table -->
+<div class="table-responsive fade-in">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let post of filteredPosts()">
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ getCategoryName(post.category_id) }}</td>
+        <td>{{ post.created_at | date:'mediumDate' }} {{ post.created_at | date:'shortTime' }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger me-2" (click)="deletePost(post.id)">Delete</button>
+          <button class="btn btn-sm btn-primary" (click)="openPostModal(post)">
+            👁️ View
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 📄 Modal for Post Details -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content animate-slide-down" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5>📄 Post Details</h5>
+      <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Title:</strong> {{ selectedPost.title }}</p>
+      <p><strong>Content:</strong> {{ selectedPost.content || 'No content available.' }}</p>
+      <p><strong>Category:</strong> {{ getCategoryName(selectedPost.category_id) }}</p>
+      <p><strong>Created At:</strong> {{ selectedPost.created_at | date:'medium' }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

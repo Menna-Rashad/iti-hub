@@ -1,0 +1,15 @@
+.custom-snackbar {
+    background-color: #323232;
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  .fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  

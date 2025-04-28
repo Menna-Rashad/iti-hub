@@ -1,0 +1,65 @@
+<mat-toolbar class="nav">
+  <div class="container">
+    <h1 class="logo-heading">ITIHub</h1>
+
+    <div class="nav-links">
+      <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button routerLink="/tracks" routerLinkActive="active-link">Tracks</a>
+      <a mat-button routerLink="/resources" routerLinkActive="active-link">Resources</a>
+      <a mat-button routerLink="/community" routerLinkActive="active-link">Community</a>
+      <a mat-button routerLink="/support" routerLinkActive="active-link">Support</a>
+      
+
+      <!-- temporarily hiding the dark mode toggle button for now -->
+      <!-- <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
+        {{ icon }}
+      </button> -->
+
+      <ng-container *ngIf="isLoggedIn">
+        <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
+          <img [src]="userImage" alt="Profile" class="user-avatar" />
+          <span class="ms-2">{{ userName }}</span>
+        </button>
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon> View Profile
+          </button>
+          <button mat-menu-item routerLink="/profile/edit">
+            <mat-icon>edit</mat-icon> Edit Profile
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon> Logout
+          </button>
+        </mat-menu>
+      </ng-container>
+
+      <ng-container *ngIf="!isLoggedIn">
+        <a mat-button routerLink="/login">Login</a>
+        <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
+      </ng-container>
+    </div>
+
+    <button class="menu-icon" mat-icon-button (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<div class="mobile-menu" *ngIf="isMenuOpen">
+  <a routerLink="/">Home</a>
+  <a routerLink="/tracks">Tracks</a>
+  <a routerLink="/resources">Resources</a>
+  <a routerLink="/community">Community</a>
+  <a routerLink="/support">Support</a>
+
+  <ng-container *ngIf="isLoggedIn">
+    <a routerLink="/profile">View Profile</a>
+    <a routerLink="/profile/edit">Edit Profile</a>
+    <a (click)="logout()">Logout</a>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoggedIn">
+    <a routerLink="/login">Login</a>
+    <a routerLink="/register">Register</a>
+  </ng-container>
+</div>

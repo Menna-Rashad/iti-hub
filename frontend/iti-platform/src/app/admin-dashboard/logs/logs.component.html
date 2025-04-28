@@ -1,0 +1,22 @@
+<h3>🗂️ Admin Logs</h3>
+
+<div class="table-responsive mt-4 fade-in">
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Admin Name</th>
+        <th>Action</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of logs; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ log.admin_name }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.created_at }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -118,48 +118,6 @@
                     <div *ngIf="FormControls['national_id'].hasError('pattern')">National ID must be 14 digits.</div>
                   </div>
                 </div>
-  
-                <!-- LinkedIn with Icon (Optional) -->
-                <div class="mb-3">
-                  <label for="linkedin" class="form-label">LinkedIn</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-linkedin text-white">
-                      <i class="fab fa-linkedin"></i>
-                    </span>
-                    <input
-                      type="url"
-                      id="linkedin"
-                      formControlName="linkedin"
-                      class="form-control enhanced-input"
-                      [class.is-invalid]="FormControls['linkedin'].invalid && (FormControls['linkedin'].dirty || FormControls['linkedin'].touched)"
-                    />
-                  </div>
-                  <div *ngIf="FormControls['linkedin'].hasError('pattern')" class="invalid-feedback">
-                    Please enter a valid LinkedIn URL.
-                  </div>
-                </div>
-  
-                <!-- GitHub with Icon (Optional) -->
-                <div class="mb-3">
-                  <label for="github" class="form-label">GitHub</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-dark text-white">
-                      <i class="fab fa-github"></i>
-                    </span>
-                    <input
-                      type="url"
-                      id="github"
-                      formControlName="github"
-                      class="form-control enhanced-input"
-                      [class.is-invalid]="FormControls['github'].invalid && (FormControls['github'].dirty || FormControls['github'].touched)"
-                    />
-                  </div>
-                  <div *ngIf="FormControls['github'].hasError('pattern')" class="invalid-feedback">
-                    Please enter a valid GitHub URL.
-                  </div>
-                </div>
-  
-  
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary w-100 enhanced-btn">
                   Create Account

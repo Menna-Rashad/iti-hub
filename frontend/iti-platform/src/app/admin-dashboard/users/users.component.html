@@ -1,0 +1,45 @@
+<h3>👤 Manage Users</h3>
+
+<div class="table-responsive mt-4 fade-in">
+    <div class="row g-3 align-items-center mt-3 mb-4">
+        <div class="col-md-10">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="🔎 Search users by name or email..."
+            [(ngModel)]="searchTerm"
+            (input)="filterUsers()"
+          />
+        </div>
+      </div>
+      
+  <table class="table table-hover table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Joined At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of filteredUsers">
+            <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.created_at | date:'mediumDate' }} {{ user.created_at | date:'shortTime' }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger me-2" (click)="deleteUser(user.id)">Delete</button>
+
+          <select class="form-select form-select-sm w-auto d-inline" (change)="updateRole(user.id, $any($event.target).value)">
+            <option disabled selected>Change Role</option>
+            <option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ProfileService } from '../../services/profile.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -19,7 +20,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private profileService: ProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -68,19 +70,38 @@ export class ProfileComponent implements OnInit {
       this.toastr.error('املأ كل الحقول المطلوبة');
       return;
     }
-
+  
     const formData = new FormData();
-Object.entries(this.profileForm.value).forEach(([key, value]) => {
-  if (value) formData.append(key, value.toString());
-});
-if (this.selectedFile) {
-  formData.append('profile_picture', this.selectedFile); // ✅ صورة فعلية
-}
-
-
+    Object.entries(this.profileForm.value).forEach(([key, value]) => {
+      if (value) formData.append(key, value.toString());
+    });
+    if (this.selectedFile) {
+      formData.append('profile_picture', this.selectedFile);
+    }
+  
     this.profileService.updateProfile(formData).subscribe({
-      next: () => this.toastr.success('تم التحديث بنجاح 🎉'),
-      
+      next: (res) => {
+        this.toastr.success('تم التحديث بنجاح 🎉');
+        this.router.navigate(['/profile']);
+
+  
+        // ✅ نحدث localStorage بالبيانات الجديدة
+        const oldUserString = localStorage.getItem('user');
+        if (oldUserString) {
+          const oldUser = JSON.parse(oldUserString);
+          const updatedUser = { 
+            ...oldUser, 
+            profile_picture: res.user?.profile_picture || oldUser.profile_picture // fallback لو مارجعش جديد
+          };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          window.dispatchEvent(new Event('storage')); // ✅ اجبار الـ Navbar يعيد قراءة البيانات
+        }
+  
+        // ✅ نحدث الصورة اللي بتظهر حاليًا
+        if (res.user?.profile_picture) {
+          this.previewUrl = `http://127.0.0.1:8000/profile_pictures/${res.user.profile_picture}`;
+        }
+      },
       error: (err) => {
         console.error('🔴', err);
         if (err.error?.errors) {
@@ -93,4 +114,5 @@ if (this.selectedFile) {
       }
     });
   }
+  
 }

@@ -8,11 +8,15 @@ import {
 import { CommonModule } from '@angular/common'; // أضف هذا السطر
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationData, RegistrationService } from '../registration.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule], // ← أضف CommonModule هنا
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule // ✅ Needed for routerLink
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -26,8 +30,6 @@ export class RegisterComponent {
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required]),
       national_id: new FormControl('', [Validators.required, Validators.pattern(/^\d{14}$/)]),
-      linkedin: new FormControl('', [Validators.pattern(/^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/)]),
-      github: new FormControl('', [Validators.pattern(/^(https?:\/\/)?(www\.)?github\.com\/.*$/)])
     }, { validators: this.passwordMatchValidator });
   }
 
