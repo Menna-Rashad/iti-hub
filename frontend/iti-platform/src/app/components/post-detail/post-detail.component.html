@@ -58,8 +58,8 @@
         (voteUpdated)="onVoteUpdated($event)">
       </app-vote-buttons>
     
-      <!-- Copy Post Button (Below Content) -->
-      <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.id"></app-copy-button>
+      <!-- Copy Post link Button (Below Content) -->
+      <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.hashid"></app-copy-button>
 
 
     </mat-card-content>
