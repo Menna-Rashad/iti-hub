@@ -1,3 +1,7 @@
+html, body {
+  height: 100%;
+  min-height: calc(100vh - 60px - 50px);
+}
 .stat-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 12px;
@@ -9,8 +13,12 @@
   }
   
   .card-title {
+    /* font-weight: 600;
+    color: #444; */
     font-weight: 600;
-    color: #444;
+    color: #555;
+    letter-spacing: 0.5px;
+  
   }
 .table {
   border-radius: 10px;
