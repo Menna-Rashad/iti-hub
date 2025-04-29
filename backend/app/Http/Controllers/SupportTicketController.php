@@ -39,12 +39,27 @@ class SupportTicketController extends Controller
                 'description' => 'required|string',
                 'priority' => 'required|in:low,medium,high',
                 'category' => 'nullable|string|max:100',
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048' // ✅ دعم المرفقات
             ]);
     
-            $ticket = SupportTicket::create(array_merge(
-                ['user_id' => $userId],
-                $validated
-            ));            
+            $ticket = SupportTicket::create([
+                'user_id' => $userId,
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'priority' => $validated['priority'],
+                'category' => $validated['category'] ?? null,
+            ]);
+    
+            // ✅ لو فيه مرفقات
+            if ($request->hasFile('attachments')) {
+                $paths = [];
+                foreach ($request->file('attachments') as $file) {
+                    $paths[] = $file->store('support_attachments', 'public');
+                }
+                // ضيف المرفقات في التذكرة (لو عامل لهم عمود attachments)
+                $ticket->attachments = $paths;
+                $ticket->save();
+            }
     
             return response()->json([
                 'message' => 'Ticket created successfully',
@@ -59,6 +74,7 @@ class SupportTicketController extends Controller
             ]);
         }
     }
+    
     
     
 
