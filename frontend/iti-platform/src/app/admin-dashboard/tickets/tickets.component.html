@@ -88,6 +88,28 @@
       </p>
       <p class="mb-2"><strong>🏷️ Category:</strong> {{ selectedTicket.category || 'No Category' }}</p>
       <p class="mb-2"><strong>📅 Created At:</strong> {{ selectedTicket.created_at | date:'medium' }}</p>
+<!-- 📎 Ticket Attachments -->
+<div *ngIf="selectedTicket.attachments?.length > 0" class="mb-4">
+  <h5>📎 Ticket Attachments:</h5>
+  <div class="d-flex flex-wrap gap-3">
+    <div *ngFor="let file of selectedTicket.attachments" class="d-flex flex-column align-items-center" style="width: 140px;">
+      <a [href]="extractFileUrl(file)" target="_blank" class="text-center mb-2">
+        <ng-container *ngIf="isImage(file); else fileIcon">
+          <img [src]="extractFileUrl(file)" alt="attachment" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
+        </ng-container>
+        <ng-template #fileIcon>
+          <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+            📄
+          </div>
+        </ng-template>
+      </a>
+      <small class="text-center">{{ extractFileName(file) }}</small>
+      <a [href]="extractFileUrl(file)" download class="btn btn-sm btn-outline-success mt-1 w-100">
+        ⬇️ Download
+      </a>
+    </div>
+  </div>
+</div>
 
       <hr>
 
