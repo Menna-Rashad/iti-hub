@@ -16,8 +16,11 @@ class SupportTicket extends Model
         'priority',
         'status',
         'category',
+        'attachments' 
     ];
-
+    protected $casts = [
+        'attachments' => 'array' // ✅ مهم جدا عشان Laravel يعرف يتعامل مع JSON صح
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
