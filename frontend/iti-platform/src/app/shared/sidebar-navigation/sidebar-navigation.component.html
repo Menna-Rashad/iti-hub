@@ -1,0 +1,16 @@
+<div class="sidebar">
+    <div class="sidebar-list">
+      <div class="accordion" *ngFor="let section of sections">
+        <h3>{{ section.title }}</h3>
+        <div class="accordion-content">
+          <a *ngFor="let link of section.links"
+             href="#"
+             class="link"
+             (click)="onSelectLink($event, link)">
+            {{ link.label }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
