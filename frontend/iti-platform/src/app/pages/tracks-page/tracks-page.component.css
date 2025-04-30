@@ -1,0 +1,21 @@
+.tracks-page {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .sidebar {
+    width: 300px;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-right: 1px solid #ccc;
+  }
+  
+  .sub-accordion {
+    margin-bottom: 1rem;
+  }
+  
+  .track-content {
+    flex-grow: 1;
+  }
+  

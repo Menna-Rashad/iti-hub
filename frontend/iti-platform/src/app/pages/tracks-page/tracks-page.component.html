@@ -1,10 +1,24 @@
-<section style="background-color: var(--background);">
-    <div class="tracks-container">
-      <app-sidebar-navigation [sections]="sectionsData"></app-sidebar-navigation>
+<div class="tracks-page">
+    <div class="sidebar">
+      <div *ngFor="let group of groupedTracks" class="accordion">
+        <h2>{{ group.groupTitle }}</h2>
   
-      <div class="tracks-content">
-        <app-track-details></app-track-details>
+        <div *ngFor="let sub of group.subGroups" class="sub-accordion">
+          <h3>{{ sub.subGroupTitle }}</h3>
+  
+          <ul>
+            <li *ngFor="let track of sub.tracks">
+              <a [routerLink]="['/tracks', track.slug]">
+                {{ track.track_title }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </section>
+  
+    <div class="track-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
   

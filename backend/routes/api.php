@@ -28,11 +28,17 @@ use App\Http\Controllers\Admin\SupportTicketAdminController;
 use App\Http\Controllers\Admin\PostAdminController;
 use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Api\TrackController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
 // ==========================
-
+ // ==========================
+    // 🔹 Tracks Routes
+    // ==========================
+    Route::get('/tracks', [TrackController::class, 'index']);
+    Route::get('/tracks/{slug}', [TrackController::class, 'show']);
+    
 // ✅ User Authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -239,4 +245,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/read-all',         [TicketNotificationController::class, 'markAllAsRead']);
         Route::get('/unread-count',     [TicketNotificationController::class, 'countUnread']);
     });
+
+   
 }); // ← قفلة جروب auth:sanctum (آخر الملف)

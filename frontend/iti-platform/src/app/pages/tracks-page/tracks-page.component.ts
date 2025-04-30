@@ -1,34 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TracksService, Track } from '../../services/tracks.service';
+import { NgFor, NgIf } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
-@Component({
-  selector: 'app-tracks-page',
-  imports: [],
-  templateUrl: './tracks-page.component.html',
-  styleUrl: './tracks-page.component.css'
-})
-export class TracksPageComponent {
-  sectionsData = [
-    {
-      title: '9 Months',
-      links: [
-        { label: 'Open Source Applications Development' },
-        { label: 'Telecom Applications Development' },
-        { label: 'Cloud Platform Development' },
-        { label: 'Software Engineering & Development' },
-        { label: 'Infrastructure, Networks & Cybersecurity' },
-        { label: 'Data & Information Systems' },
-        { label: 'AI & Cognitive Computing' },
-        { label: 'QA & Testing' },
-        { label: 'Industrial & Embedded Systems' },
-        { label: 'Digital Arts & Media' },
-      ]
-    },
-    {
-      title: '4 Months',
-      links: [
-        { label: 'Coming Soon' }
-      ]
-    }
-  ];
+interface GroupedTracks {
+  groupTitle: string;
+  subGroups: {
+    subGroupTitle: string;
+    tracks: Track[];
+  }[];
 }
 
+@Component({
+  standalone: true,
+  selector: 'app-tracks-page',
+  templateUrl: './tracks-page.component.html',
+  styleUrls: ['./tracks-page.component.css'],
+  imports: [NgFor, NgIf, RouterModule]  // ← هنا المهم!
+})
+export class TracksPageComponent implements OnInit {
+  groupedTracks: GroupedTracks[] = [];
+
+  constructor(private tracksService: TracksService) {}
+
+  ngOnInit(): void {
+    this.tracksService.getAllTracks().subscribe(tracks => {
+      const grouped = new Map<string, Map<string, Track[]>>();
+
+      for (const track of tracks) {
+        if (!grouped.has(track.group_title)) {
+          grouped.set(track.group_title, new Map());
+        }
+
+        const subGroupMap = grouped.get(track.group_title)!;
+
+        if (!subGroupMap.has(track.subgroup_title)) {
+          subGroupMap.set(track.subgroup_title, []);
+        }
+
+        subGroupMap.get(track.subgroup_title)!.push(track);
+      }
+
+      this.groupedTracks = Array.from(grouped.entries()).map(([groupTitle, subGroupMap]) => ({
+        groupTitle,
+        subGroups: Array.from(subGroupMap.entries()).map(([subGroupTitle, tracks]) => ({
+          subGroupTitle,
+          tracks
+        }))
+      }));
+    });
+  }
+}

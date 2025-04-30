@@ -25,6 +25,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { TrackDetailsComponent } from './pages/track-details/track-details.component';
+import { TracksPageComponent } from './pages/tracks-page/tracks-page.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     PostDetailComponent,
     PostDetailComponent,
     UserDashboardComponent, 
+    TracksPageComponent,
+    TrackDetailsComponent 
   ],
   imports: [
     BrowserAnimationsModule,

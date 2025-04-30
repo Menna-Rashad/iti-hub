@@ -63,6 +63,19 @@ export const routes: Routes = [
           { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) },
         ]
       },  
+      {
+        path: 'tracks',
+        loadComponent: () =>
+          import('./pages/tracks-page/tracks-page.component').then(m => m.TracksPageComponent),
+        title: 'Offered Tracks'
+      },
+      {
+        path: 'tracks/:slug',
+        loadComponent: () =>
+          import('./pages/track-details/track-details.component').then(m => m.TrackDetailsComponent),
+        title: 'Track Details'
+      }
+      
       // {
       //   path: 'admin/dashboard',
       //   component: AdminLayoutComponent,
