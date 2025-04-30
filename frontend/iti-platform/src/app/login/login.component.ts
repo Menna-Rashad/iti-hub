@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
@@ -30,13 +30,14 @@ declare const google: any;
     MatSnackBarModule
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   email: string = '';
   password: string = '';
   isLoading: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
   formSubmitted = false;
+  disableValidation = false; // متغير جديد لتعطيل الـ validation بعد اللوجن الناجح
 
   constructor(
     private authService: AuthService,
@@ -47,12 +48,15 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Lock body scroll
+    document.body.style.overflow = 'hidden';
+
     const reset = this.route.snapshot.queryParamMap.get('reset');
     if (reset === '1') {
       this.showNotification('✅ Password changed successfully. Please log in.', 'success');
     }
 
-    // ✅ Google Identity Services Init
+    // Google Identity Services Init
     google.accounts.id.initialize({
       client_id: '136248172784-g14vvg68t7sh2srb2oi9snebpkkhegcp.apps.googleusercontent.com',
       callback: (response: { credential: string }) => this.handleGoogleCallback(response),
@@ -64,8 +68,14 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    // Unlock body scroll
+    document.body.style.overflow = '';
+  }
+
   login(): void {
     this.formSubmitted = true;
+    this.disableValidation = false; // التأكد من تفعيل الـ validation قبل الـ submit
     if (!this.email || !this.password) {
       this.showNotification('⚠️ Please enter your email and password!', 'error');
       return;
@@ -79,7 +89,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response: any) => {
-        const startTime = Date.now(); // temporary solution for undefined startTime
+        const startTime = Date.now();
         const endTime = Date.now();
         const timeTaken = endTime - startTime;
         console.log(`API Request took ${timeTaken} ms`);
@@ -93,13 +103,11 @@ export class LoginComponent implements OnInit {
         if (response.token && response.user) {
           console.log('🔑 Received Token:', response.token);
 
-          // ✅ Save token and full user data including profile_picture
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
 
           this.authState.setLoggedIn(true);
 
-          // ✅ Notify navbar to reload user data immediately
           window.dispatchEvent(new Event('storage'));
 
           if (response.user?.id) localStorage.setItem('user_id', response.user.id);
@@ -107,7 +115,8 @@ export class LoginComponent implements OnInit {
 
           this.showNotification('🎉 Login successful! Redirecting...', 'success');
 
-          this.email = '';
+          this.disableValidation = true; // تعطيل الـ validation قبل مسح الحقول
+          this.email = ''; // Clear fields
           this.password = '';
 
           const role = response.user.role;
@@ -171,4 +180,3 @@ export class LoginComponent implements OnInit {
     });
   }
 }
-  
