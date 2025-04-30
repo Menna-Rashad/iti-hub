@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'forum', component: PostListComponent },
   { path: 'create-post', component: CreatePostComponent },
   { path: 'post/:id', component: PostDetailComponent },
-
+  { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent) },
   // ✅ تحويل افتراضي إلى login
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
