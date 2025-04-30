@@ -1,78 +1,66 @@
-/* src/app/login/login.component.css */
-
-/* الأساسيات للتأكد إن كل حاجة مظبوطة */
 :host {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* خلفية متدرجة خفيفة */
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  overflow: hidden;
 }
 
-/* تصميم الكارد */
 .login-card {
   width: 100%;
   max-width: 400px;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* ظل ناعم لعمق */
-  background: #ffffff; /* خلفية بيضاء */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* تأثير عند الـ Hover */
 .login-card:hover {
-  transform: translateY(-5px); /* رفع بسيط */
+  transform: translateY(-5px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* العنوان */
 h2 {
   text-align: center;
-  color: #000000; /* اللون الأحمر بتاع ITI */
+  color: #000000;
   margin-bottom: 30px;
   font-size: 24px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px; /* مسافة بين الـ Icon والنص */
+  gap: 10px;
 }
 
-/* تصميم الـ Form Fields */
 mat-form-field {
   width: 100%;
   margin-bottom: 20px;
 }
 
-/* تخصيص الـ Label */
 mat-label {
-  color: #333; /* لون داكن للنص */
+  color: #333;
   font-weight: 500;
 }
 
-/* تخصيص الـ Input */
 input[matInput] {
   color: #333;
   font-size: 16px;
 }
 
-/* الـ Outline لما يكون فيه Focus */
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-  color: #C8102E !important; /* لون الـ Outline أحمر */
+  color: #C8102E !important;
 }
 
-/* لون الـ Label لما يكون فيه Focus */
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
   color: #C8102E !important;
 }
 
-/* الـ Underline لما يكون فيه Focus */
 ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
   background-color: #C8102E !important;
 }
 
-/* تصميم الـ Button */
 button[mat-raised-button] {
   width: 100%;
   padding: 12px;
@@ -86,34 +74,30 @@ button[mat-raised-button] {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* مسافة بين النص والـ Spinner */
+  gap: 10px;
 }
 
-/* تأثير الـ Hover على الـ Button */
 button[mat-raised-button]:hover:not([disabled]) {
-  background-color: #FF6F61; /* درجة أحمر أفتح */
-  transform: scale(1.02); /* تكبير بسيط */
+  background-color: #FF6F61;
+  transform: scale(1.02);
 }
 
-/* الـ Button لما يكون Disabled */
 button[mat-raised-button][disabled] {
   background-color: #cccccc;
   color: #666;
 }
 
-/* تصميم الـ Spinner */
 mat-progress-spinner {
   display: inline-block;
 }
 
-/* رابط Forgot Password */
 .forgot-password {
   text-align: center;
   margin-top: 15px;
 }
 
 .forgot-password a {
-  color: #000000; /* لون ITI */
+  color: #000000;
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -121,17 +105,15 @@ mat-progress-spinner {
 }
 
 .forgot-password a:hover {
-  color: #FF6F61; /* درجة أفتح */
+  color: #FF6F61;
   text-decoration: underline;
 }
 
-/* زر تسجيل الدخول بـ Google */
 #google-login-button {
   margin-top: 20px;
   text-align: center;
 }
 
-/* إذا كنتِ بتستخدمي زر مخصص لـ Google، ممكن نصممه كده */
 .google-login-btn {
   display: inline-flex;
   align-items: center;
@@ -150,13 +132,14 @@ mat-progress-spinner {
 
 .google-login-btn:hover {
   background-color: #f8f9fa;
-  border-color: #C8102E; /* لون ITI عند الـ Hover */
+  border-color: #C8102E;
 }
 
 .google-login-btn img {
   width: 20px;
   margin-right: 10px;
 }
+
 .login-logo {
   width: 72px;
   height: 72px;
@@ -166,26 +149,13 @@ mat-progress-spinner {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 mat-form-field.error .mat-form-field-outline {
   stroke: #f44336 !important;
 }
 
 mat-form-field.error.mat-form-field-invalid .mat-form-field-outline {
   border-color: #f44336 !important;
-}
-/* لو حصل خطأ بناءً على ngClass */
-mat-form-field.error .mat-form-field-outline {
-  stroke: #f44336 !important;
-  border-color: #f44336 !important;
-}
-
-/* نلغي أي تلوين تلقائي من Angular Material قبل الضغط */
-::ng-deep .mat-form-field-invalid .mat-form-field-outline {
-  border-color: inherit !important;
-}
-::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-start,
-::ng-deep .mat-form-field-invalid.mat-form-field-appearance-outline .mat-form-field-outline-end {
-  border-color: inherit !important;
 }
 
 mat-form-field {
