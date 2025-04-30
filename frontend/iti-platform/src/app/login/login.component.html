@@ -3,15 +3,15 @@
   <h2>Login</h2>
 
   <!-- Email -->
-  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !email}">
+  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !email && !disableValidation}">
     <mat-label>Email</mat-label>
-    <input matInput type="email" [(ngModel)]="email" name="email" required />
+    <input matInput type="email" [(ngModel)]="email" name="email" [required]="!disableValidation" />
   </mat-form-field>
 
   <!-- Password -->
-  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !password}">
+  <mat-form-field appearance="outline" [ngClass]="{'error': formSubmitted && !password && !disableValidation}">
     <mat-label>Password</mat-label>
-    <input matInput type="password" [(ngModel)]="password" name="password" required />
+    <input matInput type="password" [(ngModel)]="password" name="password" [required]="!disableValidation" />
   </mat-form-field>
 
   <!-- Forgot Password -->
