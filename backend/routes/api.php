@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\FollowController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -54,6 +55,12 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 // 🔹 Protected Routes (Require Sanctum Authentication)
 // ==========================
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/users/{id}/follow', [FollowController::class, 'follow']);
+    Route::delete('/users/{id}/unfollow', [FollowController::class, 'unfollow']);
+    Route::get('/users/{id}/followers', [FollowController::class, 'followers']);
+    Route::get('/users/{id}/following', [FollowController::class, 'following']);
+    Route::get('/users/{id}/followers/count', [FollowController::class, 'followersCount']);
+    Route::get('/users/{id}/following/count', [FollowController::class, 'followingCount']);
 
     Route::prefix('admin')->group(function () {
         Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);
