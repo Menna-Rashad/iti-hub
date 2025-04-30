@@ -47,6 +47,7 @@ export const routes: Routes = [
       { path: 'profile/edit', component: ProfileComponent, canActivate: [AuthGuard], title: 'Edit Profile' },
       { path: 'user/dashboard', component: UserDashboardComponent, title: 'User Dashboard' },
       { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
+      { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
 
       // Admin Dashboard Section
       {
