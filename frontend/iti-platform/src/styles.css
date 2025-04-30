@@ -1,180 +1,57 @@
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import '@fortawesome/fontawesome-free/css/all.min.css';
-@import 'ngx-toastr/toastr';
-@import '../src/styles/itihubRootstyles.css';
-
+/* Custom styles */
 :root {
-  /* 🎨 Colors */
-  --color-primary: #E30613;
-  --color-primary-dark: #B2050F;
-  --color-primary-light: #FF4C5A;
-
-  --color-secondary: #007BFF;
-  --color-secondary-dark: #0056b3;
-  --color-secondary-light: #4DA6FF;
-
-  --color-background: #FFFFFF;
-  --color-surface: #F5F5F5;
-  --color-text: #333333;
-  --color-text-light: #666666;
-
-  /* 🌙 Dark Mode Colors */
-  --color-background-dark: #121212;
-  --color-surface-dark: #2D2D2D;
-  --color-text-dark: #E0E0E0;
-  --color-text-light-dark: #A0A0A0;
-
-  /* ✅ Status */
-  --color-success: #28A745;
-  --color-error: #DC3545;
-  --color-warning: #FFC107;
-
-  /* 🖋 Font */
-  --font-primary: 'Roboto', sans-serif;
-
-  /* 📏 Spacing */
-  --spacing-sm: 0.75rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-
-  /* 🟦 Radius + Shadow */
-  --border-radius-lg: 12px;
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --primary-color: #1976d2;
+  --secondary-color: #424242;
+  --accent-color: #82b1ff;
+  --warn-color: #f44336;
+  --success-color: #4caf50;
+  --background-color: #f5f5f5;
+  --text-color: #333;
 }
 
-html, body {
-  height: 100%;
+body {
   margin: 0;
-  font-family: var(--font-primary);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-/* 🌙 DARK MODE CLEAN IMPLEMENTATION */
-body.dark-mode {
-  background-color: var(--color-background-dark);
-  color: var(--color-text-dark);
+/* Material Snackbar colors */
+.mat-snack-bar-container.success {
+  background-color: var(--success-color);
+  color: white;
 }
 
-body.dark-mode .mat-toolbar {
-  background-color: #1f1f1f !important;
+.mat-snack-bar-container.error {
+  background-color: var(--warn-color);
+  color: white;
 }
 
-body.dark-mode .logo-text {
-  color: #fff;
+/* Custom styles for components */
+.card {
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-body.dark-mode .hero,
-body.dark-mode .audience-card,
-body.dark-mode .site-footer,
-body.dark-mode .latest-news-section {
-  background-color: var(--color-surface-dark);
-  color: var(--color-text-dark);
-}
-
-body.dark-mode .cta-button,
-body.dark-mode .search-box button {
-  background-color: #6c1205;
-  color: #ffffff;
-}
-
-body.dark-mode .search-box input {
-  background-color: #333;
-  color: #fff;
-  border-color: #444;
-}
-
-#darkModeToggle {
-  background: none;
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
   border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 22px;
-  color: #ffffff;
-  transition: color 0.3s ease;
 }
 
-#darkModeToggle:hover {
-  color: var(--color-primary);
+.btn-primary:hover {
+  background-color: #1565c0;
 }
 
-body.dark-mode #darkModeToggle {
-  color: #f1c40f;
-}
-/* ✨ Smooth Transitions */
-body,
-.hero,
-.audience-card,
-.site-footer,
-.latest-news-section,
-.mat-toolbar,
-.cta-button,
-.search-box input,
-.search-box button {
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-/* 🌙 Dark Mode Toggle Animation */
-#darkModeToggle {
-  transition: transform 0.2s ease, color 0.3s ease;
-}
-
-#darkModeToggle:hover {
-  transform: scale(1.2) rotate(10deg);
-}
-/* 🌙 Scrollbar for Webkit Browsers */
-body.dark-mode ::-webkit-scrollbar {
-  width: 10px;
-}
-
-body.dark-mode ::-webkit-scrollbar-track {
-  background: #1a1a1a;
-}
-
-body.dark-mode ::-webkit-scrollbar-thumb {
-  background-color: #aa0707;
-  border-radius: 6px;
-  border: 2px solid #1a1a1a;
-}
-
-body.dark-mode ::-webkit-scrollbar-thumb:hover {
-  background-color: #931111;
-}
-body.dark-mode .audience-card,
-body.dark-mode .hero,
-body.dark-mode .swiper-slide {
-  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.2);
-}
-
-body.dark-mode .swiper-slide img {
-  box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1);
-}
-body.dark-mode .nav-links a mat-icon,
-body.dark-mode .nav-links a span,
-body.dark-mode .mobile-menu a {
-  color: #ffffff !important; /* أبيض واضح */
-}
-
-/* ✨ Focus styling for forms */
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--color-primary-dark) !important;
-  box-shadow: 0 0 0 0.2rem rgba(255, 76, 90, 0.25) !important;
-  outline: none;
-}
-
-/* Optional: Also enhance hover if needed */
-input:hover,
-select:hover,
-textarea:hover {
-  border-color: var(--color-primary);
-}
-
-
-/* وللتأكيد على وضوح العناصر بالكامل داخل التولبار */
-body.dark-mode .mat-toolbar a,
-body.dark-mode .mat-toolbar .mat-icon,
-body.dark-mode .mat-toolbar span {
-  color: #fff !important;
-}
-body.dark-mode .mat-icon {
-  color: #ffeb3b !important; /* لون أصفر واضح للأيقونات */
+/* Responsive design */
+@media (max-width: 768px) {
+  .card {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
 }
