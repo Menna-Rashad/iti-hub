@@ -60,7 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{id}', [UserAdminController::class, 'update']);
         Route::get('/dashboard', [AdminDashboardController::class, 'index']);
         Route::get('/logs', [\App\Http\Controllers\Admin\AdminLogController::class, 'index']);
-        
+        Route::get('/dashboard/statistics', [AdminDashboardController::class, 'getStatistics']);
+
         Route::apiResource('news', NewsController::class);
 
         Route::get('/tasks', [\App\Http\Controllers\Admin\TaskAdminController::class, 'index']);
