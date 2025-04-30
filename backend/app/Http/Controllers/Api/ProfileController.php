@@ -37,7 +37,6 @@ class ProfileController extends Controller
         $data['password'] = Hash::make($request->password);
     }
 
-    // ✅ حذف الصورة القديمة لو موجودة
     if ($request->hasFile('profile_picture')) {
         if ($user->profile_picture && file_exists(public_path('profile_pictures/' . $user->profile_picture))) {
             unlink(public_path('profile_pictures/' . $user->profile_picture));
@@ -56,5 +55,13 @@ class ProfileController extends Controller
         'user' => $user
     ]);
 }
+public function showById($id)
+{
+    $user = \App\Models\User::select('id', 'name', 'email', 'profile_picture', 'bio', 'github', 'linkedin')
+        ->findOrFail($id);
+
+    return response()->json($user);
+}
+
 
 }
