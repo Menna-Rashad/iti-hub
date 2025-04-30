@@ -49,7 +49,7 @@ export const routes: Routes = [
       { path: 'user/dashboard', component: UserDashboardComponent, title: 'User Dashboard' },
       { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
       { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
-
+      { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent) },
       // Admin Dashboard Section
       {
         path: 'admin/dashboard',
