@@ -92,4 +92,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TicketNotification::class);
     }
+    public function supportTickets()
+{
+    return $this->hasMany(\App\Models\SupportTicket::class);
+}
+
 }
