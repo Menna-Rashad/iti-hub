@@ -8,7 +8,17 @@ export class SupportTicketService {
   private baseUrl = 'http://127.0.0.1:8000/api'; 
 
   constructor() {
-    axios.defaults.withCredentials = true; 
+    axios.defaults.withCredentials = true;
+
+    // ✅ التعديل هنا: استخدام auth_token بدلاً من token
+    const token = localStorage.getItem('auth_token');
+
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log("✅ Token set in axios headers");
+    } else {
+      console.warn("🚫 No token found in localStorage");
+    }
   }
 
   async getTickets(status?: string) {
