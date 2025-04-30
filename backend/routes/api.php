@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\SupportTicketAdminController;
 use App\Http\Controllers\Admin\PostAdminController;
 use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\NewsController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -57,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{id}', [UserAdminController::class, 'update']);
         Route::get('/dashboard', [AdminDashboardController::class, 'index']);
         Route::get('/logs', [\App\Http\Controllers\Admin\AdminLogController::class, 'index']);
+        
+        Route::apiResource('news', NewsController::class);
 
         Route::get('/tasks', [\App\Http\Controllers\Admin\TaskAdminController::class, 'index']);
         Route::delete('/tasks/{id}', [\App\Http\Controllers\Admin\TaskAdminController::class, 'destroy']);    
