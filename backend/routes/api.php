@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\SupportTicketAdminController;
 use App\Http\Controllers\Admin\PostAdminController;
 use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\LandingPageController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -42,6 +44,7 @@ Route::post('/resend-verification-email', [AuthController::class, 'resendVerific
 Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
+Route::get('/public/news', [LandingPageController::class, 'news']);
 
 // Reset‑password routes
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
@@ -57,6 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{id}', [UserAdminController::class, 'update']);
         Route::get('/dashboard', [AdminDashboardController::class, 'index']);
         Route::get('/logs', [\App\Http\Controllers\Admin\AdminLogController::class, 'index']);
+        
+        Route::apiResource('news', NewsController::class);
 
         Route::get('/tasks', [\App\Http\Controllers\Admin\TaskAdminController::class, 'index']);
         Route::delete('/tasks/{id}', [\App\Http\Controllers\Admin\TaskAdminController::class, 'destroy']);    
