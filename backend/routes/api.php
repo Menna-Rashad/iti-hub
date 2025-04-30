@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\PostAdminController;
 use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\LandingPageController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -43,6 +44,7 @@ Route::post('/resend-verification-email', [AuthController::class, 'resendVerific
 Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
+Route::get('/public/news', [LandingPageController::class, 'news']);
 
 // Reset‑password routes
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
