@@ -32,6 +32,11 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\Admin\DepartmentAdminController;
+use App\Http\Controllers\Admin\IntakeAdminController;
+use App\Http\Controllers\Admin\ProgramAdminController;
+use App\Http\Controllers\Admin\TrackAdminController;
+use App\Http\Controllers\TrackController;
 
 // ==========================
 // 🔹 Public Routes (No Authentication Required)
@@ -63,7 +68,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{id}/followers/count', [FollowController::class, 'followersCount']);
     Route::get('/users/{id}/following/count', [FollowController::class, 'followingCount']);
     Route::get('/users/{id}', [ProfileController::class, 'showById']);
-
+// Routes for Tracks
+Route::get('/tracks', [TrackController::class, 'index']);
     Route::prefix('admin')->group(function () {
         Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);
         Route::put('/users/{id}', [UserAdminController::class, 'update']);
@@ -83,6 +89,31 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/posts', [\App\Http\Controllers\Admin\PostAdminController::class, 'index']);
         Route::delete('/posts/{id}', [\App\Http\Controllers\Admin\PostAdminController::class, 'destroy']);
 
+         // Department Routes
+         Route::get('/departments', [DepartmentAdminController::class, 'index']);
+         Route::post('/departments', [DepartmentAdminController::class, 'store']);
+         Route::put('/departments/{department}', [DepartmentAdminController::class, 'update']);
+         Route::delete('/departments/{department}', [DepartmentAdminController::class, 'destroy']);
+ 
+         // Intake Routes
+         Route::get('/intakes', [IntakeAdminController::class, 'index']);
+         Route::post('/intakes', [IntakeAdminController::class, 'store']);
+         Route::put('/intakes/{intake}', [IntakeAdminController::class, 'update']);
+         Route::delete('/intakes/{intake}', [IntakeAdminController::class, 'destroy']);
+ 
+         // Program Routes
+         Route::get('/programs', [ProgramAdminController::class, 'index']);
+         Route::post('/programs', [ProgramAdminController::class, 'store']);
+         Route::put('/programs/{program}', [ProgramAdminController::class, 'update']);
+         Route::delete('/programs/{program}', [ProgramAdminController::class, 'destroy']);
+ 
+         // Track Routes
+         Route::get('/tracks', [TrackAdminController::class, 'index']);
+         Route::post('/tracks', [TrackAdminController::class, 'store']);
+         Route::put('/tracks/{track}', [TrackAdminController::class, 'update']);
+         Route::delete('/tracks/{track}', [TrackAdminController::class, 'destroy']);
+ 
+ 
         // Routes المؤقتة لاختبار الإشعارات
         Route::post('/notifications/send-to-all', [NotificationController::class, 'sendToAllUsers']);
         Route::post('/notifications/send-to-user', [NotificationController::class, 'sendToSpecificUser']);
@@ -269,7 +300,3 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/clear', [NotificationController::class, 'clearAll']);
     });
 });
-
-// 🔹 Admin-Only Routes (Admin Users)
-// ==========================
-// حذفت الجزء ده لأنه مكرر مع الـ route اللي فوق تحت prefix('notifications')
