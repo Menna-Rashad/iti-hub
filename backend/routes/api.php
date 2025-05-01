@@ -48,6 +48,10 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:lo
 Route::post('/google-login', [AuthController::class, 'googleLogin']);
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('signed');
 Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
+Route::get('/tracks', [TrackController::class, 'index']); // عرض التراكات بدون توثيق
+
+// البحث عن التراكات بناءً على المعايير المختلفة
+Route::get('/tracks/search', [TrackController::class, 'search']); // البحث عن التراكات بدون توثيق
 Route::get('/test', function () {
     return response()->json(['message' => 'Test route is working']);
 });
@@ -68,8 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{id}/followers/count', [FollowController::class, 'followersCount']);
     Route::get('/users/{id}/following/count', [FollowController::class, 'followingCount']);
     Route::get('/users/{id}', [ProfileController::class, 'showById']);
-// Routes for Tracks
-Route::get('/tracks', [TrackController::class, 'index']);
+
     Route::prefix('admin')->group(function () {
         Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);
         Route::put('/users/{id}', [UserAdminController::class, 'update']);
