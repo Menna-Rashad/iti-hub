@@ -1,7 +1,7 @@
 .footer {
     background-color: var(--secondary);
     color: var(--text-primary);
-    padding: var(--space-lg);
+    padding: var(--space-sm);
     text-align: center;
   }
   
@@ -12,9 +12,10 @@
   
   .text-sm {
     font-size: var(--font-size-sm);
+    margin: 0;
   }
   
-  .footer-links {
+  /* .footer-links {
     margin-top: var(--space-sm);
     display: flex;
     justify-content: center;
@@ -32,5 +33,5 @@
   .footer-links a:hover {
     color: var(--primary);
     text-decoration: underline;
-  }
+  } */
   

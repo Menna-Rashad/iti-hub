@@ -33,7 +33,11 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: '', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent), title: 'Home' },
+      {
+        path: '',
+        loadComponent: () => import('./pages/landing-page/landing-page.component').then(m => m.LandingPageComponent),
+        title: 'ITIHub'
+      },
       { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
       { path: 'community', component: MainContentComponent, canActivate: [AuthGuard], title: 'Community' },
       { path: 'posts', component: PostListComponent },
@@ -78,7 +82,6 @@ export const routes: Routes = [
       // },
     ]
   },
-
   // 🟣 AUTH Layout
   {
     path: '',
