@@ -18,6 +18,7 @@ export class LandingPageComponent implements OnInit {
           if (entries[0].isIntersecting) {
             animateGaugeCounter('tracksGauge', 'tracksCounter', 0, 30, 2000);
             animateGaugeCounter('usersGauge', 'usersCounter', 0, 1000, 2000);
+            animateGaugeCounter('newUsersGauge', 'newUsersCounter', 0, 223, 2000);
             observer.disconnect(); // مش كل مرة، مرة واحدة فقط
           }
         },
