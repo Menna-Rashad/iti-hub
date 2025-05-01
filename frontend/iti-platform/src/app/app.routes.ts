@@ -38,6 +38,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/landing-page/landing-page.component').then(m => m.LandingPageComponent),
         title: 'ITIHub'
       },
+      { path: 'about', loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent) },
       { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
       { path: 'community', component: MainContentComponent, canActivate: [AuthGuard], title: 'Community' },
       { path: 'posts', component: PostListComponent },
