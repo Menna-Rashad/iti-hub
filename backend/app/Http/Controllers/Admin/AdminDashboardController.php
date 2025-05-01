@@ -99,12 +99,12 @@ class AdminDashboardController extends Controller
             'recent_comments' => $recentComments,
             'recent_votes' => $recentVotes,
             'recent_news' => $recentNews,
-            'active_users_last_7_days' => $activeUsers,
-            'top_active_users' => $topActiveUsers,
-            'users_by_month' => $usersByMonth,
-            'tickets_by_status' => $ticketsByStatus,
-            'top_posters' => $topPosters,
-            'daily_forum_activity' => $dailyActivity
+            // 'active_users_last_7_days' => $activeUsers,
+            // 'top_active_users' => $topActiveUsers,
+            'users_by_month' => $usersByMonth, // in user frontend
+            // 'tickets_by_status' => $ticketsByStatus,
+            // 'top_posters' => $topPosters,
+            // 'daily_forum_activity' => $dailyActivity
         ]);
     }
 }
