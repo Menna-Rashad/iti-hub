@@ -167,3 +167,8 @@ body.dark-mode .dark-toggle-btn {
     border-bottom: var(--border-width) solid var(--border);
   }
 }
+
+.logo-image{
+  height: 3rem;
+  width: auto;
+}
