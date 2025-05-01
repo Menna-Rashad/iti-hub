@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\TaskAdminController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FollowController;
 
 // ==========================
@@ -47,7 +48,7 @@ Route::get('/test', function () {
 });
 Route::get('/public/news', [LandingPageController::class, 'news']);
 
-// Reset‑password routes
+// Reset-password routes
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail']);
 Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 
@@ -82,17 +83,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/posts', [\App\Http\Controllers\Admin\PostAdminController::class, 'index']);
         Route::delete('/posts/{id}', [\App\Http\Controllers\Admin\PostAdminController::class, 'destroy']);
 
+        // Routes المؤقتة لاختبار الإشعارات
+        Route::post('/notifications/send-to-all', [NotificationController::class, 'sendToAllUsers']);
+        Route::post('/notifications/send-to-user', [NotificationController::class, 'sendToSpecificUser']);
     });
+    
     Route::prefix('admin')->group(function () {
         Route::put('/support-tickets/{id}/edit', [SupportTicketAdminController::class, 'updateTicket']);
         Route::get('/support-tickets', [\App\Http\Controllers\Admin\SupportTicketAdminController::class, 'index']);
     });
+    
     Route::prefix('admin')->group(function () {
         Route::get('/ticket-replies', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'index']);
         Route::post('/support-tickets/{id}/reply', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'store']);
         Route::delete('/ticket-replies/{id}', [\App\Http\Controllers\Admin\TicketReplyAdminController::class, 'destroy']);
         Route::get('/support-tickets/{id}/replies', [SupportTicketReplyController::class, 'getReplies']);
-
     });
     
     // ✅ Authentication Routes
@@ -228,7 +233,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/support-tickets/{id}/status',    [SupportTicketController::class, 'updateStatus']);
     Route::delete('/admin/support-tickets/{id}', [SupportTicketController::class, 'destroy']);
 
-    Route::post('/admin/support-tickets/{id}/reply', [SupportTicketReplyController::class, 'adminReply']);
+    //Route::post('/admin/support-tickets/{id}/reply', [SupportTicketReplyController::class, 'adminReply']);
 
     // Open projects
     Route::prefix('open-projects')->group(function () {
@@ -253,4 +258,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/read-all',         [TicketNotificationController::class, 'markAllAsRead']);
         Route::get('/unread-count',     [TicketNotificationController::class, 'countUnread']);
     });
-}); // ← قفلة جروب auth:sanctum (آخر الملف)
+
+    // Notification
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::get('/unread-count', [NotificationController::class, 'countUnread']);
+        Route::post('/', [NotificationController::class, 'store']);
+        Route::delete('/clear', [NotificationController::class, 'clearAll']);
+    });
+});
+
+// 🔹 Admin-Only Routes (Admin Users)
+// ==========================
+// حذفت الجزء ده لأنه مكرر مع الـ route اللي فوق تحت prefix('notifications')

@@ -3,34 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\Notification; // استيراد موديل Notification
+use App\Events\NotificationSent; // استيراد الـ Event
+use App\Models\User; // استيراد موديل User
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return response()->json(News::latest()->get());
     }
-    
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -53,6 +49,34 @@ class NewsController extends Controller
                 'content' => $request->content,
                 'image' => $imagePath,
             ]);
+
+            // إرسال إشعار لكل المستخدمين
+            $users = User::all();
+            $notifications = [];
+            $responseNotifications = [];
+
+            foreach ($users as $user) {
+                $notification = Notification::create([
+                    'user_id' => $user->id,
+                    'sender_id' => auth()->id(),
+                    'message' => 'A new news article has been posted: ' . $news->title,
+                    'type' => 'news_update',
+                    'related_id' => $news->id,
+                    'related_type' => 'news',
+                    'is_read' => false,
+                ]);
+
+                $notifications[] = $notification;
+                $responseNotifications[] = [
+                    'id' => $notification->id,
+                    'type' => $notification->type,
+                    'message' => $notification->message,
+                    'is_read' => $notification->is_read,
+                    'created_at' => optional($notification->created_at)->toIso8601String(),
+                ];
+
+                event(new NotificationSent($notification));
+            }
     
             return response()->json($news, 201);
     
@@ -63,31 +87,23 @@ class NewsController extends Controller
             ], 500);
         }
     }
-    
-    
 
-    /**
-     * Display the specified resource.
-     */
     public function show(News $news)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(News $news)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-
     public function update(Request $request, $id)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $news = News::findOrFail($id);
     
         $request->validate([
@@ -112,14 +128,13 @@ class NewsController extends Controller
     
         return response()->json($news);
     }
-    
-    
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $news = News::findOrFail($id);
     
         if ($news->image && Storage::disk('public')->exists($news->image)) {
@@ -130,6 +145,4 @@ class NewsController extends Controller
     
         return response()->json(['message' => 'Deleted successfully']);
     }
-    
-    
 }
