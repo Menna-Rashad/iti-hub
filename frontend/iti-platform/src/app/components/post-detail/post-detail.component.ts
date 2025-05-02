@@ -18,11 +18,14 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { VoteButtonsComponent } from '../../shared/components/vote-buttons/vote-buttons.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CopyButtonComponent } from '../../shared/components/copy-button/copy-button.component';
+import { FollowService } from '../../services/follow.service';
+import { FollowStateService } from '../../services/follow-state.service';
 
 @Component({
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.css'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -36,7 +39,7 @@ import { CopyButtonComponent } from '../../shared/components/copy-button/copy-bu
     VoteButtonsComponent,
     MatTooltipModule,
     CopyButtonComponent
-  ],
+  ]
 })
 export class PostDetailComponent implements OnInit {
   post: any;
@@ -47,7 +50,7 @@ export class PostDetailComponent implements OnInit {
   selectedVote: string | null = null;
   isVoting = false;
   isAddingComment = false;
-  isFollowing: boolean = false;
+  isFollowing = false;
 
   defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
 
@@ -59,8 +62,10 @@ export class PostDetailComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private forumService: ForumService,
-    private clipboard: Clipboard 
-  ) { }
+    private clipboard: Clipboard,
+    private followService: FollowService,
+    private followState: FollowStateService
+  ) {}
 
   ngOnInit() {
     this.router.events
@@ -76,25 +81,42 @@ export class PostDetailComponent implements OnInit {
 
   loadPost(id: string) {
     this.api.getPost(id).subscribe(post => {
-      if (post.user?.profile_picture) {
-        post.user.profile_picture = `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`;
-      } else {
-        post.user.profile_picture = this.defaultAvatar;
-      }
-  
+      post.user.profile_picture = post.user?.profile_picture
+        ? `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`
+        : this.defaultAvatar;
+
       this.post = post;
-      console.log('current_user_vote for post:', post.current_user_vote);
-      post.comments?.forEach((c: any) => console.log(`Comment ${c.id} vote:`, c.current_user_vote));
-  
-      const userId = localStorage.getItem('user_id');
-      this.isFollowing = post.user_id === userId; 
-      this.canEdit = userId !== null && post.user_id == userId;
-      this.visibleComments = post.comments?.slice(0, 3);
-  
+
+      const userId = Number(localStorage.getItem('user_id'));
+      this.currentUserId = userId;
+      this.canEdit = post.user?.id === userId;
+
+      const targetUserId = this.post.user.id;
+
+      // ✅ الاستماع لأي تحديث مباشر لحالة المتابعة
+      this.followState.getObservable(targetUserId).subscribe(status => {
+        this.isFollowing = status;
+      });
+
+      // ✅ تحميل حالة المتابعة من الـ backend عند أول مرة فقط
+      if (!this.followState.getObservable(targetUserId).value) {
+        this.followService.checkStatus(targetUserId).subscribe({
+          next: (res) => {
+            const isFollowing = res?.is_following || false;
+            this.followState.set(targetUserId, isFollowing);
+          },
+          error: () => {
+            this.followState.set(targetUserId, false);
+          }
+        });
+      }
+
+      // التصويت للبوست
       if (!this.post.current_user_vote) {
         this.post.current_user_vote = null;
       }
-  
+
+      // التصويت لكل تعليق
       if (this.post.comments?.length) {
         this.post.comments.forEach((comment: any) => {
           if (!comment.current_user_vote) {
@@ -104,8 +126,24 @@ export class PostDetailComponent implements OnInit {
       }
     });
   }
-  
-  
+
+  toggleFollow() {
+    const userId = this.post.user.id;
+
+    const action = this.isFollowing
+      ? this.followService.unfollow(userId)
+      : this.followService.follow(userId);
+
+    action.subscribe({
+      next: () => {
+        const newStatus = !this.isFollowing;
+        this.followState.set(userId, newStatus);
+      },
+      error: () => {
+        alert('❌ Failed to update follow status.');
+      }
+    });
+  }
 
   onVoteUpdated(event: {
     targetType: 'post' | 'comment';
@@ -118,7 +156,7 @@ export class PostDetailComponent implements OnInit {
       this.post.downvotes = event.newCounts.downvotes;
     }
   }
-  
+
   onCommentVoteUpdated(comment: any, event: {
     targetType: 'post' | 'comment';
     targetId: number;
@@ -129,14 +167,6 @@ export class PostDetailComponent implements OnInit {
       comment.upvotes = event.newCounts.upvotes;
       comment.downvotes = event.newCounts.downvotes;
     }
-  }
-  
-  
-
-  toggleFollow() {
-    this.isFollowing = !this.isFollowing;
-
-    console.log(this.isFollowing ? "Followed" : "Unfollowed");
   }
 
   selectVote(vote: string): void {
@@ -163,7 +193,30 @@ export class PostDetailComponent implements OnInit {
         }
       });
   }
-
+  editComment(comment: any): void {
+    const newContent = prompt('✏️ Edit your comment:', comment.content);
+    if (newContent && newContent.trim()) {
+      this.commentService.updateComment(comment.id, { content: newContent.trim() })
+      .subscribe({
+        next: () => {
+          comment.content = newContent.trim(); // ✅ تحديث محتوى الكومنت محليًا
+          this.cdr.detectChanges(); // 🔄 عشان Angular يعرف إن حصل تغيير
+        },
+        error: (err) => console.error(err),
+      });
+    
+    }
+  }
+  
+  deleteComment(commentId: number): void {
+    if (confirm('🗑 Are you sure you want to delete this comment?')) {
+      this.commentService.deleteComment(commentId).subscribe({
+        next: () => this.loadPost(this.post.id),
+        error: (err) => console.error(err),
+      });
+    }
+  }
+  
   handleVote(target: 'post' | 'comment', id: string, type: 'upvote' | 'downvote') {
     this.isVoting = true;
     this.voteService.handleVote(target, id, type).subscribe({
@@ -216,9 +269,8 @@ export class PostDetailComponent implements OnInit {
   }
 
   copyPost(post: any) {
-    const postUrl = `${window.location.origin}/posts/${post.id}`; 
-    this.clipboard.copy(postUrl); 
-    alert('Post link copied to clipboard!'); 
+    const postUrl = `${window.location.origin}/posts/${post.id}`;
+    this.clipboard.copy(postUrl);
+    alert('Post link copied to clipboard!');
   }
-  
 }
