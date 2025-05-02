@@ -18,8 +18,13 @@ return [
             'useTLS' => true,
         ],
     ],
-    // ... إضافات أخرى مثل redis
-],
-
-
-];
+  
+            'redis' => [
+                'driver' => 'redis',
+                'connection' => 'default',
+            ],
+            'log' => [
+                'driver' => 'log',
+            ],
+        ],
+    ];
