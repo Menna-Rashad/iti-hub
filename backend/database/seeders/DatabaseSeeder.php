@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CategorySeeder::class);
         $this->call(DummyDashboardSeeder::class);
+        $this->call(TracksFullSeeder::class);    
+        $this->call(NewsSeeder::class);
+    
 
     }
 }
