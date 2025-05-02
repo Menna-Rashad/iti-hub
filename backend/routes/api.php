@@ -51,7 +51,8 @@ Route::post('/resend-verification-email', [AuthController::class, 'resendVerific
 Route::get('/tracks', [TrackController::class, 'index']); // عرض التراكات بدون توثيق
 //count
 Route::get('/tracks/count', [TrackController::class, 'count']);
-
+Route::get('total-users', [LandingPageController::class, 'getTotalUsers']);
+Route::get('recent-users-this-month', [LandingPageController::class, 'getRecentUsersThisMonth']);
 // البحث عن التراكات بناءً على المعايير المختلفة
 Route::get('/tracks/search', [TrackController::class, 'search']); // البحث عن التراكات بدون توثيق
 Route::get('/test', function () {
