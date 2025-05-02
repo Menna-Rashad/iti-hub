@@ -39,7 +39,7 @@ class Notification extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class); // العلاقة مع المستخدم الذي سيحصل على الإشعار
+        return $this->belongsTo(User::class,'user_id'); // العلاقة مع المستخدم الذي سيحصل على الإشعار
     }
 
     /**
