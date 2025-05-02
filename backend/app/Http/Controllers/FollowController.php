@@ -55,5 +55,18 @@ public function followingCount($id)
     $user = User::findOrFail($id);
     return response()->json(['count' => $user->following()->count()]);
 }
+public function getFollowStatus($id)
+{
+    $user = auth()->user();
+
+    if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $isFollowing = $user->following()->where('followed_id', $id)->exists();
+
+    return response()->json(['status' => $isFollowing ? 'following' : 'not_following']);
+}
+
 
 }

@@ -37,11 +37,14 @@ body {
   font-family: var(--font-family);
 }
 
-/* Navbar Base */
+
+
+mat-toolbar.nav {
+  position: static !important;
+}
+
+
 .nav {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
   background: linear-gradient(100deg, var(--secondary) 0%, #ffffff 100%);

@@ -1,0 +1,8 @@
+.search-input:focus{
+    border-color: var(--text-secondary) !important;
+    box-shadow:none !important;
+}
+
+.track-name{
+    color: var(--primary) !important;
+}

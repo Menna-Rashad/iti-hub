@@ -69,12 +69,12 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 // ==========================
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{id}/follow', [FollowController::class, 'follow']);
-    Route::delete('/users/{id}/unfollow', [FollowController::class, 'unfollow']);
-    Route::get('/users/{id}/followers', [FollowController::class, 'followers']);
+    Route::post('/users/{id}/unfollow', [FollowController::class, 'unfollow']);    Route::get('/users/{id}/followers', [FollowController::class, 'followers']);
     Route::get('/users/{id}/following', [FollowController::class, 'following']);
     Route::get('/users/{id}/followers/count', [FollowController::class, 'followersCount']);
     Route::get('/users/{id}/following/count', [FollowController::class, 'followingCount']);
     Route::get('/users/{id}', [ProfileController::class, 'showById']);
+    Route::get('/users/{id}/status', [FollowController::class, 'getFollowStatus']);
 
     Route::prefix('admin')->group(function () {
         Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);

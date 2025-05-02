@@ -6,7 +6,7 @@ import {
   QueryList,
 } from '@angular/core';
 import { ForumService } from '../services/forum.service';
-import { MatDialog } from '@angular/material/dialog';
+// Removed duplicate import of MatDialog
 import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TopContributorsComponent } from '../top-contributors/top-contributors.component';
 import { CopyButtonComponent } from '../shared/components/copy-button/copy-button.component';
 import { VoteButtonsComponent } from '../shared/components/vote-buttons/vote-buttons.component';
+import { FollowService } from '../services/follow.service';
+import { FollowStateService } from '../services/follow-state.service';
+import { CommentService } from '../services/comments.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PublicProfileComponent } from '../components/public-profile/public-profile.component';
+
 @Component({
   selector: 'app-main-content',
   standalone: true,
@@ -58,6 +64,7 @@ export class MainContentComponent implements OnInit {
   categories: any[] = [];
   selectedCategory: string = '';
   categoryColors: string[] = [];
+  hoveredUser: any = null;
 
   isFollowing: { [key: number]: boolean } = {}; 
 
@@ -74,10 +81,15 @@ export class MainContentComponent implements OnInit {
   constructor(
     private forumService: ForumService,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private followService: FollowService,
+    private followState: FollowStateService,
+    private commentService: CommentService,
+    
   ) {}
 
   ngOnInit(): void {
+    this.getCurrentUser();
     this.loadPosts();
     this.getCurrentUser();
     this.getTopContributors();
@@ -88,8 +100,85 @@ export class MainContentComponent implements OnInit {
     this.forumService.getCurrentUser().subscribe({
       next: (res) => {
         this.currentUser = res.user ?? res;
+  
+        // بعد ما نجيب اليوزر نعيد تحميل البوستات (عشان نقدر نقارن user_id مع الكومنتات)
+        this.loadPosts(); // 🔄 مهم جدًا!
       },
       error: (err) => console.error(err),
+    });
+  }
+  openUserPopup(userId: number, event: MouseEvent): void {
+    event.preventDefault();
+    this.dialog.open(PublicProfileComponent, {
+      height: '500px',
+      width: '450px',
+      data: { userId },
+      panelClass: 'user-profile-dialog'
+    });
+  }
+  
+  loadPosts(): void {
+    const userId = Number(localStorage.getItem('user_id'));
+
+    this.forumService.getPosts().subscribe({
+      next: (res) => {
+        this.posts = res.map((post: any) => {
+          post.user.profile_picture = post.user?.profile_picture
+            ? `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`
+            : this.defaultAvatar;
+
+          post.isOwner = post.user?.id === userId;
+
+          // ✅ مراقبة حالة المتابعة بشكل مباشر
+          if (!post.isOwner) {
+            this.followState.getObservable(post.user.id).subscribe(status => {
+              this.isFollowing[post.id] = status;
+            });
+
+            // ✅ تحميل الحالة من الـ backend مرة واحدة
+            if (!this.followState.getObservable(post.user.id).value) {
+              this.followService.checkStatus(post.user.id).subscribe({
+                next: (res) => {
+                  const isFollowing = res?.is_following || false;
+                  this.followState.set(post.user.id, isFollowing);
+                },
+                error: () => {
+                  this.followState.set(post.user.id, false);
+                }
+              });
+            }
+          }
+
+          return post;
+        });
+
+        this.filteredPosts = this.posts;
+
+        this.posts.forEach((post: any) => {
+          this.loadComments(post.id);
+        });
+      },
+      error: (err) => console.error('Error loading posts:', err),
+    });
+  }
+
+  toggleFollow(post: any): void {
+    const postId = post.id;
+    const userId = post.user?.id;
+
+    const action = this.isFollowing[postId]
+      ? this.followService.unfollow(userId)
+      : this.followService.follow(userId);
+
+    action.subscribe({
+      next: () => {
+        const newStatus = !this.isFollowing[postId];
+        this.followState.set(userId, newStatus);
+        this.toastr.success(newStatus ? 'Followed ✅' : 'Unfollowed ❌');
+      },
+      error: () => {
+        this.toastr.error('❌ Failed to update follow status');
+      }
     });
   }
 
@@ -105,34 +194,7 @@ export class MainContentComponent implements OnInit {
       updatedPost.downvotes = event.newCounts.downvotes;
     }
   }
-  
 
-  loadPosts(): void {
-    this.forumService.getPosts().subscribe({
-      next: (res) => {
-        this.posts = res.map((post: any) => {
-          if (post.user?.profile_picture) {
-            post.user.profile_picture = `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`;
-          } else {
-            post.user.profile_picture = this.defaultAvatar;
-          }
-          return post;
-        });
-        this.filteredPosts = this.posts;
-  
-        res.forEach((post: any) => {
-          this.loadComments(post.id);
-        });
-      },
-      error: (err) => console.error('Error loading posts:', err),
-    });
-  }
-  
-  
-toggleFollow(post: any): void {
-  this.isFollowing[post.id] = !this.isFollowing[post.id];
-  console.log(this.isFollowing[post.id] ? "Followed" : "Unfollowed");
-}
   applyFilter(event: any): void {
     const selectedFilter = event.target.value;
     if (selectedFilter === 'newest') {
@@ -141,20 +203,20 @@ toggleFollow(post: any): void {
       this.filteredPosts = this.posts.sort((a, b) => b.upvotes - a.upvotes);
     }
   }
-  
+
   loadComments(postId: number): void {
     this.loadingComments[postId] = true;
-    this.forumService.getPost(postId.toString()).subscribe({
+    this.commentService.getComments(postId.toString()).subscribe({
       next: (res) => {
-        this.comments[postId] = res.comments;
-        this.visibleComments[postId] = res.comments.slice(0, 3);
+        this.comments[postId] = res;
+        this.visibleComments[postId] = res.slice(0, 3);
         this.loadingComments[postId] = false;
       },
       error: (err) => {
         this.loadingComments[postId] = false;
         console.error(err);
-      },
-    });
+      }
+    });    
   }
 
   addComment(postId: number): void {
@@ -248,22 +310,20 @@ toggleFollow(post: any): void {
     this.filteredPosts = this.posts;
   }
 
-  // ✅ Post Actions
   editPost(post: any): void {
     const newTitle = prompt('📝 Edit post title:', post.title);
     const newContent = prompt('📝 Edit post content:', post.content);
-  
+
     if (newTitle?.trim() && newContent?.trim()) {
       const formData = new FormData();
-  
+
       formData.append('title', newTitle.trim());
       formData.append('content', newContent.trim());
-      formData.append('category_id', post.category_id?.toString() || ''); // لو عايزة تغيريه برضو
+      formData.append('category_id', post.category_id?.toString() || '');
       formData.append('tags', post.tags || '');
-  
       formData.append('existing_media', JSON.stringify(post.media || []));
-      formData.append('_method', 'PUT'); // مهم جداً عشان Laravel يفهم إنها تحديث مش إنشاء
-  
+      formData.append('_method', 'PUT');
+
       this.forumService.updatePost(post.id, formData).subscribe({
         next: () => {
           this.loadPosts();
@@ -273,7 +333,6 @@ toggleFollow(post: any): void {
       });
     }
   }
-  
 
   deletePost(postId: number): void {
     if (confirm('🗑 Are you sure you want to delete this post?')) {
@@ -287,7 +346,6 @@ toggleFollow(post: any): void {
     }
   }
 
-  //Add the TopContributors component method to fetch contributors
   getTopContributors(): void {
     this.forumService.getTopContributors().subscribe(
       (response: any) => {
@@ -314,34 +372,30 @@ toggleFollow(post: any): void {
     }
     return colors;
   }
-  
- 
-  // Filtering posts based on the selected category
+
   filterPosts(category: any): void {
     if (category) {
       this.filteredPosts = this.posts.filter(
         (post) => post.category_id === category.id
       );
     } else {
-      // Show all posts if "All" button is clicked
       this.filteredPosts = this.posts;
     }
   }
+
   isImage(file: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(file);
   }
-  
+
   isVideo(file: string): boolean {
     return /\.(mp4|webm|ogg)$/i.test(file);
   }
-  
+
   isAudio(file: string): boolean {
     return /\.(mp3|wav|ogg)$/i.test(file);
   }
-  
+
   isDocument(file: string): boolean {
     return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
-  
-  
 }
