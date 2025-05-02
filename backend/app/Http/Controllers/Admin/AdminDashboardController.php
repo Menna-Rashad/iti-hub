@@ -16,8 +16,24 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = auth()->user();
+            if (!$user || $user->role !== 'admin') {
+                return response()->json(['message' => 'Unauthorized', 'redirect' => 'http://localhost:4200/'], 403);
+            }
+            return $next($request);
+        });
+    }
+    
+
     public function index()
     {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect('/');
+        }
         return response()->json([
             'users_count' => User::count(),
             'posts_count' => ForumPost::count(),
@@ -30,9 +46,14 @@ class AdminDashboardController extends Controller
             'latest_tickets' => SupportTicket::latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
         ]);
     }
+    
 
     public function getStatistics()
     {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect('/');
+        }
         $totalUsers = User::count();
 
         $recentUsers = User::where('created_at', '>=', now()->subDays(30))->count();

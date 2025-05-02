@@ -1,5 +1,3 @@
-// src/app/admin-dashboard-new/admin-dashboard-new.component.ts
-// import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
@@ -18,8 +16,16 @@ export class AdminDashboardNewComponent implements OnInit {
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    this.adminService.getAdminDashboard().subscribe((data) => {
-      this.dashboardData = data;
+    this.adminService.getAdminDashboard().subscribe({
+      next: (data) => {
+        this.dashboardData = data;
+      },
+      error: (err) => {
+        if (err.status === 403) {
+          window.location.href = '/'; 
+        }
+      }
     });
   }
+  
 }
