@@ -424,3 +424,7 @@ body:not(.admin-layout) .alert-success {
     min-width: 18%;
   }
 }
+
+.text-danger {
+  color: var(--primary) !important;
+}
