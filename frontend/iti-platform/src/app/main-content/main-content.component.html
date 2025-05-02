@@ -1,7 +1,7 @@
 <div class="main-content-layout">
   <!-- Sidebar -->
   <aside class="left-panel">
-    <app-sidebar></app-sidebar>
+    <!-- <app-sidebar></app-sidebar> -->
   </aside>
 
   <!-- Posts Center -->
@@ -14,66 +14,81 @@
       </div>
       <a mat-button routerLink="/posts/create">➕ Create Post</a>
     </div>
-        <!-- فلتر البوستات -->
-        <div class="filter-container">
-          <label for="filter" class="filter-label">Filter by:</label>
-          <select id="filter" (change)="applyFilter($event)" class="filter-select">
-            <option value="newest">Newest</option>
-            <option value="top-votes">Top Votes</option>
-          </select>
-        </div>
+
+    <!-- فلتر البوستات -->
+    <div class="filter-container">
+      <label for="filter" class="filter-label">Filter by:</label>
+      <select id="filter" (change)="applyFilter($event)" class="filter-select">
+        <option value="newest">Newest</option>
+        <option value="top-votes">Top Votes</option>
+      </select>
+    </div>
+
     <!-- Posts List -->
     <div *ngFor="let post of filteredPosts" class="discussion-card">
-      <div class="post-header">
-        <div class="post-author">
-          <div class="user-info">
-            <img [src]="post.user?.profile_picture" (error)="post.user.profile_picture = defaultAvatar" alt="User Avatar" class="user-avatar">
-            <span>{{ post.user?.name || 'Unknown User' }}</span> <!-- عرض اسم صاحب البوست -->
-            <button mat-button class="follow-btn" (click)="toggleFollow(post)">
-              {{ isFollowing[post.id] ? 'Unfollow' : 'Follow' }} <!-- التفاعل مع زر المتابعة -->
-            </button>
+      <div class="post-header d-flex justify-content-between align-items-start">
+        <div class="d-flex align-items-center gap-2">
+          <img [src]="post.user?.profile_picture" (error)="post.user.profile_picture = defaultAvatar" alt="User Avatar" class="user-avatar" />
+          <div class="d-flex flex-column">
+            <div class="user-hover-wrapper" (mouseenter)="hoveredUser = post.user" (mouseleave)="hoveredUser = null">
+              <a class="author-link">
+                {{ post.user?.name || 'Unknown User' }}
+              </a>
+            
+              <div class="user-popup" *ngIf="hoveredUser === post.user">
+                <img [src]="post.user.profile_picture" class="popup-avatar" />
+                <div class="popup-info">
+                  <strong>{{ post.user.name }}</strong>
+                  <p *ngIf="post.user.email">📧 {{ post.user.email }}</p>
+                  <p *ngIf="post.user.bio">📝 {{ post.user.bio }}</p>
+                  <a *ngIf="post.user.linkedin" [href]="post.user.linkedin" target="_blank">🔗 LinkedIn</a>
+                </div>
+              </div>
+            </div>
+            
+            <span class="post-date">{{ post.created_at | date:'medium' }}</span>
           </div>
-          <br>
-          <h2>{{ post.title }}</h2>
         </div>
 
-        <!-- ⋯ Post Options (Only for post owner) -->
-        <ng-container *ngIf="post.user_id === currentUser?.id">
-          <button mat-icon-button [matMenuTriggerFor]="postMenu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #postMenu="matMenu">
-            <button mat-menu-item (click)="editPost(post)">
-              <mat-icon>edit</mat-icon>
-              <span>Edit</span>
+        <div class="d-flex align-items-center gap-2">
+          <i *ngIf="!post.isOwner && !isFollowing[post.id]" class="fa-solid fa-user-plus follow-icon" (click)="toggleFollow(post)" title="متابعة"></i>
+          <i *ngIf="!post.isOwner && isFollowing[post.id]" class="fa-solid fa-user-minus unfollow-icon" (click)="toggleFollow(post)" title="إلغاء المتابعة"></i>
+
+          <ng-container *ngIf="post.isOwner">
+            <button mat-icon-button [matMenuTriggerFor]="postMenu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button mat-menu-item (click)="deletePost(post.id)">
-              <mat-icon>delete</mat-icon>
-              <span>Delete</span>
-            </button>
-          </mat-menu>
-        </ng-container>
+            <mat-menu #postMenu="matMenu">
+              <button mat-menu-item (click)="editPost(post)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deletePost(post.id)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </ng-container>
+        </div>
       </div>
+
+      <h2>{{ post.title }}</h2>
 
       <p>{{ post.content }}</p>
 
-<!-- ✅ MEDIA PREVIEW -->
-<div class="media-section" *ngIf="post.media?.length > 0">
-  <ng-container *ngFor="let file of post.media">
-    <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
-    <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
-    <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
-    <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
-      <mat-icon>insert_drive_file</mat-icon> View Document
-    </a>
-  </ng-container>
-</div>
+      <div class="media-section" *ngIf="post.media?.length > 0">
+        <ng-container *ngFor="let file of post.media">
+          <img *ngIf="isImage(file)" [src]="'http://localhost:8000/storage/' + file" class="media-preview" />
+          <video *ngIf="isVideo(file)" [src]="'http://localhost:8000/storage/' + file" controls class="media-preview"></video>
+          <audio *ngIf="isAudio(file)" [src]="'http://localhost:8000/storage/' + file" controls></audio>
+          <a *ngIf="isDocument(file)" [href]="'http://localhost:8000/storage/' + file" target="_blank" class="doc-link">
+            <mat-icon>insert_drive_file</mat-icon> View Document
+          </a>
+        </ng-container>
+      </div>
 
-
-      <!-- ✅ Tag-style Category -->
       <span class="category-tag">{{ post.category?.name || 'Uncategorized' }}</span>
 
-      <!-- ✅ Voting & Copy -->
       <div class="likes-section">
         <app-vote-buttons
           [targetType]="'post'"
@@ -84,17 +99,11 @@
           (voteUpdated)="onVoteUpdated($event)">
         </app-vote-buttons>
 
-        <!-- <button (click)="vote(post.id, 'upvote')" [disabled]="loadingVotes[post.id]">👍 {{ post.upvotes || 0 }}</button>
-        <button (click)="vote(post.id, 'downvote')" [disabled]="loadingVotes[post.id]">👎 {{ post.downvotes || 0 }}</button> -->
-
-        <!-- ✅ Copy with Tooltip -->
         <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.id"></app-copy-button>
-
       </div>
 
       <a [routerLink]="['/posts', post.id]">View Discussion</a>
 
-      <!-- 💬 Comments Section -->
       <div class="comments-wrapper">
         <div *ngIf="loadingComments[post.id]">Loading comments...</div>
 
@@ -104,24 +113,25 @@
           <div class="comment-scroll-box">
             <div *ngFor="let comment of comments[post.id]" class="comment">
               <strong>{{ comment.user?.name }}</strong>: {{ comment.content }}
-              <div class="comment-actions" *ngIf="comment.user_id === currentUser?.id">
-                <button class="comment-btn" (click)="editComment(post.id, comment)">✏️ Edit</button>
-                <button class="comment-btn" (click)="deleteComment(post.id, comment.id)">🗑 Delete</button>
+              <div class="comment-actions" *ngIf="comment.user?.id === currentUser?.id">
+                <button mat-button color="primary" (click)="editComment(post.id, comment)">Edit</button>
+                <button mat-button color="warn" (click)="deleteComment(post.id, comment.id)">Delete</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Add Comment -->
         <div class="add-comment-box">
           <input type="text" [(ngModel)]="commentText[post.id]" placeholder="Write a comment..." />
-          <button (click)="addComment(post.id)">Add Comment</button>
+          <button mat-raised-button color="primary" class="add-comment-btn">
+            <mat-icon>send</mat-icon>
+            Add Comment
+          </button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Top Contributors + Categories -->
   <aside class="right-panel">
     <app-top-contributors></app-top-contributors>
 
