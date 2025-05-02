@@ -11,19 +11,13 @@
       <a mat-button routerLink="/apply-guide" routerLinkActive="active-link">Guide</a>
       <a mat-button routerLink="/community" routerLinkActive="active-link">Community</a>
       <a mat-button routerLink="/support" routerLinkActive="active-link">Support</a>
-      
-
-      <!-- temporarily hiding the dark mode toggle button for now -->
-      <!-- <button id="darkModeToggle" (click)="toggleDarkMode()" title="Toggle Dark Mode" class="dark-toggle-btn">
-        {{ icon }}
-      </button> -->
 
       <ng-container *ngIf="isLoggedIn">
         <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
           <img [src]="userImage" alt="Profile" class="user-avatar" />
           <span class="ms-2">{{ userName }}</span>
         </button>
-        <mat-menu #profileMenu="matMenu">
+        <mat-menu #profileMenu="matMenu" class="ninja-profile-menu">
           <button mat-menu-item routerLink="/profile">
             <mat-icon>person</mat-icon> View Profile
           </button>
@@ -34,11 +28,14 @@
             <mat-icon>logout</mat-icon> Logout
           </button>
         </mat-menu>
-      </ng-container>
 
+        <!-- دمج NotificationComponent -->
+        <app-notification></app-notification>
+      </ng-container>
+      
       <ng-container *ngIf="!isLoggedIn">
-        <a mat-button routerLink="/login">Login</a>
-        <a mat-flat-button color="accent" routerLink="/register" class="register-btn">Register</a>
+        <a mat-button routerLink="/login" class="login-btn">Login</a>
+        <a mat-flat-button routerLink="/register" class="register-btn">Register</a>
       </ng-container>
     </div>
 
@@ -48,10 +45,12 @@
   </div>
 </mat-toolbar>
 
+<!-- Mobile Menu -->
 <div class="mobile-menu" *ngIf="isMenuOpen">
   <a routerLink="/">Home</a>
+  <a routerLink="/about">About</a>
   <a routerLink="/tracks">Tracks</a>
-  <a routerLink="/resources">Resources</a>
+  <a routerLink="/apply-guide">Guide</a>
   <a routerLink="/community">Community</a>
   <a routerLink="/support">Support</a>
 
@@ -59,10 +58,14 @@
     <a routerLink="/profile">View Profile</a>
     <a routerLink="/profile/edit">Edit Profile</a>
     <a (click)="logout()">Logout</a>
+    <!-- إزالة الإشعارات الـ static من الـ mobile menu لأنها موجودة في app-notification -->
   </ng-container>
 
   <ng-container *ngIf="!isLoggedIn">
-    <a routerLink="/login">Login</a>
-    <a routerLink="/register">Register</a>
+    <a routerLink="/login" class="login-btn">Login</a>
+    <a routerLink="/register" class="register-btn">Register</a>
   </ng-container>
 </div>
+
+<!-- Overlay for Mobile Menu -->
+<div class="mobile-menu-overlay" *ngIf="isMenuOpen" (click)="toggleMenu()"></div>
