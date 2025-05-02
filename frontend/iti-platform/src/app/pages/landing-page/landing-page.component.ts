@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.css']
 })
@@ -18,6 +19,7 @@ export class LandingPageComponent implements OnInit {
           if (entries[0].isIntersecting) {
             animateGaugeCounter('tracksGauge', 'tracksCounter', 0, 30, 2000);
             animateGaugeCounter('usersGauge', 'usersCounter', 0, 1000, 2000);
+            animateGaugeCounter('newUsersGauge', 'newUsersCounter', 0, 223, 2000);
             observer.disconnect(); // مش كل مرة، مرة واحدة فقط
           }
         },
