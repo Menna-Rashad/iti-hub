@@ -24,7 +24,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   // ✅ لو فيه صفحة غير معروفة
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/login' },
+  
 ];
 
 @NgModule({
