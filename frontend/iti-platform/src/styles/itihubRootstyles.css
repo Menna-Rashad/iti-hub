@@ -424,3 +424,6 @@ body:not(.admin-layout) .alert-success {
     min-width: 18%;
   }
 }
+body {
+  padding-top: 80px; /* Adjust space for navbar */
+}
