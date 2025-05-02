@@ -58,4 +58,11 @@ class TrackController extends Controller
 
         return response()->json($tracks); // إرجاع التراكات
     }
+
+    public function count()
+{
+    $count = Track::count();
+    return response()->json(['tracks_count' => $count]);
+}
+
 }
