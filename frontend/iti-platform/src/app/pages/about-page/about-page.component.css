@@ -1,0 +1,436 @@
+
+  /* Hero Section Styling */
+  .hero-section {
+    background-color: var(--background-alt);
+    padding: var(--space-2xl) 0;
+    text-align: center;
+    border-bottom: var(--border-width) solid var(--border-light);
+  }
+
+  .hero-section h1 {
+    color: var(--primary);
+  }
+
+  .hero-section p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+  }
+
+  /* Cards Section Styling */
+  .cards-section {
+    padding: var(--space-2xl) 0;
+    background-color: #EDEDED; /* Darker background */
+  }
+
+  .cards-section .card {
+    animation: float 3s var(--transition-easing) infinite;
+    height: 100%; /* Ensure cards stretch to equal height */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cards-section .card:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .cards-section .card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .cards-section .card:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .cards-section h3 {
+    font-size: 1.375rem; /* Slightly larger for emphasis */
+    color: var(--primary);
+    margin-bottom: var(--space-md); /* Increased spacing */
+    border-bottom: var(--border-width) solid var(--border-light); /* Visual separator */
+    padding-bottom: var(--space-xs);
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .backronym {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .backronym-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-sm);
+  }
+
+  .backronym-circle {
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  /* Featurette Section Styling */
+  .featurette-section {
+    padding: var(--space-2xl) 0;
+    background-color: var(--background);
+  }
+
+  .featurette {
+    margin-bottom: var(--space-2xl);
+    opacity: 0;
+    animation: fadeIn 1s var(--transition-easing) forwards;
+  }
+
+  .featurette:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+
+  .featurette:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .featurette h2 {
+    color: var(--primary);
+  }
+
+  .featurette blockquote {
+    background-color: var(--background-alt);
+    border-left: var(--border-width) solid var(--primary);
+    padding: var(--space-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .featurette cite {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .featurette img {
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    max-height: 300px;
+    object-fit: cover;
+  }
+
+  /* Carousel Section Styling */
+  .carousel-section {
+    padding: var(--space-2xl) 0;
+    background-color: var(--background-alt);
+  }
+
+  .carousel-section .carousel {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .carousel-section .carousel-item {
+    text-align: center;
+  }
+
+  .carousel-section .card {
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: none; /* Override floating animation from cards-section */
+  }
+
+  .carousel-section img {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-md);
+    object-fit: cover;
+  }
+
+  .carousel-section h3 {
+    font-size: var(--font-size-h3);
+    color: var(--primary);
+    margin-bottom: var(--space-sm);
+    border-bottom: none; /* Remove separator from cards-section */
+  }
+
+  .carousel-section p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+
+  .contact-item i {
+    font-size: 1.2rem;
+    color: var(--primary);
+  }
+
+  /* Honorary Section Styling */
+  .honorary-section {
+    padding: var(--space-2xl) 0;
+    background-color: var(--background);
+  }
+
+  .honorary-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .honorary-section .card {
+    width: 300px;
+    height: 350px;
+    padding: 0;
+    border: var(--border-width) solid var(--border-light);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .honorary-section img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .honorary-section .card-text {
+    padding: var(--space-md);
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .honorary-section h4 {
+    color: var(--primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .honorary-section p {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    margin-bottom: 0;
+  }
+
+  /* Media Queries */
+  @media (max-width: 480px) {
+    body:not(.admin-layout) h1 {
+      font-size: 1.25rem;
+    }
+    .hero-section {
+      padding: var(--space-lg) 0;
+    }
+    .hero-section p {
+      font-size: var(--font-size-sm);
+      padding: 0 var(--space-sm);
+    }
+    .cards-section .card {
+      padding: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .cards-section h3 {
+      font-size: 1rem;
+    }
+    .cards-section p {
+      font-size: var(--font-size-sm);
+    }
+    .backronym {
+      grid-template-columns: 1fr;
+    }
+    .backronym-item {
+      font-size: var(--font-size-xs);
+    }
+    .backronym-circle {
+      width: 20px;
+      height: 20px;
+    }
+    .featurette h2 {
+      font-size: 1.25rem;
+    }
+    .featurette blockquote {
+      font-size: var(--font-size-sm);
+      padding: var(--space-sm);
+    }
+    .featurette cite {
+      font-size: var(--font-size-xs);
+    }
+    .featurette img {
+      max-height: 200px;
+      margin-bottom: var(--space-md);
+    }
+    .carousel-section .carousel {
+      max-width: 100%;
+    }
+    .carousel-section .card {
+      max-width: 250px;
+      padding: var(--space-sm);
+    }
+    .carousel-section img {
+      width: 120px;
+      height: 120px;
+    }
+    .carousel-section h3 {
+      font-size: 1rem;
+    }
+    .carousel-section p {
+      font-size: var(--font-size-xs);
+    }
+    .contact-item {
+      font-size: var(--font-size-xs);
+    }
+    .contact-item i {
+      font-size: 1rem;
+    }
+    .honorary-section .card {
+      width: 240px;
+      height: 350px;
+    }
+    .honorary-section img {
+      height: 120px;
+    }
+    .honorary-section h4 {
+      font-size: 1rem;
+    }
+    .honorary-section p {
+      font-size: var(--font-size-xs);
+    }
+    .honorary-section .card-text {
+      padding: var(--space-sm);
+    }
+  }
+
+  @media (max-width: 768px) and (min-width: 481px) {
+    body:not(.admin-layout) h1 {
+      font-size: 1.5rem;
+    }
+    .hero-section {
+      padding: var(--space-xl) 0;
+    }
+    .hero-section p {
+      font-size: var(--font-size-base);
+    }
+    .cards-section .card {
+      padding: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .cards-section h3 {
+      font-size: 1.125rem;
+    }
+    .backronym {
+      grid-template-columns: 1fr 1fr;
+    }
+    .featurette h2 {
+      font-size: 1.375rem;
+    }
+    .featurette blockquote {
+      font-size: var(--font-size-base);
+    }
+    .featurette img {
+      max-height: 250px;
+      margin-bottom: var(--space-md);
+    }
+    .carousel-section .carousel {
+      max-width: 350px;
+    }
+    .carousel-section .card {
+      max-width: 280px;
+    }
+    .carousel-section img {
+      width: 130px;
+      height: 130px;
+    }
+    .honorary-section .card {
+      width: 270px;
+      height: 350px;
+    }
+    .honorary-section img {
+      height: 130px;
+    }
+    .honorary-section h4 {
+      font-size: 1.125rem;
+    }
+    .honorary-section .card-text {
+      padding: var(--space-sm);
+    }
+  }
+
+  @media (max-width: 1024px) and (min-width: 769px) {
+    body:not(.admin-layout) h1 {
+      font-size: 1.75rem;
+    }
+    .cards-section .card {
+      padding: var(--space-md);
+    }
+    .featurette img {
+      max-height: 280px;
+    }
+    .honorary-section .card {
+      padding: 0;
+    }
+  }
+
+  @media (min-width: 1201px) {
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  }
+
+  .carousel-item img{
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .honorary-section .card{
+    max-width: 216px !important;
+  }
