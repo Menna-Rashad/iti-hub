@@ -16,16 +16,16 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            $user = auth()->user();
-            if (!$user || $user->role !== 'admin') {
-                return response()->json(['message' => 'Unauthorized', 'redirect' => 'http://localhost:4200/'], 403);
-            }
-            return $next($request);
-        });
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(function ($request, $next) {
+    //         $user = auth()->user();
+    //         if (!$user || $user->role !== 'admin') {
+    //             return response()->json(['message' => 'Unauthorized', 'redirect' => 'http://localhost:4200/'], 403);
+    //         }
+    //         return $next($request);
+    //     });
+    // }
     
 
     public function index()
