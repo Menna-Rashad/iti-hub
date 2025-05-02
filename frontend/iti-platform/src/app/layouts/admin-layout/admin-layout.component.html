@@ -1,19 +1,91 @@
-<div class="admin-layout">
-    <aside class="sidebar">
-      <h4 class="sidebar-title">ITI Admin</h4>
-      <nav class="nav">
-        <a routerLink="/admin/dashboard" routerLinkActive="active" data-icon="📊">Statistics</a>
-        <a routerLink="/admin/dashboard/users" routerLinkActive="active" data-icon="👤">Users</a>
-        <a routerLink="/admin/dashboard/posts" routerLinkActive="active" data-icon="📝">Posts</a>
-        <a routerLink="/admin/dashboard/comments" routerLinkActive="active" data-icon="💬">Comments</a>
-        <a routerLink="/admin/dashboard/tickets" routerLinkActive="active" data-icon="🎫">Tickets</a>
-        <a routerLink="/admin/dashboard/logs" routerLinkActive="active" data-icon="🗂️">Admin Logs</a>
-        <a routerLink="/" class="back-to-site">🏠 Back to Website</a>
-      </nav>
-    </aside>
-  
-    <main class="main-content">
+<mat-sidenav-container class="admin-layout">
+  <!-- Sidebar -->
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    class="sidebar"
+  >
+    <mat-toolbar class="sidebar-header">
+      <span class="sidebar-title">ITI Admin</span>
+    </mat-toolbar>
+    <mat-nav-list class="nav">
+      <a
+        mat-list-item
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>dashboard</mat-icon>
+        Statistics
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/users"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>people</mat-icon>
+        Users
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/posts"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>article</mat-icon>
+        Posts
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/comments"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>comment</mat-icon>
+        Comments
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/tickets"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>support</mat-icon>
+        Tickets
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/logs"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon matListIcon>history</mat-icon>
+        Admin Logs
+      </a>
+    </mat-nav-list>
+    <a
+      mat-list-item
+      class="back-to-site"
+      href="/"
+      matTooltip="Back to Main Site"
+    >
+      <mat-icon>exit_to_app</mat-icon>
+      Back to Site
+    </a>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="main-content">
+    <mat-toolbar color="primary" *ngIf="isMobile">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>ITI Admin</span>
+    </mat-toolbar>
+    <div class="content">
       <router-outlet></router-outlet>
-    </main>
-  </div>
-  
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
