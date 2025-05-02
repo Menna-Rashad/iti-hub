@@ -49,6 +49,8 @@ Route::post('/google-login', [AuthController::class, 'googleLogin']);
 Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware('signed');
 Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
 Route::get('/tracks', [TrackController::class, 'index']); // عرض التراكات بدون توثيق
+//count
+Route::get('/tracks/count', [TrackController::class, 'count']);
 
 // البحث عن التراكات بناءً على المعايير المختلفة
 Route::get('/tracks/search', [TrackController::class, 'search']); // البحث عن التراكات بدون توثيق
