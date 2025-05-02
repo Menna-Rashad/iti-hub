@@ -278,3 +278,17 @@ button:hover {
     color: #bdbdbd;
     cursor: not-allowed;
 }
+.follow-icon,
+.unfollow-icon {
+  font-size: 20px;
+  color: #9b1e2f;
+  cursor: pointer;
+  margin-left: 12px;
+  transition: transform 0.2s ease;
+}
+
+.follow-icon:hover,
+.unfollow-icon:hover {
+  transform: scale(1.15);
+  color: #880e4f;
+}
