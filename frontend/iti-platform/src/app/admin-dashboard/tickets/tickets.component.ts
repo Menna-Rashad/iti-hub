@@ -2,190 +2,257 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule }   from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule }   from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule }  from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+
 import { AdminService } from '../../services/admin.service';
+
+/* ---------- helper interfaces ---------- */
+interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  status: 'open' | 'in_review' | 'closed';
+  priority: 'low' | 'medium' | 'high';
+  category?: string;
+  created_at: string;
+  attachments: string[];
+}
+
+interface Reply {
+  sender_type: 'user' | 'admin';
+  message: string;
+  attachments: string[];
+  created_at: Date;
+}
 
 @Component({
   selector: 'app-support-tickets',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
+  ],
   templateUrl: './tickets.component.html',
   styleUrls: ['./tickets.component.css']
 })
 export class TicketsComponent implements OnInit {
-  tickets: any[] = [];
-  filteredTickets: any[] = [];
-  searchTerm: string = '';
-  selectedTicket: any = null;
-  showModal: boolean = false;
-  adminReplyMessage: string = '';
-  showReplyBox: boolean = false;
-  ticketReplies: any[] = [];
-  adminReplyAttachments: File[] = [];
-  selectedStatus: string = '';
 
-  constructor(private adminService: AdminService, private snackBar: MatSnackBar) {}
+  /* ---------- dummy tickets ---------- */
+  tickets: Ticket[] = [
+    {
+      id: 101,
+      title: 'Login issue',
+      description: 'Cannot log in after password reset.',
+      status: 'open',
+      priority: 'high',
+      category: 'Authentication',
+      created_at: '2025-04-10T09:30:00Z',
+      attachments: ['screenshots/login_error.png']
+    },
+    {
+      id: 102,
+      title: 'Payment not processed',
+      description: 'Payment failed but money deducted.',
+      status: 'in_review',
+      priority: 'medium',
+      category: 'Billing',
+      created_at: '2025-04-08T14:12:00Z',
+      attachments: []
+    },
+    {
+      id: 103,
+      title: 'Feature request: Dark mode',
+      description: 'It would be great to have a dark theme for the portal.',
+      status: 'closed',
+      priority: 'low',
+      category: 'Feedback',
+      created_at: '2025-04-05T11:00:00Z',
+      attachments: []
+    }
+  ];
+
+  /* ---------- dummy replies ---------- */
+  dummyReplies: Record<number, Reply[]> = {
+    101: [
+      {
+        sender_type: 'user',
+        message: 'Here is a screenshot.',
+        attachments: ['screenshots/login_error.png'],
+        created_at: new Date('2025-04-10T10:00:00Z')
+      }
+    ],
+    102: [],
+    103: [
+      {
+        sender_type: 'admin',
+        message: 'Dark mode now on the roadmap!',
+        attachments: [],
+        created_at: new Date('2025-04-06T09:00:00Z')
+      }
+    ]
+  };
+
+  /* ---------- component state ---------- */
+  filteredTickets: Ticket[] = [...this.tickets];
+  searchTerm = '';
+  selectedStatus = '';
+
+  selectedTicket: Ticket | null = null;
+  showModal = false;
+  ticketReplies: Reply[] = [];
+  showReplyBox = false;
+  adminReplyMessage = '';
+  adminReplyAttachments: File[] = [];
+
+  constructor(private admin: AdminService,
+              private snack: MatSnackBar) {}
 
   ngOnInit(): void {
-    this.loadTickets();
+    /* For live API, comment out the dummy tickets
+       and uncomment loadTickets() below */
+    // this.loadTickets();
   }
 
+  /* ------------- API loader (for production) ------------- */
   loadTickets() {
-    this.adminService.getAllSupportTickets().subscribe({
-      next: (data) => {
-        this.tickets = data;
-        this.filteredTickets = data;
-      },
-      error: (err) => {
-        console.error('Error loading tickets:', err);
-      }
+    this.admin.getAllSupportTickets().subscribe({
+      next: d => { this.tickets = d; this.filteredTickets = d; },
+      error: e => console.error('Error loading tickets', e)
     });
   }
-  // getSelectValue(event: Event): string {
-  //   return (event.target as HTMLSelectElement).value;
-  // }
-  
-  getSelectValue(event: Event): string {
-    const target = event.target as HTMLSelectElement;
-    return target.value;
-  }
-  openModal(ticket: any) {
-    this.selectedTicket = ticket;
-    this.showModal = true;
-    
-    this.adminService.getTicketReplies(ticket.id).subscribe({
-      next: (data) => {
-        this.ticketReplies = data.replies;
-      },
-      error: (err) => {
-        console.error('Error fetching replies:', err);
-        this.ticketReplies = [];
-      }
-    });
-  }
-  
-  
+
+  /* ------------- Filters ------------- */
   filterTickets() {
-    const term = this.searchTerm.toLowerCase();
-    const status = this.selectedStatus.toLowerCase();
-  
-    this.filteredTickets = this.tickets.filter(ticket =>
-      (ticket.title?.toLowerCase().includes(term) || ticket.status?.toLowerCase().includes(term)) &&
-      (status ? ticket.status.toLowerCase() === status : true)
+    const t = this.searchTerm.toLowerCase();
+    const s = this.selectedStatus.toLowerCase();
+    this.filteredTickets = this.tickets.filter(x =>
+      (x.title.toLowerCase().includes(t) || x.status.toLowerCase().includes(t))
+      && (s ? x.status.toLowerCase() === s : true)
     );
   }
-  
-  handleFileInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.adminReplyAttachments = Array.from(input.files);
-    }
-  }
-  
-  extractFileName(filePath: string): string {
-    return filePath.split('/').pop() || filePath;
-  }
- 
-  clearSearch() {
+  clearFilters() {
     this.searchTerm = '';
-    this.filteredTickets = this.tickets;
+    this.selectedStatus = '';
+    this.filteredTickets = [...this.tickets];
   }
 
-  isImage(fileUrl: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
-  }
+  /* ------------- Modal ------------- */
+  openModal(ticket: Ticket) {
+    this.selectedTicket = ticket;
+    this.showModal = true;
+    this.showReplyBox = false;
 
-extractFileUrl(filePath: string): string {
-  if (!filePath.startsWith('http')) {
-    return `http://localhost:8000/storage/${filePath}`;
+    /* For live API:
+    this.admin.getTicketReplies(ticket.id).subscribe({
+      next: d => this.ticketReplies = d.replies,
+      error: () => this.ticketReplies = []
+    });
+    */
+    this.ticketReplies = this.dummyReplies[ticket.id] ?? [];
   }
-  return filePath;
-}
+  closeModal() { this.selectedTicket = null; this.showModal = false; }
 
-
-  closeModal() {
-    this.selectedTicket = null;
-    this.showModal = false;
+  /* ------------- Reply ------------- */
+  toggleReplyBox() { this.showReplyBox = !this.showReplyBox; }
+  handleFileInput(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (input.files) this.adminReplyAttachments = Array.from(input.files);
   }
-  toggleReplyBox() {
-    this.showReplyBox = !this.showReplyBox;
-  }
-  
   sendAdminReply() {
     if (!this.adminReplyMessage.trim()) {
-      this.showToast('⚠️ Please type a message before sending.', false);
-      return;
+      this.toast('Type a message.', false); return;
     }
-  
-    if (confirm('Are you sure you want to send this reply?')) {
-      const formData = new FormData();
-      formData.append('message', this.adminReplyMessage);
-  
-      this.adminReplyAttachments.forEach((file) => {
-        formData.append('attachments[]', file);
-      });
-  
-      const replyMessage = this.adminReplyMessage;  
-      const replyAttachments = this.adminReplyAttachments.map(file => file.name);
-  
-      this.adminService.replyToSupportTicket(this.selectedTicket.id, formData).subscribe({
-        next: () => {
-          this.showToast('Reply sent successfully ✅', true);
-          this.adminReplyMessage = '';
-          this.adminReplyAttachments = [];
-          this.showReplyBox = false;
-  
-          this.ticketReplies.push({
-            sender_type: 'admin',
-            message: replyMessage,
-            attachments: replyAttachments,
-            created_at: new Date()
-          });
-        },
-        error: (err) => {
-          console.error('Error sending reply:', err);
-          this.showToast('❌ Failed to send reply.', false);
-        }
-      });
-    }
+    /* Pretend send */
+    this.ticketReplies.push({
+      sender_type: 'admin',
+      message: this.adminReplyMessage,
+      attachments: this.adminReplyAttachments.map(f => f.name),
+      created_at: new Date()
+    });
+    this.adminReplyMessage = '';
+    this.adminReplyAttachments = [];
+    this.showReplyBox = false;
+    this.toast('Reply sent ✅');
   }
-  
-  
+
+  /* ------------- Delete with confirmation ------------- */
   deleteTicket(id: number) {
-    if (confirm('Are you sure you want to delete this ticket?')) {
-      this.adminService.deleteSupportTicket(id).subscribe({
+    const ref = this.snack.open(
+      `Delete ticket #${id}?`,
+      'Delete',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['confirm-snackbar']      // blue bar, red action
+      }
+    );
+
+    ref.onAction().subscribe(() => {
+      /* Real call in production:
+      this.admin.deleteSupportTicket(id).subscribe({
         next: () => {
           this.loadTickets();
-          this.showToast('Ticket deleted successfully ✅');
-        },
-        error: (err) => {
-          console.error('Error deleting ticket:', err);
+          this.toast('Ticket deleted ✅');
         }
       });
-    }
-  }
-
-  updateTicketStatus(id: number, newStatus: string) {
-    if (confirm(`Are you sure you want to mark this ticket as ${newStatus}?`)) {
-      this.adminService.updateSupportTicketStatus(id, newStatus).subscribe({
-        next: () => {
-          this.loadTickets();
-          this.showToast('Ticket status updated ✅');
-        },
-        error: (err) => {
-          console.error('Error updating ticket status:', err);
-        }
-      });
-    }
-  }
-
-  showToast(message: string, isSuccess: boolean = true) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: isSuccess ? ['custom-snackbar-success'] : ['custom-snackbar-error']
+      */
+      this.tickets = this.tickets.filter(t => t.id !== id);
+      this.filteredTickets = [...this.tickets];
+      this.toast('Ticket deleted ✅');
     });
   }
-  
+
+  /* ------------- Status change with confirmation ------------- */
+  updateTicketStatus(id: number, newStatus: Ticket['status']) {
+    const ref = this.snack.open(
+      `Mark as ${newStatus}?`,
+      'Update',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['confirm-snackbar']
+      }
+    );
+
+    ref.onAction().subscribe(() => {
+      /* Real call for production:
+      this.admin.updateSupportTicketStatus(id,newStatus).subscribe({
+        next: () => this.loadTickets()
+      });
+      */
+      const t = this.tickets.find(x => x.id === id);
+      if (t) t.status = newStatus;
+      this.toast('Status updated ✅');
+    });
+  }
+
+  /* ------------- Helpers ------------- */
+  isImage(u: string) { return /\.(jpg|jpeg|png|gif|webp)$/i.test(u); }
+  extractFileName(p: string) { return p.split('/').pop() || p; }
+  extractFileUrl(p: string) { return p.startsWith('http') ? p : `http://localhost:8000/storage/${p}`; }
+
+  toast(msg: string, ok = true) {
+    this.snack.open(msg, 'Close', {
+      duration: 3000,
+      verticalPosition: 'top',
+      panelClass: ok ? ['custom-snackbar-success'] : ['custom-snackbar-error']
+    });
+  }
 }

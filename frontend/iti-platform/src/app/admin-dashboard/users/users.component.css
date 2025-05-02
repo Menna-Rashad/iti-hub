@@ -1,15 +1,100 @@
-.custom-snackbar {
-    background-color: #323232;
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-  }
-  .fade-in {
-    animation: fadeIn 0.5s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  
+/******** Section card & header *****************************************/
+mat-card {
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+mat-card-header {
+  background: linear-gradient(90deg, #1e2a44, #2d4066);
+  color: #ffffff;
+  padding: 16px 20px;
+}
+mat-card-title { font-weight: 700; letter-spacing: .4px; }
+
+/******** Search bar ****************************************************/
+.search-field .mat-form-field-flex {
+  background: #f2f6fb;
+  border: 1px solid #cfd6e4;
+  border-radius: 80px;
+  padding-right: 1px;
+  transition: border-color .2s;
+}
+.search-field.mat-focused .mat-form-field-flex {
+  border-color: #4fc3f7;
+}
+.search-field input.mat-input-element { padding: 8px 0; }
+
+.reset-btn {
+  background: #f2f6fb;
+  border: 1px solid #cfd6e4;
+  border-radius: 50%;
+  transition: background .2s, transform .15s;
+}
+.reset-btn:hover {
+  background: #4fc3f7;
+  color: #fff;
+  transform: rotate(-90deg);
+}
+
+/******** Data‑card tile *************************************************/
+.data-card {
+  background: #ffffff;
+  border: 1px solid #e5eaf2;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.data-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* icon */
+.icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #1e2a44 0%, #2d4066 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+.icon-wrapper mat-icon { color:#fff; font-size:26px; }
+
+/* text */
+.data-content h6 { color:#1e2a44; font-size:.95rem; font-weight:600; }
+.data-content p  { color:#36455b; font-size:.87rem; margin:2px 0; }
+.data-content .date { color:#8b95a9; font-size:.8rem; }
+
+/* badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+.bg-primary { background:#4fc3f7 !important; color:#fff; }
+.bg-danger  { background:#dc3545 !important; color:#fff; }
+
+/* action button */
+.btn-action {
+  color:#dc3545;
+  transition: color .15s ease, transform .15s ease;
+}
+.btn-action:hover { color:#b91c1c; transform: translateY(-2px); }
+
+/* snackbar */
+.custom-snackbar { background:#4fc3f7 !important; color:#fff !important; font-weight:600; }
+
+/* fade‑in */
+.fade-in { animation: fadeIn .5s ease-out; }
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:none; }
+}

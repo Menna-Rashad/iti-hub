@@ -1,45 +1,119 @@
-<h3>👤 Manage Users</h3>
+<div class="container mt-4 dashboard-wrapper">
 
-<div class="table-responsive mt-4 fade-in">
-    <div class="row g-3 align-items-center mt-3 mb-4">
-        <div class="col-md-10">
+  <!-- section card -->
+  <mat-card class="shadow-lg">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="me-2">groups</mat-icon>
+        Manage Users
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- ── Sleek search bar ─────────────────────────── -->
+      <div class="d-flex flex-column flex-md-row align-items-stretch gap-3 mb-4">
+
+        <mat-form-field appearance="fill" class="search-field flex-grow-1">
+          <mat-icon matPrefix>search</mat-icon>
+
           <input
+            matInput
             type="text"
-            class="form-control"
-            placeholder="🔎 Search users by name or email..."
+            placeholder="Search by name or email…"
             [(ngModel)]="searchTerm"
             (input)="filterUsers()"
           />
+
+          <!-- clear -->
+          <button
+            mat-icon-button
+            matSuffix
+            *ngIf="searchTerm"
+            [attr.aria-label]="'Clear search'"
+            (click)="clearSearch()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- reset -->
+        <button
+          mat-icon-button
+          color="primary"
+          class="reset-btn align-self-md-center"
+          [attr.aria-label]="'Reset list'"
+          (click)="clearSearch()"
+        >
+          <mat-icon>refresh</mat-icon>
+        </button>
+
+      </div>
+      <!-- ─────────────────────────────────────────────── -->
+
+      <!-- card grid -->
+      <div class="row g-4">
+        <div
+          class="col-sm-6 col-lg-4"
+          *ngFor="let user of filteredUsers; trackBy: trackUser"
+        >
+          <div class="data-card fade-in" [attr.data-id]="user.id">
+            <div class="icon-wrapper">
+              <mat-icon>person</mat-icon>
+            </div>
+
+            <div class="data-content d-flex flex-column">
+              <h6 class="mb-0">{{ user.name }}</h6>
+              <p class="mb-1">{{ user.email }}</p>
+              <p class="date mb-2">
+                Joined {{ user.created_at | date:'mediumDate' }}
+              </p>
+
+              <span
+                class="badge bg-{{ getRoleColor(user.role) }} text-uppercase align-self-start mb-2"
+              >
+                {{ user.role }}
+              </span>
+
+              <div class="d-flex gap-2 mt-auto">
+                <button
+                  mat-icon-button
+                  color="warn"
+                  class="btn-action"
+                  [attr.aria-label]="'Delete ' + user.name"
+                  (click)="deleteUser(user.id)"
+                >
+                  <mat-icon fontIcon="delete"></mat-icon>
+                </button>
+
+                <mat-form-field appearance="outline" class="flex-fill m-0">
+                  <mat-select
+                    placeholder="Change Role"
+                    [attr.aria-label]="'Change role for ' + user.name"
+                    (selectionChange)="updateRole(user.id, $event.value)"
+                  >
+                    <mat-option
+                      *ngFor="let role of roles"
+                      [value]="role"
+                    >
+                      {{ role | titlecase }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      
-  <table class="table table-hover table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Joined At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let user of filteredUsers">
-            <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.created_at | date:'mediumDate' }} {{ user.created_at | date:'shortTime' }}</td>
-        <td>
-          <button class="btn btn-sm btn-danger me-2" (click)="deleteUser(user.id)">Delete</button>
 
-          <select class="form-select form-select-sm w-auto d-inline" (change)="updateRole(user.id, $any($event.target).value)">
-            <option disabled selected>Change Role</option>
-            <option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</option>
-          </select>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <p
+        *ngIf="!filteredUsers.length"
+        class="text-center text-muted mt-4"
+      >
+        No users found.
+      </p>
+
+    </mat-card-content>
+  </mat-card>
+
 </div>

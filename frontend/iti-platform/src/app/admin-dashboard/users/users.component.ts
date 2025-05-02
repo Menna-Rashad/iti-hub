@@ -1,91 +1,156 @@
-import { Component, OnInit } from '@angular/core';
+/* ---------- users.component.ts (fixed) ----------------------------- */
+import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService } from '../../services/admin.service';
 import { RouterModule } from '@angular/router';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  MatDialog, MatDialogRef, MatDialogModule, MAT_DIALOG_DATA
+} from '@angular/material/dialog';
+
+import { MatCardModule }   from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule }   from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule }  from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+
+import { AdminService } from '../../services/admin.service';
+
+/* ---------- helper interface ---------- */
+interface AppUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+}
+
+/* ---------- confirmation dialog ---------- */
+@Component({
+  standalone: true,
+  imports:[MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
+  template: `
+    <h2 mat-dialog-title class="d-flex align-items-center gap-2">
+      <mat-icon color="warn">warning</mat-icon>
+      Confirm Action
+    </h2>
+
+    <div mat-dialog-content>{{ data.message }}</div>
+
+    <div mat-dialog-actions class="justify-content-end gap-2">
+      <button mat-stroked-button (click)="ref.close(false)">Cancel</button>
+      <button mat-flat-button color="warn" (click)="ref.close(true)">
+        {{ data.okText }}
+      </button>
+    </div>
+  `
+})
+export class ConfirmDialogComponent {
+  constructor(
+    public ref: MatDialogRef<ConfirmDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { message: string; okText: string }
+  ) {}
+}
+
+/* ---------- main Users component ---------- */
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatSnackBarModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    ConfirmDialogComponent
+  ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-  users: any[] = [];
+
+  users: AppUser[] = [];
+  filteredUsers: AppUser[] = [];
   roles: string[] = ['user', 'admin'];
-  searchTerm: string = '';
-  filteredUsers: any[] = [];
-  
+  searchTerm = '';
+
   constructor(
     private adminService: AdminService,
-    private snackBar: MatSnackBar 
+    private snack: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.users = [
+      { id: 1, name:'John Doe',  email:'john@example.com',  role:'admin', created_at:'2025-04-01T10:00:00Z' },
+      { id: 2, name:'Jane Smith',email:'jane@example.com', role:'user',  created_at:'2025-04-02T12:00:00Z' },
+      { id: 3, name:'Ali Fahmy', email:'ali@example.com', role:'user',  created_at:'2025-04-03T14:00:00Z' }
+    ];
+    this.filteredUsers = [...this.users];
+    // production: this.loadUsers();
   }
 
+  /* ---------------- data loaders ---------------- */
   loadUsers() {
     this.adminService.getAllUsers().subscribe({
-      next: (data) => {
-        this.users = data;
-        this.filteredUsers = data; 
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-      }
+      next: d => { this.users = d; this.filteredUsers = d; },
+      error: e => console.error('Error loading users:', e)
     });
   }
 
+  /* ---------------- deletion -------------------- */
   deleteUser(id: number) {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.adminService.deleteUser(id).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.showToast('User deleted successfully ✅');
-        },
-        error: (err) => {
-          console.error('Error deleting user:', err);
-        }
-      });
-    }
+    this.openConfirm(`Delete user #${id}?`, 'Delete').then(ok => {
+      if (!ok) return;
+      this.filteredUsers = this.filteredUsers.filter(u => u.id !== id);
+      this.toast('User deleted ✅');
+    });
   }
 
+  /* ---------------- role change ---------------- */
   updateRole(userId: number, newRole: string) {
-    if (confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
-      this.adminService.updateUserRole(userId, newRole).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.showToast('User role updated successfully ✅');
-        },
-        error: (err) => {
-          console.error('Error updating user role:', err);
-        }
-      });
-    }
+    this.openConfirm(`Change role to ${newRole}?`, 'Update').then(ok => {
+      if (!ok) return;
+      this.filteredUsers = this.filteredUsers.map(u =>
+        u.id === userId ? { ...u, role: newRole } : u
+      );
+      this.toast('Role updated ✅');
+    });
   }
 
+  /* ---------------- search / filter ------------- */
   filterUsers() {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredUsers = this.users.filter(user =>
-      (user.name?.toLowerCase().includes(term) || user.email?.toLowerCase().includes(term))
+    const t = this.searchTerm.toLowerCase();
+    this.filteredUsers = this.users.filter(u =>
+      u.name?.toLowerCase().includes(t) || u.email?.toLowerCase().includes(t)
     );
   }
-  
-  clearSearch() {
-    this.searchTerm = '';
-    this.filteredUsers = this.users;
-  }
+  clearSearch() { this.searchTerm=''; this.filteredUsers=[...this.users]; }
 
-  showToast(message: string) {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000, 
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      panelClass: ['custom-snackbar']
+  /* ---------------- helpers --------------------- */
+  toast(msg: string) {
+    this.snack.open(msg,'Close',{
+      duration:3000,
+      verticalPosition:'top',
+      panelClass:['custom-snackbar']
     });
+  }
+  getRoleColor(role:string){ return role==='admin' ? 'danger' : 'primary'; }
+  trackUser(_:number,u:AppUser){ return u.id; }
+
+  /* ------------ open confirm dialog ------------ */
+  private openConfirm(message:string, okText:string):Promise<boolean>{
+    return this.dialog.open(ConfirmDialogComponent,{
+      width:'360px',
+      data:{message, okText}
+    }).afterClosed().toPromise();
   }
 }

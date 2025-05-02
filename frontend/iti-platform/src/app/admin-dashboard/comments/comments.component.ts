@@ -2,98 +2,139 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule }   from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule }   from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule }  from '@angular/material/input';
+
 import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-comments',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
   templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.css']
+  styleUrls: ['./comments.component.css'],
 })
 export class CommentsComponent implements OnInit {
-  comments: any[] = [];
-  filteredComments: any[] = [];
-  searchTerm: string = '';
-  selectedComment: any = null;
-  showModal: boolean = false;
-  posts: any[] = [];
 
-  constructor(private adminService: AdminService, private snackBar: MatSnackBar) {}
+  /* ---------------- Dummy data ---------------- */
+  posts = [
+    { id: 101, title: 'Welcome to the Forum' },
+    { id: 102, title: 'How to Get Started' },
+    { id: 103, title: 'Community Guidelines' },
+  ];
+
+  comments = [
+    {
+      id: 5,
+      content: 'Great post! Really helped me understand the basics of the platform.',
+      user: { name: 'John Doe' },
+      post_id: 101,
+      created_at: '2025-04-03T10:15:00Z',
+    },
+    {
+      id: 6,
+      content: 'Appreciate the insights—super useful for beginners like me.',
+      user: { name: 'Jane Smith' },
+      post_id: 102,
+      created_at: '2025-04-04T09:20:00Z',
+    },
+    {
+      id: 7,
+      content:
+        'Thanks for the community guidelines—very clear and helpful for new members!',
+      user: { name: 'Ali Fahmy' },
+      post_id: 103,
+      created_at: '2025-04-05T14:30:00Z',
+    },
+  ];
+
+  filteredComments = [...this.comments];
+  searchTerm = '';
+
+  /* modal state */
+  selectedComment: any = null;
+  showModal = false;
+
+  constructor(private admin: AdminService,
+              private snack: MatSnackBar) {}
 
   ngOnInit(): void {
-    this.loadComments();
-    this.loadPosts();
+    /** For real backend, uncomment: */
+    // this.loadPosts();
+    // this.loadComments();
   }
-  loadPosts() {
-    this.adminService.getAllPosts().subscribe({
-      next: (data) => {
-        this.posts = data;
-      },
-      error: (err) => {
-        console.error('Error loading posts:', err);
-      }
-    });
-  }
-  
-  getPostTitle(postId: number): string {
-    const post = this.posts.find(p => p.id === postId);
-    return post ? post.title : 'Unknown Post';
-  }
-  
-  loadComments() {
-    this.adminService.getAllComments().subscribe({
-      next: (data) => {
-        this.comments = data;
-        this.filteredComments = data;
-      },
-      error: (err) => {
-        console.error('Error loading comments:', err);
-      }
-    });
+
+  /* --------- Optional real API calls --------- */
+  loadPosts() { /* ... */ }
+  loadComments() { /* ... */ }
+
+  /* --------- Helpers & actions --------- */
+  getPostTitle(id: number) {
+    const p = this.posts.find(x => x.id === id);
+    return p ? p.title : 'Unknown Post';
   }
 
   filterComments() {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredComments = this.comments.filter(comment =>
-      (comment.content?.toLowerCase().includes(term) || comment.user?.name?.toLowerCase().includes(term))
+    const t = this.searchTerm.toLowerCase();
+    this.filteredComments = this.comments.filter(c =>
+      c.content?.toLowerCase().includes(t) ||
+      c.user?.name?.toLowerCase().includes(t)
     );
   }
-
   clearSearch() {
     this.searchTerm = '';
-    this.filteredComments = this.comments;
+    this.filteredComments = [...this.comments];
   }
 
-  openModal(comment: any) {
-    this.selectedComment = comment;
-    this.showModal = true;
-  }
+  openModal(c: any) { this.selectedComment = c; this.showModal = true; }
+  closeModal()      { this.selectedComment = null; this.showModal = false; }
 
-  closeModal() {
-    this.selectedComment = null;
-    this.showModal = false;
-  }
+  /** Confirmation Snack‑bar delete **/
+  deleteComment(id: number): void {
 
-  deleteComment(commentId: number) {
-    if (confirm('Are you sure you want to delete this comment?')) {
-      this.adminService.deleteComment(commentId).subscribe({
-        next: () => {
-          this.loadComments();
-          this.showToast('Comment deleted successfully ✅');
-        },
-        error: (err) => {
-          console.error('Error deleting comment:', err);
-        }
+    const ref = this.snack.open(
+      `Delete comment #${id}?`,
+      'Delete',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['confirm-snackbar']   // blue accent bar
+      }
+    );
+
+    ref.onAction().subscribe(() => {
+      /* Dummy remove */
+      this.comments = this.comments.filter(c => c.id !== id);
+      this.filteredComments = [...this.comments];
+      this.toast('Comment deleted ✅');
+
+      /* Real call
+      this.admin.deleteComment(id).subscribe({
+        next: () => { this.loadComments(); this.toast('Comment deleted ✅'); }
       });
-    }
+      */
+    });
   }
 
-  showToast(message: string) {
-    this.snackBar.open(message, 'Close', {
+  toast(msg: string) {
+    this.snack.open(msg, 'Close', {
       duration: 3000,
-      horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: ['custom-snackbar']
     });

@@ -1,9 +1,32 @@
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  
+/* ---------- header card ---------- */
+mat-card{border-radius:18px;background:#fff;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);}
+mat-card-header{
+  background:linear-gradient(90deg,#1e2a44,#2d4066);
+  color:#fff;padding:16px 20px;}
+mat-card-title{font-weight:700;letter-spacing:.4px;}
+
+/* ---------- data card ---------- */
+.data-card{
+  background:#fff;border:1px solid #e5eaf2;border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  padding:15px;display:flex;align-items:flex-start;
+  transition:transform .25s,box-shadow .25s;}
+.data-card:hover{transform:translateY(-5px);
+  box-shadow:0 10px 24px rgba(0,0,0,.15);}
+
+/* icon circle */
+.icon-wrapper{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(180deg,#1e2a44 0%,#2d4066 100%);
+  display:flex;align-items:center;justify-content:center;margin-right:16px;}
+.icon-wrapper mat-icon{color:#fff;font-size:26px;}
+
+/* text */
+.data-content h6{color:#1e2a44;font-size:.95rem;font-weight:600;}
+.data-content p {color:#36455b;font-size:.87rem;margin:2px 0;}
+.date{color:#8b95a9;font-size:.8rem;}
+
+/* fade‑in util */
+.fade-in{animation:fadeIn .5s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
