@@ -1,5 +1,3 @@
-// src/app/admin-dashboard-new/admin-dashboard-new.component.ts
-// import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
