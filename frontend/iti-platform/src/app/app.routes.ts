@@ -3,6 +3,8 @@ import { Routes } from '@angular/router';
 // Layouts
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { AdminDashboardNewComponent } from './admin-dashboard-new/admin-dashboard-new.component';
 
 // Auth Pages
 import { RegisterComponent } from './register/register.component';
@@ -20,12 +22,11 @@ import { MainContentComponent } from './main-content/main-content.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
 import { MentorDashboardComponent } from './mentor-dashboard/mentor-dashboard.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 // Guards
 import { AuthGuard } from './guards/auth.guard';
 import { MentorGuard } from './auth/mentor.guard';
-import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   // 🔵 MAIN Layout
@@ -33,11 +34,7 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      {
-        path: '',
-        loadComponent: () => import('./pages/landing-page/landing-page.component').then(m => m.LandingPageComponent),
-        title: 'ITIHub'
-      },
+      { path: '', loadComponent: () => import('./pages/landing-page/landing-page.component').then(m => m.LandingPageComponent), title: 'ITIHub' },
       { path: 'about', loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent) },
       { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },
       { path: 'community', component: MainContentComponent, canActivate: [AuthGuard], title: 'Community' },
@@ -54,35 +51,27 @@ export const routes: Routes = [
       { path: 'user/dashboard', component: UserDashboardComponent, title: 'User Dashboard' },
       { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
       { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
-      { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent) },
-      // Admin Dashboard Section
-      {
-        path: 'admin/dashboard',
-        loadComponent: () => import('./admin-dashboard-new/admin-dashboard-new.component').then(m => m.AdminDashboardNewComponent),
-        title: 'Admin Dashboard',
-        children: [
-          { path: '', loadComponent: () => import('./admin-dashboard/statistics/statistics.component').then(m => m.StatisticsComponent) },
-          { path: 'users', loadComponent: () => import('./admin-dashboard/users/users.component').then(m => m.UsersComponent) },
-          { path: 'posts', loadComponent: () => import('./admin-dashboard/posts/posts.component').then(m => m.PostsComponent) },
-          { path: 'comments', loadComponent: () => import('./admin-dashboard/comments/comments.component').then(m => m.CommentsComponent) },
-          { path: 'tickets', loadComponent: () => import('./admin-dashboard/tickets/tickets.component').then(m => m.TicketsComponent) },
-          { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) },
-        ]
-      },  
-      // {
-      //   path: 'admin/dashboard',
-      //   component: AdminLayoutComponent,
-      //   children: [
-      //     { path: '', loadComponent: () => import('./admin-dashboard/statistics/statistics.component').then(m => m.StatisticsComponent) },
-      //     { path: 'users', loadComponent: () => import('./admin-dashboard/users/users.component').then(m => m.UsersComponent) },
-      //     { path: 'posts', loadComponent: () => import('./admin-dashboard/posts/posts.component').then(m => m.PostsComponent) },
-      //     { path: 'comments', loadComponent: () => import('./admin-dashboard/comments/comments.component').then(m => m.CommentsComponent) },
-      //     { path: 'tickets', loadComponent: () => import('./admin-dashboard/tickets/tickets.component').then(m => m.TicketsComponent) },
-      //     { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) },
-      //   ]
-      // },
     ]
   },
+
+  // 🔴 ADMIN Layout
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [AdminGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', loadComponent: () => import('./admin-dashboard/statistics/statistics.component').then(m => m.StatisticsComponent) },
+      { path: 'users', loadComponent: () => import('./admin-dashboard/users/users.component').then(m => m.UsersComponent) },
+      { path: 'posts', loadComponent: () => import('./admin-dashboard/posts/posts.component').then(m => m.PostsComponent) },
+      { path: 'comments', loadComponent: () => import('./admin-dashboard/comments/comments.component').then(m => m.CommentsComponent) },
+      { path: 'tickets', loadComponent: () => import('./admin-dashboard/tickets/tickets.component').then(m => m.TicketsComponent) },
+      { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) }
+    ]
+  }
+  ,
+  
+
   // 🟣 AUTH Layout
   {
     path: '',
