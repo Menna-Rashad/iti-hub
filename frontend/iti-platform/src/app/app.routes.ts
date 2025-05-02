@@ -51,6 +51,9 @@ export const routes: Routes = [
       { path: 'user/dashboard', component: UserDashboardComponent, title: 'User Dashboard' },
       { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
       { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
+      { path: 'user/:id', loadComponent: () => import('./components/public-profile/public-profile.component').then(m => m.PublicProfileComponent), title: 'User Profile' },
+      
+
     ]
   },
 
