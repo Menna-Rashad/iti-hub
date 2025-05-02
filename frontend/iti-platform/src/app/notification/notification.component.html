@@ -1,0 +1,72 @@
+<button
+  mat-icon-button
+  class="notification-bell"
+  [matMenuTriggerFor]="notificationMenu"
+  aria-label="View notifications"
+  [attr.aria-expanded]="menuOpen"
+  (menuOpened)="menuOpen = true"
+  (menuClosed)="menuOpen = false"
+>
+  <mat-icon class="notification-icon">notifications</mat-icon>
+  <mat-badge
+    [matBadge]="unreadCount"
+    [matBadgeHidden]="unreadCount === 0"
+    color="warn"
+    class="notification-badge"
+  ></mat-badge>
+</button>
+
+<mat-menu #notificationMenu="matMenu" class="notification-menu">
+  <div class="notification-header">
+    <span class="header-title">Notifications</span>
+    <button
+      mat-icon-button
+      (click)="markAllAsRead()"
+      aria-label="Mark all notifications as read"
+      [disabled]="unreadCount === 0"
+      class="mark-all-read"
+    >
+      <mat-icon>check_circle</mat-icon>
+      <span>Mark all as read</span>
+    </button>
+  </div>
+
+  <div class="notification-date-group">
+    <span class="date-header">Today</span>
+  </div>
+
+  <ng-container *ngIf="notifications.length > 0; else noNotifications">
+    <ng-container *ngFor="let notification of notifications">
+      <button
+        mat-menu-item
+        class="notification-item"
+        [ngClass]="{'unread-notification': !notification.is_read, 'read-notification': notification.is_read}"
+        [attr.aria-label]="'Notification: ' + notification.message"
+      >
+        <mat-icon class="notification-item-icon" [ngClass]="notification.type.toLowerCase() + '-icon'">
+          {{ getNotificationIcon(notification.type) }}
+        </mat-icon>
+        <div class="notification-content" (click)="markAsRead(notification.id)">
+          <p class="notification-title">{{ notification.type.replace('_', ' ') | titlecase }}</p>
+          <p class="notification-message">{{ notification.message }}</p>
+          <span class="notification-timestamp">{{ formatTimestamp(notification.created_at) }}</span>
+        </div>
+        <button
+          mat-icon-button
+          (click)="deleteNotification(notification.id)"
+          aria-label="Delete notification"
+          class="delete-button"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </button>
+    </ng-container>
+  </ng-container>
+  <ng-template #noNotifications>
+    <div class="no-notifications">No notifications</div>
+  </ng-template>
+
+  <div class="view-all">
+    <a href="#" (click)="$event.preventDefault()">View all notifications</a>
+  </div>
+</mat-menu>
