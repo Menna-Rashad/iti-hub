@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\News;
@@ -52,7 +51,6 @@ class NewsController extends Controller
 
             // إرسال إشعار لكل المستخدمين
             $users = User::all();
-            $notifications = [];
             $responseNotifications = [];
 
             foreach ($users as $user) {
@@ -66,7 +64,6 @@ class NewsController extends Controller
                     'is_read' => false,
                 ]);
 
-                $notifications[] = $notification;
                 $responseNotifications[] = [
                     'id' => $notification->id,
                     'type' => $notification->type,
@@ -75,7 +72,7 @@ class NewsController extends Controller
                     'created_at' => optional($notification->created_at)->toIso8601String(),
                 ];
 
-                event(new NotificationSent($notification));
+                event(new NotificationSent($notification)); // بث الإشعار عبر قاعدة البيانات
             }
     
             return response()->json($news, 201);
