@@ -16,8 +16,16 @@ export class AdminDashboardNewComponent implements OnInit {
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    this.adminService.getAdminDashboard().subscribe((data) => {
-      this.dashboardData = data;
+    this.adminService.getAdminDashboard().subscribe({
+      next: (data) => {
+        this.dashboardData = data;
+      },
+      error: (err) => {
+        if (err.status === 403) {
+          window.location.href = '/'; 
+        }
+      }
     });
   }
+  
 }
