@@ -106,4 +106,5 @@ public function following()
     return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
 }
 
+
 }
