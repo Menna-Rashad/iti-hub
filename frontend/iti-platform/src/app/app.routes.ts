@@ -52,7 +52,7 @@ export const routes: Routes = [
       { path: 'mentor/dashboard', component: MentorDashboardComponent, canActivate: [MentorGuard], title: 'Mentor Dashboard' },
       { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
       { path: 'user/:id', loadComponent: () => import('./components/public-profile/public-profile.component').then(m => m.PublicProfileComponent), title: 'User Profile' },
-      
+      { path: 'tracks', loadComponent: () => import('./pages/tracks-page/tracks-page.component').then(m => m.TracksPageComponent), title: 'Tracks' },
 
     ]
   },

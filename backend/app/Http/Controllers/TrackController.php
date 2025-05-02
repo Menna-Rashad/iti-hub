@@ -11,7 +11,7 @@ class TrackController extends Controller
     public function index()
     {
         // الحصول على جميع الـ Tracks مع بيانات البرامج والأقسام
-        $tracks = Track::with(['program', 'department'])->get();
+        $tracks = Track::with(['program', 'department', 'intakes'])->get();
 
         // إذا لم توجد تراكات في قاعدة البيانات، قم بإرجاع رسالة مفادها أن التراكات ستكون متاحة قريبًا
         if ($tracks->isEmpty()) {
@@ -24,7 +24,7 @@ class TrackController extends Controller
     // البحث عن التراكات بناءً على المعايير المختلفة
     public function search(Request $request)
     {
-        $query = Track::query();
+        $query = Track::with(['program', 'intakes']);
 
         // البحث بالاسم
         if ($request->has('name')) {
