@@ -295,13 +295,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/unread-count',     [TicketNotificationController::class, 'countUnread']);
     });
 
-    // Notification
-    Route::prefix('notifications')->group(function () {
-        Route::get('/', [NotificationController::class, 'index']);
-        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
-        Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
-        Route::get('/unread-count', [NotificationController::class, 'countUnread']);
-        Route::post('/', [NotificationController::class, 'store']);
-        Route::delete('/clear', [NotificationController::class, 'clearAll']);
-    });
+    // ==========================
+// 🔹 Notifications Routes (Protected by Sanctum)
+// ==========================
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/send-news', [NotificationController::class, 'sendNewsNotification']);
+    Route::post('/notifications/send-reply/{ticketId}', [NotificationController::class, 'sendReplyNotification']);
+    Route::delete('/notifications/{notificationId}', [NotificationController::class, 'destroy']);
+    Route::patch('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);});
+
+    
+    
 });
