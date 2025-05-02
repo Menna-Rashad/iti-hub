@@ -1,0 +1,33 @@
+<div *ngIf="user" class="profile-container">
+    <mat-card>
+      <div class="profile-header">
+        <img
+          class="profile-avatar"
+          [src]="user.profile_picture"
+          alt="User Picture"
+        />
+        <h2>{{ user.name }}</h2>
+        <p *ngIf="user.email">📧 {{ user.email }}</p>
+        <p *ngIf="user.bio">📝 {{ user.bio }}</p>
+        <a *ngIf="user.linkedin" [href]="user.linkedin" target="_blank">🔗 LinkedIn</a>
+  
+<!-- فقط إذا لم يكن صاحب البروفايل -->
+<button *ngIf="!isOwnProfile" mat-stroked-button color="primary" (click)="toggleFollow()">
+    {{ isFollowing ? 'Unfollow' : 'Follow' }}
+  </button>
+  
+      </div>
+    </mat-card>
+  
+    <!-- <mat-card class="follow-section">
+      <h3>👥 Followers ({{ followers.length }})</h3>
+      <ul>
+        <li *ngFor="let f of followers">{{ f.name }}</li>
+      </ul>
+  
+      <h3>➡️ Following ({{ following.length }})</h3>
+      <ul>
+        <li *ngFor="let f of following">{{ f.name }}</li>
+      </ul>
+    </mat-card> -->
+  </div>
