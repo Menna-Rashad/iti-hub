@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule, Router } from '@angular/router';
 import { AuthStateService } from '../../../services/auth-state.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { NotificationComponent } from '../../../notification/notification.component';
 
 @Component({
   selector: 'app-navbar',
@@ -18,7 +20,9 @@ import { AuthStateService } from '../../../services/auth-state.service';
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-    RouterModule
+    MatDividerModule,
+    RouterModule,
+    NotificationComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
@@ -38,13 +42,19 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Apply saved dark mode preference
     this.isDarkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', this.isDarkMode);
-  
-    // Check the authentication status
+
+    // تحقق من الـ token يدويًا عند الـ init
+    const tokenExists = !!localStorage.getItem('auth_token');
+    console.log('Initial token check:', tokenExists); // Debugging
+    this.isLoggedIn = tokenExists;
+    this.authState.setLoggedIn(tokenExists);
+
+    // اشتراك في الـ isLoggedIn$
     this.authState.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
+      console.log('isLoggedIn updated to:', status); // Debugging
       if (status) {
         this.fetchUser();
       } else {
@@ -52,13 +62,12 @@ export class NavbarComponent implements OnInit {
         this.userName = '';
       }
     });
-  
-    // ✅ Listen for localStorage updates (زي لما نغير الصورة)
-    window.addEventListener('storage', () => {
+
+    // تحديث المستخدم إذا كان مسجل دخول
+    if (this.isLoggedIn) {
       this.fetchUser();
-    });
+    }
   }
-  
 
   fetchUser(): void {
     const storedUser = localStorage.getItem('user');
@@ -68,29 +77,41 @@ export class NavbarComponent implements OnInit {
         ? `http://127.0.0.1:8000/profile_pictures/${user.profile_picture}?t=${new Date().getTime()}`
         : 'assets/user.png';
       this.userName = user.name || 'User';
+      console.log('User fetched:', this.userName, this.userImage); // Debugging
+    } else {
+      this.userImage = '';
+      this.userName = '';
+      console.log('No user found in localStorage'); // Debugging
     }
   }
-  
 
   logout(): void {
+    // Clear localStorage
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('notifications');
+    
+    // Update auth state
     this.authState.setLoggedIn(false);
-    this.userImage = '';
-    this.userName = '';
+    
+    // Show snackbar
     this.snackBar.open('Logged out successfully', 'Close', {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
     });
-    this.router.navigate(['/login']); // Fixed login route
+    
+    // Redirect to login page
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload(); // Force reload to ensure state is cleared
+    });
   }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  // Toggle Dark Mode
   toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
     localStorage.setItem('darkMode', this.isDarkMode.toString());
@@ -98,7 +119,13 @@ export class NavbarComponent implements OnInit {
     this.icon = this.isDarkMode ? '☀️' : '🌙';
   }
 
-  ngAfterViewInit() {
-    // You can remove this manual event binding, Angular already handles (click) in the template
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const navbar = document.querySelector('.nav');
+    if (window.scrollY > 50) {
+      navbar?.classList.add('scrolled');
+    } else {
+      navbar?.classList.remove('scrolled');
+    }
   }
 }
