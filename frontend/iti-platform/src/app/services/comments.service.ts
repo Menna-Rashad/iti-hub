@@ -27,5 +27,13 @@ addComment(postId: string, commentData: any): Observable<any> {
   
     return this.http.post(`${this.apiUrl}/posts/${postId}/comments`, payload, { headers });
   }
+  updateComment(commentId: number, data: { content: string }) {
+    return this.http.put(`http://127.0.0.1:8000/api/comments/${commentId}`, data);
+  }
+  
+  deleteComment(commentId: number) {
+    return this.http.delete(`http://127.0.0.1:8000/api/comments/${commentId}`);
+  }
+  
   
 }

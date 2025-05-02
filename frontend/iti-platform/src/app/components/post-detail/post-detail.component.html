@@ -1,34 +1,46 @@
 <div class="post-wrapper" *ngIf="post">
   <mat-card class="post-card">
     <mat-card-header>
-      <div class="user-info">
-        <img 
-        class="user-avatar" 
-        [src]="post.user?.profile_picture" 
-        (error)="post.user.profile_picture = defaultAvatar" 
-        alt="User" />
-        <div class="meta-text">
-          <div class="post-meta">
-            <a [routerLink]="['/profile', post.user?.id]" class="author-link">{{ post.user?.name }}</a>
-     <!-- Follow Button below user name -->
-     <button mat-button class="follow-btn" (click)="toggleFollow()">
-      {{ isFollowing ? 'Unfollow' : 'Follow' }}
-    </button>          
+      <div class="user-info d-flex justify-content-between align-items-center w-100">
+        <!-- اليسار: الصورة والاسم والتاريخ -->
+        <div class="d-flex align-items-center gap-2">
+          <img 
+            class="user-avatar" 
+            [src]="post.user?.profile_picture" 
+            (error)="post.user.profile_picture = defaultAvatar" 
+            alt="User" />
+            <div class="meta-text d-flex flex-column">
+              <a [routerLink]="['/user', post.user?.id]" class="author-link">
+                {{ post.user?.name }}
+              </a>
+              <span class="post-date">{{ post.created_at | date:'medium' }}</span>
+            </div>
           </div>
-            <span class="post-date">{{ post.created_at | date:'medium' }}</span>
-        </div>
-        <!-- Menu for Edit & Delete -->
-        <div *ngIf="canEdit" class="more-options">
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="goToEdit()">Edit</button>
-            <button mat-menu-item (click)="deletePost()">Delete</button>
-          </mat-menu>
+
+            
+    
+        <!-- اليمين: أيقونات المتابعة والقائمة -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- Follow / Unfollow icons -->
+          <ng-container *ngIf="!canEdit">
+            <i *ngIf="!isFollowing" class="fa-solid fa-user-plus follow-icon" (click)="toggleFollow()" title="متابعة"></i>
+            <i *ngIf="isFollowing" class="fa-solid fa-user-minus unfollow-icon" (click)="toggleFollow()" title="إلغاء المتابعة"></i>
+          </ng-container>
+    
+          <!-- القائمة -->
+          <div *ngIf="canEdit" class="more-options">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="goToEdit()">Edit</button>
+              <button mat-menu-item (click)="deletePost()">Delete</button>
+            </mat-menu>
+          </div>
         </div>
       </div>
     </mat-card-header>
+    
     <div class="post-title">{{ post.title }}</div>
 
     <mat-card-content>
@@ -89,8 +101,18 @@
         <div class="comment-meta">
           <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
         </div>
-
-        <!-- Vote Section for Comment -->
+    
+        <!-- ✅ فقط لصاحب التعليق -->
+        <div class="comment-actions" *ngIf="comment.user_id === currentUserId">
+          <button mat-icon-button color="primary" (click)="editComment(comment)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteComment(comment.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+    
+        <!-- Vote Section -->
         <app-vote-buttons
           [targetType]="'comment'"
           [targetId]="comment.id"
@@ -99,10 +121,9 @@
           [currentVote]="comment.current_user_vote"
           (voteUpdated)="onCommentVoteUpdated(comment, $event)">
         </app-vote-buttons>
-
-
       </mat-card-content>
     </mat-card>
+    
 
     <!-- Show more comments button -->
     <button *ngIf="post.comments.length > visibleComments.length" mat-stroked-button color="accent" (click)="showMoreComments()">

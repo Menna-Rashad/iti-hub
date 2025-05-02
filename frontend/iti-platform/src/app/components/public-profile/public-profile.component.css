@@ -1,0 +1,80 @@
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    max-width: 360px;
+    margin: auto;
+  }
+  
+  mat-card {
+    background-color: #fdfdfd;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 0 3px #f4f4f4;
+  }
+  
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  
+  .profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #901B20;
+    margin-bottom: 10px;
+    background-color: #fff;
+  }
+  
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+  
+  a {
+    color: #901B20;
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 8px;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button[mat-stroked-button] {
+    margin-top: 14px;
+    border-color: #901B20;
+    color: #901B20;
+    font-weight: 500;
+    border-radius: 25px;
+    padding: 5px 18px;
+    font-size: 13px;
+  }
+  
+  button[mat-stroked-button]:hover {
+    background-color: #f8e7ea;
+  }
+  
