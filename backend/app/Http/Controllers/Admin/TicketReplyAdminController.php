@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SupportTicket;
 use App\Models\TicketReply;
-use App\Models\Notification; // استيراد موديل Notification
-use App\Events\NotificationSent; // استيراد الـ Event
+use App\Models\Notification;
+use App\Events\NotificationSent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\AdminLog;
@@ -84,6 +83,7 @@ class TicketReplyAdminController extends Controller
         
                 \Log::info('Notification created: ' . json_encode($notification));
         
+                // بث الإشعار عبر قاعدة البيانات
                 event(new NotificationSent($notification));
             } catch (\Exception $e) {
                 \Log::error('Failed to create notification: ' . $e->getMessage());
@@ -110,6 +110,7 @@ class TicketReplyAdminController extends Controller
             ], 500);
         }
     }
+
     public function destroy($id)
     {
         if (auth()->user()->role !== 'admin') {
