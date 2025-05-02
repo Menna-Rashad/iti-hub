@@ -1,9 +1,11 @@
 /* ✅ Navbar Base */
 
+mat-toolbar.nav {
+  position: static !important;
+}
+
+
 .nav {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
   background-color: var(--secondary);
