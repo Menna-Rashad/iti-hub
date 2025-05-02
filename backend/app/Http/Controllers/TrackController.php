@@ -24,7 +24,7 @@ class TrackController extends Controller
     // البحث عن التراكات بناءً على المعايير المختلفة
     public function search(Request $request)
     {
-        $query = Track::query();
+        $query = Track::with(['program', 'intakes']);
 
         // البحث بالاسم
         if ($request->has('name')) {
