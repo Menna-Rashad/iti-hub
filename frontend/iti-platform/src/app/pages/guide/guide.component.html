@@ -1,8 +1,29 @@
-<div class="coming-container">
-    <div id="nuotron">
-      <div class="ellipse"></div>
-      <div class="dot"></div>
-    </div>
-    <div class="coming-text"> Coming Soon ...</div>
+<div class="container">
+  <div class="section">
+    <h2>Application Steps</h2>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let step of steps; let i = index">
+        <span class="step-number">{{ i + 1 }}.</span> {{ step }}
+      </mat-list-item>
+    </mat-list>
   </div>
-  
+
+  <div class="section">
+    <h2>Required Documents</h2>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let doc of documents">
+        <mat-icon>description</mat-icon> {{ doc }}
+      </mat-list-item>
+    </mat-list>
+  </div>
+
+  <div class="section">
+    <h2>Useful Links and Study Resources</h2>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let resource of resources">
+        <mat-icon>link</mat-icon>
+        <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resource.name }}</a>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>
