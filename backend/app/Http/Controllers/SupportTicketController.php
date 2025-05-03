@@ -10,18 +10,15 @@ class SupportTicketController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SupportTicket::with('user');
+        $user = auth()->user();
     
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        if ($user->role === 'admin') {
+            return SupportTicket::with('user')->latest()->get();
         }
     
-        $tickets = $query->latest()->get();
-    
-        return response()->json([
-            'tickets' => $tickets
-        ]);
+        return SupportTicket::with('replies')->where('user_id', $user->id)->latest()->get();
     }
+    
     
 
     public function store(Request $request)
@@ -82,10 +79,13 @@ class SupportTicketController extends Controller
     {
         $ticket = SupportTicket::with('replies')->findOrFail($id);
     
-        if (Auth::user()->role !== 'admin' && $ticket->user_id !== Auth::id()) {
+        $user = auth()->user();
+    
+        if (!$user || ($user->role !== 'admin' && $ticket->user_id !== $user->id)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
     
+        // Format reply attachments
         $ticket->replies->each(function ($reply) {
             if ($reply->attachments) {
                 $reply->attachments = collect($reply->attachments)->map(function ($file) {
@@ -94,11 +94,19 @@ class SupportTicketController extends Controller
             }
         });
     
+        // Format ticket attachments
+        if ($ticket->attachments) {
+            $ticket->attachments = collect($ticket->attachments)->map(function ($file) {
+                return asset('storage/' . $file);
+            });
+        }
+    
         return response()->json([
             'ticket' => $ticket,
             'replies' => $ticket->replies
         ]);
     }
+    
     
     public function updateStatus(Request $request, $id)
 {

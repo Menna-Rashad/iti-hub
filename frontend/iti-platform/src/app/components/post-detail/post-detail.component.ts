@@ -51,6 +51,9 @@ export class PostDetailComponent implements OnInit {
   isVoting = false;
   isAddingComment = false;
   isFollowing = false;
+  showHoverProfile: boolean = false;
+  maxVisibleComments = 4;
+
 
   defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
 
@@ -124,6 +127,8 @@ export class PostDetailComponent implements OnInit {
           }
         });
       }
+      this.visibleComments = this.post.comments.slice(0, this.maxVisibleComments);
+
     });
   }
 
@@ -174,7 +179,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   showMoreComments() {
-    this.visibleComments = this.post.comments;
+    this.visibleComments = [...this.post.comments]; // اعرض كل الكومنتات
   }
 
   addComment() {

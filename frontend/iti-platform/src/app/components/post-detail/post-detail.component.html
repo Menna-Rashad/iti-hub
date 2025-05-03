@@ -10,15 +10,33 @@
             (error)="post.user.profile_picture = defaultAvatar" 
             alt="User" />
             <div class="meta-text d-flex flex-column">
-              <a [routerLink]="['/user', post.user?.id]" class="author-link">
+              <span class="author-link"
+                [matTooltip]="post.user?.name"
+                matTooltipPosition="below"
+                (mouseenter)="showHoverProfile = true"
+                (mouseleave)="showHoverProfile = false"
+                (click)="$event.preventDefault()">
                 {{ post.user?.name }}
-              </a>
+              </span>
+              <div 
+                class="hover-profile-popup"
+                *ngIf="showHoverProfile"
+                (mouseenter)="showHoverProfile = true"
+                (mouseleave)="showHoverProfile = false">
+                <div class="hover-card">
+                  <img [src]="post.user?.profile_picture" class="hover-avatar" />
+                  <h4 class="hover-name">{{ post.user?.name }}</h4>
+                  <p *ngIf="post.user?.email" class="hover-email">📧 {{ post.user.email }}</p>
+                  <p *ngIf="post.user?.bio" class="hover-bio">📝 {{ post.user.bio }}</p>
+                  <a *ngIf="post.user?.linkedin" [href]="post.user.linkedin" target="_blank" class="hover-linkedin">
+                    🔗 LinkedIn
+                  </a>
+                </div>
+              </div>
               <span class="post-date">{{ post.created_at | date:'medium' }}</span>
             </div>
           </div>
 
-            
-    
         <!-- اليمين: أيقونات المتابعة والقائمة -->
         <div class="d-flex align-items-center gap-2">
           <!-- Follow / Unfollow icons -->
@@ -26,7 +44,7 @@
             <i *ngIf="!isFollowing" class="fa-solid fa-user-plus follow-icon" (click)="toggleFollow()" title="متابعة"></i>
             <i *ngIf="isFollowing" class="fa-solid fa-user-minus unfollow-icon" (click)="toggleFollow()" title="إلغاء المتابعة"></i>
           </ng-container>
-    
+
           <!-- القائمة -->
           <div *ngIf="canEdit" class="more-options">
             <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -40,11 +58,10 @@
         </div>
       </div>
     </mat-card-header>
-    
+
     <div class="post-title">{{ post.title }}</div>
 
     <mat-card-content>
-      
       <div class="post-content">{{ post.content }}</div>
 
       <!-- MEDIA PREVIEW -->
@@ -60,7 +77,6 @@
       </div>
 
       <!-- VOTE SECTION -->
-      
       <app-vote-buttons
         [targetType]="'post'"
         [targetId]="post.id"
@@ -69,11 +85,9 @@
         [currentVote]="post.current_user_vote"
         (voteUpdated)="onVoteUpdated($event)">
       </app-vote-buttons>
-    
+
       <!-- Copy Post Button (Below Content) -->
       <app-copy-button [urlToCopy]="'http://localhost:4200/posts/' + post.id"></app-copy-button>
-
-
     </mat-card-content>
   </mat-card>
 
@@ -87,8 +101,8 @@
           matInput
           [(ngModel)]="newComment"
           placeholder="Write a comment..."
-          class="comment-input animate"
-        ></textarea>
+          class="comment-input animate">
+        </textarea>
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="addComment()" [disabled]="isAddingComment">
         {{ isAddingComment ? 'Adding...' : 'Add Comment' }}
@@ -101,7 +115,7 @@
         <div class="comment-meta">
           <small>{{ comment.user?.name }} · {{ comment.created_at | date:'short' }}</small>
         </div>
-    
+
         <!-- ✅ فقط لصاحب التعليق -->
         <div class="comment-actions" *ngIf="comment.user_id === currentUserId">
           <button mat-icon-button color="primary" (click)="editComment(comment)">
@@ -111,7 +125,7 @@
             <mat-icon>delete</mat-icon>
           </button>
         </div>
-    
+
         <!-- Vote Section -->
         <app-vote-buttons
           [targetType]="'comment'"
@@ -123,7 +137,6 @@
         </app-vote-buttons>
       </mat-card-content>
     </mat-card>
-    
 
     <!-- Show more comments button -->
     <button *ngIf="post.comments.length > visibleComments.length" mat-stroked-button color="accent" (click)="showMoreComments()">

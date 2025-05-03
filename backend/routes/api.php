@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{id}/following/count', [FollowController::class, 'followingCount']);
     Route::get('/users/{id}', [ProfileController::class, 'showById']);
     Route::get('/users/{id}/status', [FollowController::class, 'getFollowStatus']);
+    Route::get('/tickets/{ticketId}/replies', [TicketReplyController::class, 'getReplies']);
 
     Route::prefix('admin')->group(function () {
         Route::put('/users/{id}/promote', [UserAdminController::class, 'promote']);
