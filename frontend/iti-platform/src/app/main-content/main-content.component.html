@@ -94,7 +94,7 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #postMenu="matMenu">
-                <button mat-menu-item (click)="editPost(post)">
+                <button mat-menu-item [routerLink]="['/posts/edit', post.id]">
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>
