@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\User;
+use App\Models\SupportTicket;
 use App\Events\NotificationSent;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging\CloudMessage;
 
 class NotificationController extends Controller
 {
@@ -20,86 +18,45 @@ class NotificationController extends Controller
                                      ->orderBy('created_at', 'desc')
                                      ->get();
 
+        $notificationsArray = $notifications->toArray();
+        
         return response()->json([
-            'notifications' => $notifications->map(function ($notification) {
+            'notifications' => array_map(function ($notification) {
                 return [
-                    'id' => $notification->id,
-                    'type' => $notification->type,
-                    'message' => $notification->message,
-                    'is_read' => $notification->is_read,
-                    'created_at' => optional($notification->created_at)->toIso8601String(),
+                    'id' => $notification['id'],
+                    'type' => $notification['type'],
+                    'message' => $notification['message'],
+                    'is_read' => $notification['is_read'],
+                    'created_at' => optional($notification['created_at'])->toIso8601String(),
                 ];
-            }),
+            }, $notificationsArray),
         ]);
     }
 
     /**
-     * تحديث حالة الإشعار إلى "مقروء".
+     * إرسال إشعار لجميع المستخدمين عند إضافة خبر.
      */
-    public function markAsRead(Request $request, $id)
+    public function sendNewsNotification(Request $request)
     {
-        $notification = Notification::where('user_id', $request->user()->id)
-                                    ->findOrFail($id);
-
-        if (!$notification->is_read) {
-            $notification->update(['is_read' => true]);
-        }
-
-        return response()->json(['message' => 'Notification marked as read']);
-    }
-
-    /**
-     * تحديث جميع الإشعارات غير المقروءة إلى "مقروءة".
-     */
-    public function markAllAsRead(Request $request)
-    {
-        $count = Notification::where('user_id', $request->user()->id)
-                             ->where('is_read', false)
-                             ->update(['is_read' => true]);
-
-        return response()->json(['message' => "$count notifications marked as read"]);
-    }
-
-    /**
-     * إرجاع عدد الإشعارات غير المقروءة.
-     */
-    public function countUnread(Request $request)
-    {
-        $count = Notification::where('user_id', $request->user()->id)
-                             ->where('is_read', false)
-                             ->count();
-
-        return response()->json(['unread_count' => $count]);
-    }
-
-    /**
-     * إرسال إشعار لكل المستخدمين (للبوستات).
-     */
-    public function sendToAllUsers(Request $request, $message = null, $type = null, $related_id = null, $related_type = null)
-    {
-        // فحص إن المستخدم أدمن
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. You are not an admin.'], 403);
         }
-    
-        // Validation
+
         $validated = $request->validate([
             'message' => 'required|string',
             'type' => 'required|string',
             'related_id' => 'nullable|integer',
             'related_type' => 'nullable|string',
         ]);
-    
-        // استخدام القيم من الـ request بعد الـ validation
+
         $message = $validated['message'];
         $type = $validated['type'];
         $related_id = $validated['related_id'];
         $related_type = $validated['related_type'];
-    
+
         $users = User::all();
-        $notifications = [];
         $responseNotifications = [];
-    
+
         foreach ($users as $user) {
             $notification = Notification::create([
                 'user_id' => $user->id,
@@ -110,8 +67,7 @@ class NotificationController extends Controller
                 'related_type' => $related_type,
                 'is_read' => false,
             ]);
-    
-            $notifications[] = $notification;
+
             $responseNotifications[] = [
                 'id' => $notification->id,
                 'type' => $notification->type,
@@ -119,46 +75,67 @@ class NotificationController extends Controller
                 'is_read' => $notification->is_read,
                 'created_at' => optional($notification->created_at)->toIso8601String(),
             ];
-    
+
             event(new NotificationSent($notification));
         }
-    
-        return $responseNotifications;
+
+        return response()->json($responseNotifications);
     }
-    
-    public function sendToSpecificUser(Request $request, $user_id = null, $message = null, $type = null, $related_id = null, $related_type = null)
+
+    /**
+     * إرسال إشعار للمستخدم عند الرد على التذكرة.
+     */
+    public function sendReplyNotification(Request $request, $ticketId)
     {
-        // فحص إن المستخدم أدمن
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized. You are not an admin.'], 403);
         }
-    
-        // Validation
+
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
             'message' => 'required|string',
-            'type' => 'required|string',
-            'related_id' => 'nullable|integer',
-            'related_type' => 'nullable|string',
+            'ticket_id' => 'required|integer|exists:support_tickets,id',
         ]);
-    
-        // استخدام القيم من الـ request بعد الـ validation
-        $user_id = $validated['user_id'];
+
+        $ticket = SupportTicket::findOrFail($validated['ticket_id']);
         $message = $validated['message'];
-        $type = $validated['type'];
-        $related_id = $validated['related_id'];
-        $related_type = $validated['related_type'] ?? 'ticket';
-    
+
         $notification = Notification::create([
-            'user_id' => $user_id,
+            'user_id' => $ticket->user_id,
             'sender_id' => $request->user()->id,
-            'message' => $message,
-            'type' => $type,
-            'related_id' => $related_id,
-            'related_type' => $related_type,
+            'message' => 'An admin has replied to your support ticket #' . $ticket->id,
+            'type' => 'ticket_reply',
+            'related_id' => $ticket->id,
+            'related_type' => 'ticket',
             'is_read' => false,
         ]);
-    
+
+        event(new NotificationSent($notification));
+
+        return response()->json([
+            'message' => 'Notification sent successfully.',
+            'notification' => [
+                'id' => $notification->id,
+                'type' => $notification->type,
+                'message' => $notification->message,
+                'is_read' => $notification->is_read,
+                'created_at' => optional($notification->created_at)->toIso8601String(),
+            ]
+        ]);
+    }
+
+    /**
+     * حذف إشعار معين للمستخدم.
+     */
+    public function destroy(Request $request, $notificationId)
+    {
+        $notification = Notification::where('id', $notificationId)
+                                    ->where('user_id', $request->user()->id)
+                                    ->first();
+
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found or you are not authorized to delete it.'], 404);
+        }
+
         $responseNotification = [
             'id' => $notification->id,
             'type' => $notification->type,
@@ -166,39 +143,54 @@ class NotificationController extends Controller
             'is_read' => $notification->is_read,
             'created_at' => optional($notification->created_at)->toIso8601String(),
         ];
-    
-        event(new NotificationSent($notification));
-    
-        return $responseNotification;
-    }
 
-    /**
-     * مسح جميع الإشعارات الخاصة بالمستخدم.
-     */
-    public function clearAll(Request $request)
-    {
-        $count = Notification::where('user_id', $request->user()->id)->delete();
+        $notification->delete();
 
         return response()->json([
-            'message' => "$count notifications cleared successfully",
+            'message' => 'Notification deleted successfully.',
+            'notification' => $responseNotification
         ]);
     }
 
     /**
-     * إرسال إشعار عبر Firebase.
+     * تحديث حالة قراءة إشعار معين.
      */
-    public function sendNotification(Request $request)
+    public function markAsRead(Request $request, $notificationId)
     {
-        $firebase = (new Factory)->withServiceAccount(storage_path('firebase-credentials.json'))->createMessaging();
+        $notification = Notification::where('id', $notificationId)
+                                    ->where('user_id', $request->user()->id)
+                                    ->first();
 
-        $message = CloudMessage::new()
-            ->withNotification([
-                'title' => $request->title,
-                'body' => $request->message,
-            ]);
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found or you are not authorized to mark it as read.'], 404);
+        }
 
-        $firebase->send($message);
+        $notification->update(['is_read' => true]);
 
-        return response()->json(['message' => 'Notification sent via Firebase']);
+        return response()->json([
+            'message' => 'Notification marked as read successfully.',
+            'notification' => [
+                'id' => $notification->id,
+                'type' => $notification->type,
+                'message' => $notification->message,
+                'is_read' => $notification->is_read,
+                'created_at' => optional($notification->created_at)->toIso8601String(),
+            ]
+        ]);
+    }
+
+    /**
+     * تحديث حالة قراءة جميع الإشعارات للمستخدم.
+     */
+    public function markAllAsRead(Request $request)
+    {
+        $notifications = Notification::where('user_id', $request->user()->id)
+                                     ->where('is_read', false)
+                                     ->update(['is_read' => true]);
+
+        return response()->json([
+            'message' => 'All notifications marked as read successfully.',
+            'count' => $notifications,
+        ]);
     }
 }

@@ -1,0 +1,226 @@
+/* Base styles for the notification bell */
+.notification-bell {
+    position: relative;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    border: none; 
+  }
+  
+  .notification-bell:hover {
+    transform: scale(1.1);
+  }
+  
+  .notification-icon {
+    font-size: 1.5rem;
+    color: #ff1744;
+    animation: bell 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes bell {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+  }
+  
+  /* Badge on notification bell */
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    background-color: #d32f2f;
+    color: white;
+    font-size: 0.75rem;
+    animation: badgePulse 0.5s ease-in-out 3; /* Pulse animation */
+  }
+  
+  @keyframes badgePulse {
+    0%, 100% { transform: translate(50%, -50%) scale(1); }
+    50% { transform: translate(50%, -50%) scale(1.2); }
+  }
+  
+  /* Notification menu container */
+  .notification-menu {
+    background: #f7f9fc;
+    border-radius: 12px;
+    min-width: 320px;
+    max-width: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Notification menu header */
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .header-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .mark-all-read {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    color: #4caf50;
+    text-transform: uppercase;
+  }
+  
+  .mark-all-read mat-icon {
+    font-size: 1rem;
+    color: #4caf50;
+  }
+  
+  /* Date section of the notification */
+  .notification-date-group {
+    padding: 8px 16px;
+  }
+  
+  .date-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+  }
+  
+  /* Individual notification item */
+  .notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .notification-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .unread-notification {
+    background-color: #e8f5e9;
+  }
+  
+  .read-notification {
+    background-color: transparent;
+  }
+  
+  /* Notification item icon */
+  .notification-item-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #fff;
+    border: none; /* Removed border around the icon */
+  }
+  
+  .maintenance_request_update-icon {
+    background-color: #666;
+  }
+  
+  .rent_payment_confirmation-icon {
+    background-color: #4caf50;
+  }
+  
+  .lease_renewal_reminder-icon {
+    background-color: #f44336;
+  }
+  
+  /* Notification message content */
+  .notification-content {
+    flex: 1;
+    text-align: left;
+  }
+  
+  .notification-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .notification-message {
+    margin: 4px 0 0;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  .notification-timestamp {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    font-size: 0.75rem;
+    color: #999;
+  }
+  
+  /* Delete button visibility */
+  .delete-button {
+    visibility: hidden;
+  }
+  
+  .notification-item:hover .delete-button {
+    visibility: visible;
+  }
+  
+  .delete-button mat-icon {
+    font-size: 1.25rem;
+    color: #999;
+  }
+  
+  /* No notifications state */
+  .no-notifications {
+    padding: 16px;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #777;
+  }
+  
+  /* Snackbar styles */
+  .notification-snackbar {
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .snackbar-success {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .snackbar-error {
+    background-color: #d32f2f;
+    color: white;
+  }
+  
+  /* View all notifications link */
+  .view-all {
+    padding: 12px 16px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .view-all a {
+    font-size: 0.875rem;
+    color: #1976d2;
+    text-decoration: none;
+  }
+  
+  .view-all a:hover {
+    text-decoration: underline;
+  }
+  
