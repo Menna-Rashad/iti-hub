@@ -43,7 +43,7 @@
       <!-- Comment card grid -->
       <div class="row g-4">
         <div class="col-12 col-md-6"
-             *ngFor="let c of filteredComments">
+             *ngFor="let c of filteredComments; trackBy: trackComment">
           <div class="data-card fade-in">
 
             <div class="icon-wrapper">
@@ -70,7 +70,7 @@
                   [attr.aria-label]="'Delete comment ' + c.id"
                   (click)="deleteComment(c.id)"
                 >
-                  <mat-icon fontIcon="delete"></mat-icon>
+                  <mat-icon>delete</mat-icon>
                 </button>
               </div>
             </div>
@@ -92,23 +92,33 @@
 <!-- Details modal -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- Modal Header -->
     <div class="modal-header">
-      <h5>📝 Comment Details</h5>
+      <h5 class="d-flex align-items-center gap-2">
+        <mat-icon>chat</mat-icon>
+        Comment Details
+      </h5>
       <button mat-icon-button (click)="closeModal()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
 
-    <div class="modal-body">
-      <p><strong>Content:</strong> {{ selectedComment?.content }}</p>
-      <p><strong>User:</strong> {{ selectedComment?.user?.name || 'Unknown' }}</p>
-      <p><strong>Post:</strong> {{ getPostTitle(selectedComment?.post_id) }}</p>
-      <p><strong>Created:</strong>
-         {{ selectedComment?.created_at | date:'medium' }}</p>
-    </div>
+    <!-- Modal Body -->
+    <mat-card class="modal-body-card">
+      <mat-card-content>
+        <p><strong>Content:</strong></p>
+        <p class="mb-3">{{ selectedComment?.content }}</p>
+        <p><strong>User:</strong> {{ selectedComment?.user?.name || 'Unknown' }}</p>
+        <p><strong>Post:</strong> {{ getPostTitle(selectedComment?.post_id!) }}</p>
+        <p><strong>Created:</strong> {{ selectedComment?.created_at | date:'medium' }}</p>
+      </mat-card-content>
+    </mat-card>
 
+    <!-- Modal Footer -->
     <div class="modal-footer">
       <button mat-stroked-button color="primary" (click)="closeModal()">Close</button>
     </div>
+
   </div>
 </div>

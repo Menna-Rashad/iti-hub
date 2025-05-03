@@ -26,7 +26,7 @@
           <button mat-icon-button matSuffix
                   *ngIf="searchTerm"
                   [attr.aria-label]="'Clear search'"
-                  (click)="searchTerm=''">
+                  (click)="clearFilters()">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -53,8 +53,8 @@
       <!-- card grid -->
       <div class="row g-4">
         <div class="col-sm-6 col-lg-4"
-             *ngFor="let p of filteredPosts()">
-          <div class="data-card fade-in" >
+             *ngFor="let p of filteredPosts(); trackBy: trackPost">
+          <div class="data-card fade-in">
 
             <div class="icon-wrapper">
               <mat-icon>article</mat-icon>
@@ -79,7 +79,7 @@
                 <button mat-icon-button color="warn" class="btn-action"
                         [attr.aria-label]="'Delete post ' + p.id"
                         (click)="deletePost(p.id)">
-                  <mat-icon fontIcon="delete"></mat-icon>
+                  <mat-icon>delete</mat-icon>
                 </button>
               </div>
             </div>
@@ -98,7 +98,7 @@
 
 </div>
 
-<!-- ========= View‑Post Modal ======================================= -->
+<!-- ========= View-Post Modal ======================================= -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-view" (click)="$event.stopPropagation()">
 
@@ -113,10 +113,10 @@
     </div>
 
     <div class="modal-view__body">
-      <p><strong>Title:</strong> {{ selectedPost.title }}</p>
-      <p><strong>Content:</strong> {{ selectedPost.content || 'No content.' }}</p>
-      <p><strong>Category:</strong> {{ getCategoryName(selectedPost.category_id) }}</p>
-      <p><strong>Created:</strong> {{ selectedPost.created_at | date:'medium' }}</p>
+      <p><strong>Title:</strong> {{ selectedPost?.title }}</p>
+      <p><strong>Content:</strong> {{ selectedPost?.content || 'No content.' }}</p>
+      <p><strong>Category:</strong> {{ getCategoryName(selectedPost?.category_id!) }}</p>
+      <p><strong>Created:</strong> {{ selectedPost?.created_at | date:'medium' }}</p>
     </div>
 
     <div class="modal-view__footer">
