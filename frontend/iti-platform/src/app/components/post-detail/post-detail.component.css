@@ -292,3 +292,66 @@ button:hover {
   transform: scale(1.15);
   color: #880e4f;
 }
+.hover-profile-popup {
+    position: absolute;
+    left: -300px;
+    top: 50%;
+    transform: translateY(-90%);
+    z-index: 1000;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    width: 260px;
+    font-size: 14px;
+    animation: fadeIn 0.2s ease-in-out;
+    border: 1px solid #eee;
+  }
+  
+  .hover-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .hover-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #901B20;
+    margin-bottom: 8px;
+  }
+  
+  .hover-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #901B20;
+    margin: 0 0 4px 0;
+  }
+  
+  .hover-email,
+  .hover-bio,
+  .hover-linkedin {
+    font-size: 14px;
+    margin: 3px 0;
+    color: #444;
+    text-decoration: none;
+  }
+  
+  .hover-linkedin:hover {
+    color: #2980b9;
+    text-decoration: underline;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
