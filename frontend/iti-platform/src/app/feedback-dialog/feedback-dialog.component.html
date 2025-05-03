@@ -1,32 +1,32 @@
-<h2 mat-dialog-title>📝 شاركنا سؤالك أو ملاحظتك</h2>
+<h2 mat-dialog-title>📝 Share Your Question or Feedback</h2>
 
 <mat-dialog-content *ngIf="!submitted">
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>نوع الرسالة</mat-label>
+    <mat-label>Message Type</mat-label>
     <mat-select [(ngModel)]="type">
-      <mat-option value="question">سؤال</mat-option>
-      <mat-option value="feedback">ملاحظة</mat-option>
+      <mat-option value="question">Question</mat-option>
+      <mat-option value="feedback">Feedback</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>{{ type === 'question' ? 'اكتب سؤالك' : 'اكتب ملاحظتك' }}</mat-label>
+    <mat-label>{{ type === 'question' ? 'Write your question' : 'Write your feedback' }}</mat-label>
     <textarea
       matInput
       [(ngModel)]="content"
       rows="5"
-      placeholder="اكتب هنا..."
+      placeholder="Start typing here..."
     ></textarea>
   </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-content *ngIf="submitted">
   <p style="text-align: center; color: green; font-weight: bold;">
-    ✅ تم إرسال {{ type === 'question' ? 'السؤال' : 'الملاحظة' }} بنجاح!
+    ✅ Your {{ type === 'question' ? 'question' : 'feedback' }} has been submitted successfully!
   </p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" *ngIf="!submitted">
-  <button mat-button (click)="cancel()">إلغاء</button>
-  <button mat-raised-button color="primary" (click)="submit()">إرسال</button>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()">Submit</button>
 </mat-dialog-actions>
