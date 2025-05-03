@@ -264,6 +264,7 @@ export class PostDetailComponent implements OnInit {
       error: (err) => {
         this.toastr.error('Error deleting post:', err); 
       }
+
     });
   }
 

@@ -121,6 +121,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           const role = response.user.role;
           let redirect = '/';
+
           if (role === 'admin') redirect = '/admin/dashboard';
           else if (role === 'mentor') redirect = '/mentor/dashboard';
 
