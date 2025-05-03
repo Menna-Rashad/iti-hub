@@ -88,5 +88,8 @@ export const routes: Routes = [
   },
 
   // 🛑 Catch All
-  { path: '**', redirectTo: '', pathMatch: 'full' }
-];
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
+  }
+  ];
