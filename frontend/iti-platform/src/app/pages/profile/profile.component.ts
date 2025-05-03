@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
         }
       },
       error: () => {
-        this.toastr.error('فشل تحميل البيانات', 'خطأ');
+        this.toastr.error('Failed to load data', 'error');
       }
     });
   }
@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
 
   onSubmit(): void {
     if (this.profileForm.invalid) {
-      this.toastr.error('املأ كل الحقول المطلوبة');
+      this.toastr.error('Fill all needed fields');
       return;
     }
   
@@ -81,7 +81,7 @@ export class ProfileComponent implements OnInit {
   
     this.profileService.updateProfile(formData).subscribe({
       next: (res) => {
-        this.toastr.success('تم التحديث بنجاح 🎉');
+        this.toastr.success('Updated successfully');
         this.router.navigate(['/profile']);
 
   
@@ -106,10 +106,10 @@ export class ProfileComponent implements OnInit {
         console.error('🔴', err);
         if (err.error?.errors) {
           Object.entries(err.error.errors).forEach(([key, val]: any) =>
-            this.toastr.error(val.join(', '), 'خطأ')
+            this.toastr.error(val.join(', '), 'error')
           );
         } else {
-          this.toastr.error('حدث خطأ أثناء التحديث');
+          this.toastr.error('An error occurred while updating');
         }
       }
     });
