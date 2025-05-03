@@ -1,185 +1,181 @@
-<h3>🎫 Manage Support Tickets</h3>
+<div class="container mt-4 dashboard-wrapper">
 
-<!-- 🔎 Search -->
-<div class="row g-3 align-items-center mt-3 mb-4">
-  <div class="col-md-10">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="🔎 Search tickets..."
-      [(ngModel)]="searchTerm"
-      (input)="filterTickets()"
-    />
-  </div>
-  <div class="col-md-2">
-    <select class="form-select" [(ngModel)]="selectedStatus" (change)="filterTickets()">
-      <option value="">All Statuses</option>
-      <option value="open">Open</option>
-      <option value="in_review">In Review</option>
-      <option value="closed">Closed</option>
-    </select>
-  </div>
-  
-  <div class="col-md-2">
-    <button class="btn btn-secondary w-100" (click)="clearSearch()">Reset</button>
-  </div>
+  <mat-card class="shadow-lg">
+    <mat-card-header>
+      <mat-card-title>
+        <span class="me-2 material-icons-outlined">support_agent</span>
+        Manage Support Tickets
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- search & status pills -->
+      <div class="d-flex flex-column flex-lg-row gap-3 mb-4">
+
+        <mat-form-field appearance="fill" class="search-field flex-grow-1">
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput placeholder="Search tickets…"
+                 [(ngModel)]="searchTerm" (input)="filterTickets()">
+          <button mat-icon-button matSuffix *ngIf="searchTerm"
+                  (click)="searchTerm=''; filterTickets()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="search-field flex-grow-1 flex-lg-0">
+          <mat-select placeholder="Status"
+                      [(ngModel)]="selectedStatus"
+                      (selectionChange)="filterTickets()">
+            <mat-option value="">All Statuses</mat-option>
+            <mat-option value="open">Open</mat-option>
+            <mat-option value="in_review">In Review</mat-option>
+            <mat-option value="closed">Closed</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-icon-button color="primary"
+                class="reset-btn align-self-lg-center"
+                (click)="clearFilters()"
+                aria-label="Reset filters">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+
+      <!-- ticket cards -->
+      <div class="row g-4">
+        <div class="col-12 col-md-6"
+             *ngFor="let t of filteredTickets">
+          <div class="data-card fade-in">
+
+            <div class="icon-wrapper">
+              <mat-icon>support</mat-icon>
+            </div>
+
+            <div class="data-content d-flex flex-column">
+              <h6 class="mb-1">#{{ t.id }} · {{ t.title }}</h6>
+
+              <p class="mb-1">
+                <span class="badge"
+                  [ngClass]="{
+                    'bg-success': t.status==='open',
+                    'bg-warning text-dark': t.status==='in_review',
+                    'bg-danger': t.status==='closed'
+                  }">
+                  {{ t.status.replace('_',' ') | titlecase }}
+                </span>
+              </p>
+
+              <p class="date mb-2">{{ t.created_at | date:'mediumDate' }}</p>
+
+              <div class="d-flex gap-2 mt-auto">
+                <button mat-icon-button color="primary"
+                        aria-label="View ticket"
+                        (click)="openModal(t)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+
+                <mat-form-field appearance="outline" class="flex-fill m-0">
+                  <mat-select placeholder="Status"
+                              (selectionChange)="updateTicketStatus(t.id,$event.value)">
+                    <mat-option value="open">Open</mat-option>
+                    <mat-option value="in_review">In Review</mat-option>
+                    <mat-option value="closed">Closed</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-icon-button color="warn" class="btn-action"
+                        aria-label="Delete ticket"
+                        (click)="deleteTicket(t.id)">
+                  <mat-icon fontIcon="delete"></mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="!filteredTickets.length"
+         class="text-center text-muted mt-4">No tickets found.</p>
+
+    </mat-card-content>
+  </mat-card>
 </div>
 
-<!-- 📋 Tickets Table -->
-<div class="table-responsive fade-in">
-  <table class="table table-hover table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let ticket of filteredTickets">
-        <td>{{ ticket.id }}</td>
-        <td>{{ ticket.title }}</td>
-        <td>
-          <span class="badge"
-            [ngClass]="{
-              'bg-success': ticket.status === 'open',
-              'bg-warning text-dark': ticket.status === 'in_review',
-              'bg-danger': ticket.status === 'closed'
-            }">
-            {{ ticket.status.replace('_', ' ') | titlecase }}
-          </span>
-        </td>
-        <td>{{ ticket.created_at | date:'medium' }}</td>
-        <td>
-          <button class="btn btn-sm btn-primary me-2" (click)="openModal(ticket)">👁️ View</button>
-          <select class="form-select form-select-sm d-inline w-auto" (change)="updateTicketStatus(ticket.id, getSelectValue($event))">
-            <option disabled selected>Change Status</option>
-            <option value="open">Open</option>
-            <option value="in_review">In Review</option>
-            <option value="closed">Closed</option>
-          </select>
-          <button class="btn btn-sm btn-danger mt-2" (click)="deleteTicket(ticket.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 📄 Ticket Modal -->
+<!-- ===== modal ===== -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-content animate-slide-down p-4" (click)="$event.stopPropagation()" style="border-radius: 10px; max-height: 90vh; overflow-y: auto;">
-    <div class="modal-header mb-3">
-      <h5>📄 Ticket Details</h5>
-      <button type="button" class="btn-close" (click)="closeModal()"></button>
+  <div class="modal-view" (click)="$event.stopPropagation()">
+
+    <div class="modal-view__header">
+      <h5 class="m-0 d-flex align-items-center gap-2">
+        <mat-icon>support</mat-icon> Ticket Details
+      </h5>
+      <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
-    <div class="modal-body">
 
-      <!-- 🎯 Ticket Details -->
-      <p class="mb-2"><strong>📝 Title:</strong> {{ selectedTicket.title }}</p>
-      <p class="mb-2"><strong>🧾 Description:</strong> {{ selectedTicket.description || 'No description available.' }}</p>
-      <p class="mb-2"><strong>📊 Status:</strong> {{ selectedTicket.status.replace('_', ' ') | titlecase }}</p>
-      <p class="mb-2">
-        <strong>🎯 Priority:</strong>
-        <span class="badge bg-danger" *ngIf="selectedTicket.priority === 'high'">High</span>
-        <span class="badge bg-warning text-dark" *ngIf="selectedTicket.priority === 'medium'">Medium</span>
-        <span class="badge bg-secondary" *ngIf="selectedTicket.priority === 'low'">Low</span>
-      </p>
-      <p class="mb-2"><strong>🏷️ Category:</strong> {{ selectedTicket.category || 'No Category' }}</p>
-      <p class="mb-2"><strong>📅 Created At:</strong> {{ selectedTicket.created_at | date:'medium' }}</p>
-<!-- 📎 Ticket Attachments -->
-<div *ngIf="selectedTicket.attachments?.length > 0" class="mb-4">
-  <h5>📎 Ticket Attachments:</h5>
-  <div class="d-flex flex-wrap gap-3">
-    <div *ngFor="let file of selectedTicket.attachments" class="d-flex flex-column align-items-center" style="width: 140px;">
-      <a [href]="extractFileUrl(file)" target="_blank" class="text-center mb-2">
-        <ng-container *ngIf="isImage(file); else fileIcon">
-          <img [src]="extractFileUrl(file)" alt="attachment" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
-        </ng-container>
-        <ng-template #fileIcon>
-          <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
-            📄
-          </div>
-        </ng-template>
-      </a>
-      <small class="text-center">{{ extractFileName(file) }}</small>
-      <a [href]="extractFileUrl(file)" download class="btn btn-sm btn-outline-success mt-1 w-100">
-        ⬇️ Download
-      </a>
-    </div>
-  </div>
-</div>
+    <div class="modal-view__body">
+      <p><strong>Title:</strong> {{ selectedTicket?.title }}</p>
+      <p><strong>Description:</strong> {{ selectedTicket?.description || 'No description.' }}</p>
+      <p><strong>Status:</strong> {{ selectedTicket?.status?.replace('_',' ') | titlecase }}</p>
+      <p><strong>Priority:</strong> {{ selectedTicket?.priority | titlecase }}</p>
+      <p><strong>Category:</strong> {{ selectedTicket?.category || '—' }}</p>
+      <p><strong>Created:</strong> {{ selectedTicket?.created_at | date:'medium' }}</p>
 
-      <hr>
-
-      <!-- 📝 Reply Section -->
-      <div class="mb-3">
-        <button class="btn btn-info w-100" (click)="toggleReplyBox()">✍️ Reply as Admin</button>
-      </div>
-
-      <div *ngIf="showReplyBox" class="mb-3">
-        <textarea
-          class="form-control mb-2"
-          [(ngModel)]="adminReplyMessage"
-          placeholder="✏️ Type your reply here..."
-          rows="4"
-        ></textarea>
-
-        <input
-          type="file"
-          (change)="handleFileInput($event)"
-          multiple
-          class="form-control mb-2"
-        />
-
-        <button class="btn btn-success w-100" (click)="sendAdminReply()">🚀 Send Reply</button>
-      </div>
-
-      <hr>
-
-      <!-- 🗨️ Replies List -->
-      <h5>🗨️ Ticket Replies:</h5>
-
-      <div *ngIf="ticketReplies.length > 0; else noReplies">
-        <div *ngFor="let reply of ticketReplies" class="p-2 my-2 border rounded">
-          <p><strong>{{ reply.sender_type | titlecase }}:</strong> {{ reply.message || 'No message' }}</p>
-
-     <!-- Attachments -->
-     <div *ngIf="reply.attachments?.length > 0" class="mt-2">
-        <p><strong>📎 Attachments:</strong></p>
-        <div class="d-flex flex-wrap gap-2">
-          <div *ngFor="let file of reply.attachments" class="d-flex align-items-center gap-2">
-            <ng-container *ngIf="isImage(file); else fileLink">
-              <img [src]="extractFileUrl(file)" alt="attachment" style="width: 120px; height: auto; border-radius: 8px; border: 1px solid #ccc;">
+      <!-- attachments -->
+      <div *ngIf="selectedTicket?.attachments?.length">
+        <h6>Attachments</h6>
+        <div class="media-grid">
+          <div *ngFor="let f of selectedTicket?.attachments">
+            <ng-container *ngIf="isImage(f); else fileStub">
+              <img [src]="extractFileUrl(f)" class="media-img" />
             </ng-container>
-            <ng-template #fileLink>
-              <a [href]="extractFileUrl(file)" target="_blank" class="text-primary text-decoration-underline">
-                {{ extractFileName(file) }}
-              </a>
+            <ng-template #fileStub>
+              <div class="media-stub">{{ extractFileName(f) }}</div>
             </ng-template>
-      
-            <a [href]="extractFileUrl(file)" download class="btn btn-sm btn-outline-success">
-              ⬇️ Download
-            </a>
+            <a [href]="extractFileUrl(f)" download>Download</a>
           </div>
         </div>
       </div>
-      
-  
 
-          <p class="text-muted" style="font-size: 12px;">📅 {{ reply.created_at | date:'medium' }}</p>
-        </div>
+      <!-- admin reply -->
+      <button mat-flat-button color="primary" class="w-100 my-3"
+              (click)="toggleReplyBox()">
+        {{ showReplyBox ? 'Cancel' : 'Reply as Admin' }}
+      </button>
+
+      <div *ngIf="showReplyBox">
+        <textarea matInput class="w-100 mb-2"
+                  rows="4" placeholder="Type your reply…"
+                  [(ngModel)]="adminReplyMessage"></textarea>
+        <input type="file" multiple
+               (change)="handleFileInput($event)" class="form-control mb-2">
+        <button mat-flat-button color="accent" class="w-100"
+                (click)="sendAdminReply()">Send Reply</button>
       </div>
 
-      <ng-template #noReplies>
-        <p class="text-muted">No replies yet.</p>
-      </ng-template>
+      <!-- replies list -->
+      <h6 class="mt-4">Replies</h6>
+      <p *ngIf="!ticketReplies.length" class="text-muted">No replies yet.</p>
 
+      <div *ngFor="let r of ticketReplies" class="p-2 my-2 border rounded">
+        <p><strong>{{ r.sender_type | titlecase }}:</strong> {{ r.message }}</p>
+        <div *ngIf="r.attachments?.length" class="d-flex flex-wrap gap-2">
+          <a *ngFor="let f of r.attachments"
+             [href]="extractFileUrl(f)" target="_blank">
+             {{ extractFileName(f) }}
+          </a>
+        </div>
+        <p class="text-muted" style="font-size:12px;">
+          {{ r.created_at | date:'medium' }}</p>
+      </div>
     </div>
 
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <div class="modal-view__footer">
+      <button mat-stroked-button color="primary" (click)="closeModal()">Close</button>
     </div>
+
   </div>
 </div>

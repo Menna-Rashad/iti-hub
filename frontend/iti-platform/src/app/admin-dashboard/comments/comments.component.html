@@ -1,68 +1,114 @@
-<h3>💬 Manage Comments</h3>
+<div class="container mt-4 dashboard-wrapper">
 
-<div class="row g-3 align-items-center mt-3 mb-4">
-  <div class="col-md-10">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="🔎 Search comments or users..."
-      [(ngModel)]="searchTerm"
-      (input)="filterComments()"
-    />
-  </div>
-  <div class="col-md-2">
-    <button class="btn btn-secondary w-100" (click)="clearSearch()">Reset</button>
-  </div>
+  <!-- Section card -->
+  <mat-card class="shadow-lg">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="me-2">comment</mat-icon>
+        Manage Comments
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- Search pill -->
+      <div class="d-flex flex-column flex-md-row align-items-stretch gap-3 mb-4">
+
+        <mat-form-field appearance="fill" class="search-field flex-grow-1">
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            type="text"
+            placeholder="Search comments or users…"
+            [(ngModel)]="searchTerm"
+            (input)="filterComments()"
+          />
+          <button mat-icon-button matSuffix
+                  *ngIf="searchTerm"
+                  [attr.aria-label]="'Clear search'"
+                  (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <button mat-icon-button color="primary"
+                class="reset-btn align-self-md-center"
+                [attr.aria-label]="'Reset list'"
+                (click)="clearSearch()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+
+      </div>
+
+      <!-- Comment card grid -->
+      <div class="row g-4">
+        <div class="col-12 col-md-6"
+             *ngFor="let c of filteredComments">
+          <div class="data-card fade-in">
+
+            <div class="icon-wrapper">
+              <mat-icon>chat</mat-icon>
+            </div>
+
+            <div class="data-content d-flex flex-column">
+              <h6 class="mb-1">#{{ c.id }} · {{ c.user?.name || 'Unknown' }}</h6>
+
+              <p class="mb-1">
+                {{ c.content.length > 100 ? (c.content | slice:0:100) + '…' : c.content }}
+                <a href="#" (click)="openModal(c); $event.preventDefault()">Read</a>
+              </p>
+
+              <p class="date mb-2">
+                Post: {{ getPostTitle(c.post_id) | slice:0:60 }}
+                <span *ngIf="getPostTitle(c.post_id).length > 60">…</span>
+              </p>
+
+              <div class="d-flex gap-2 mt-auto">
+                <button
+                  mat-icon-button color="warn"
+                  class="btn-action"
+                  [attr.aria-label]="'Delete comment ' + c.id"
+                  (click)="deleteComment(c.id)"
+                >
+                  <mat-icon fontIcon="delete"></mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="!filteredComments.length"
+         class="text-center text-muted mt-4">
+        No comments found.
+      </p>
+
+    </mat-card-content>
+  </mat-card>
+
 </div>
 
-<div class="table-responsive fade-in">
-  <table class="table table-hover table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>ID</th>
-        <th>Content</th>
-        <th>User</th>
-        <th>Post Title</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let comment of filteredComments">
-        <td>{{ comment.id }}</td>
-        <td>
-          <span (click)="openModal(comment)" style="cursor: pointer;">
-            {{ comment.content.length > 100 ? (comment.content | slice:0:100) + '...' : comment.content }}
-          </span>
-        </td>
-        <td>{{ comment.user?.name || 'Unknown' }}</td>
-        <td>
-            {{ getPostTitle(comment.post_id) | slice:0:50 }}{{ getPostTitle(comment.post_id).length > 50 ? '...' : '' }}
-          </td>
-            <td>{{ comment.created_at | date:'medium' }}</td>
-        <td>
-          <button class="btn btn-sm btn-danger" (click)="deleteComment(comment.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Modal for Viewing Full Comment -->
+<!-- Details modal -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-content animate-slide-down" (click)="$event.stopPropagation()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h5>📝 Comment Details</h5>
-      <button type="button" class="btn-close" (click)="closeModal()"></button>
+      <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
+
     <div class="modal-body">
       <p><strong>Content:</strong> {{ selectedComment?.content }}</p>
       <p><strong>User:</strong> {{ selectedComment?.user?.name || 'Unknown' }}</p>
-      <p><strong>Post ID:</strong> {{ selectedComment?.post_id }}</p>
-      <p><strong>Created At:</strong> {{ selectedComment?.created_at | date:'medium' }}</p>
+      <p><strong>Post:</strong> {{ getPostTitle(selectedComment?.post_id) }}</p>
+      <p><strong>Created:</strong>
+         {{ selectedComment?.created_at | date:'medium' }}</p>
     </div>
+
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+      <button mat-stroked-button color="primary" (click)="closeModal()">Close</button>
     </div>
   </div>
 </div>

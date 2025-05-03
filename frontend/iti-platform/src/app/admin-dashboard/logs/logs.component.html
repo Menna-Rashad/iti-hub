@@ -1,22 +1,42 @@
-<h3>🗂️ Admin Logs</h3>
+<div class="container mt-4 dashboard-wrapper">
 
-<div class="table-responsive mt-4 fade-in">
-  <table class="table table-hover table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>#</th>
-        <th>Admin Name</th>
-        <th>Action</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let log of logs; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ log.admin_name }}</td>
-        <td>{{ log.action }}</td>
-        <td>{{ log.created_at }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- wrapper card -->
+  <mat-card class="shadow-lg">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="me-2">history</mat-icon>
+        Admin Logs
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- log cards grid -->
+      <div class="row g-4">
+        <div class="col-12 col-md-6" *ngFor="let log of logs; let i = index">
+          <div class="data-card fade-in">
+
+            <!-- icon circle -->
+            <div class="icon-wrapper">
+              <mat-icon>history</mat-icon>
+            </div>
+
+            <!-- body -->
+            <div class="data-content d-flex flex-column">
+              <h6 class="mb-1">#{{ i + 1 }} · {{ log.admin_name }}</h6>
+              <p class="mb-1">{{ log.action }}</p>
+              <p class="date mb-0">{{ log.created_at | date:'medium' }}</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="!logs.length" class="text-center text-muted mt-4">
+        No logs found.
+      </p>
+
+    </mat-card-content>
+  </mat-card>
+
 </div>

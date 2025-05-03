@@ -1,58 +1,71 @@
 .admin-layout {
-    display: flex;
-    min-height: 100vh;
-  }
-  
-  .sidebar {
-    background-color: rgb(121, 34, 34);
-    width: 230px;
-    background: linear-gradient(135deg, rgb(124, 12, 12), rgb(164, 32, 32));
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  
-  .sidebar-title {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-size: 22px;
-  }
-  
-  .nav {
-    background-color: rgb(121, 34, 34);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .nav a {
-    background-color: rgb(121, 34, 34);
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 6px;
-    transition: background 0.2s ease;
-  }
-  
-  .nav a:hover,
-  .nav a.active {
-    background: rgba(255,255,255,0.2);
-  }
-  
-  .back-to-site {
-    margin-top: auto;
-    background: rgba(255,255,255,0.1);
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-  }
-  
-  .main-content {
-    flex: 1;
-    background: #f5f5f5;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #1e2a44, #2d4066);
+  width: 250px;
+  color: #d3d8e0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: width 0.3s ease;
+}
+
+.sidebar-title {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #4fc3f7;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav a {
+  color: #d3d8e0;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav a:hover,
+.nav a.active {
+  background: #4fc3f7;
+  color: #fff;
+}
+
+.nav a mat-icon {
+  margin-right: 10px;
+}
+
+.back-to-site {
+  margin-top: auto;
+  background: rgba(79, 195, 247, 0.1);
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  color: #d3d8e0;
+  transition: background 0.2s ease;
+}
+
+.back-to-site:hover {
+  background: #4fc3f7;
+  color: #fff;
+}
+
+.main-content {
+  flex: 1;
+  background: #f7f9fc;
+  padding: 25px;
+  overflow-y: auto;
+}

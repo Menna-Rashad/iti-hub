@@ -1,78 +1,127 @@
-<h3>📝 Manage Posts</h3>
+<div class="container mt-4 dashboard-wrapper">
 
-<!-- 🔎 Search & Category Filter -->
-<div class="row g-3 align-items-center mt-3 mb-4">
-  <div class="col-md-6">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="🔎 Search posts..."
-      [(ngModel)]="searchTerm"
-    />
-  </div>
+  <!-- main wrapper card -->
+  <mat-card class="shadow-lg">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="me-2">description</mat-icon>
+        Manage Posts
+      </mat-card-title>
+    </mat-card-header>
 
-  <div class="col-md-4">
-    <select
-    class="form-select"
-    [(ngModel)]="selectedCategory"
-  >
-    <option value="all">All Categories</option>
-    <option *ngFor="let category of categories" [value]="category.name">
-      {{ category.name }}
-    </option>
-  </select>
-  
-  </div>
+    <mat-card-content>
 
-  <div class="col-md-2">
-    <button class="btn btn-secondary w-100" (click)="clearFilters()">Reset</button>
-  </div>
-</div>
+      <!-- search + category filter -->
+      <div class="d-flex flex-column flex-lg-row gap-3 mb-4">
 
-<!-- 📋 Posts Table -->
-<div class="table-responsive fade-in">
-  <table class="table table-hover table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Category</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let post of filteredPosts()">
-        <td>{{ post.id }}</td>
-        <td>{{ post.title }}</td>
-        <td>{{ getCategoryName(post.category_id) }}</td>
-        <td>{{ post.created_at | date:'mediumDate' }} {{ post.created_at | date:'shortTime' }}</td>
-        <td>
-          <button class="btn btn-sm btn-danger me-2" (click)="deletePost(post.id)">Delete</button>
-          <button class="btn btn-sm btn-primary" (click)="openPostModal(post)">
-            👁️ View
+        <!-- search pill -->
+        <mat-form-field appearance="fill" class="search-field flex-grow-1">
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            type="text"
+            placeholder="Search posts…"
+            [(ngModel)]="searchTerm"
+          />
+          <button mat-icon-button matSuffix
+                  *ngIf="searchTerm"
+                  [attr.aria-label]="'Clear search'"
+                  (click)="searchTerm=''">
+            <mat-icon>close</mat-icon>
           </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        </mat-form-field>
+
+        <!-- category pill -->
+        <mat-form-field appearance="fill" class="search-field flex-grow-1 flex-lg-0">
+          <mat-select [(ngModel)]="selectedCategory">
+            <mat-option value="all">All Categories</mat-option>
+            <mat-option *ngFor="let c of categories" [value]="c.name">
+              {{ c.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- reset button -->
+        <button mat-icon-button color="primary"
+                class="reset-btn align-self-lg-center"
+                [attr.aria-label]="'Reset filters'"
+                (click)="clearFilters()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+
+      <!-- card grid -->
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-4"
+             *ngFor="let p of filteredPosts()">
+          <div class="data-card fade-in" >
+
+            <div class="icon-wrapper">
+              <mat-icon>article</mat-icon>
+            </div>
+
+            <div class="data-content d-flex flex-column">
+              <h6 class="mb-1">#{{ p.id }} · {{ getCategoryName(p.category_id) }}</h6>
+
+              <p class="mb-1">
+                {{ p.title | slice:0:60 }} <span *ngIf="p.title.length>60">…</span>
+              </p>
+
+              <p class="date mb-2">{{ p.created_at | date:'mediumDate' }}</p>
+
+              <div class="d-flex gap-2 mt-auto">
+                <button mat-icon-button color="primary"
+                        [attr.aria-label]="'View post ' + p.id"
+                        (click)="openPostModal(p)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+
+                <button mat-icon-button color="warn" class="btn-action"
+                        [attr.aria-label]="'Delete post ' + p.id"
+                        (click)="deletePost(p.id)">
+                  <mat-icon fontIcon="delete"></mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="!filteredPosts().length"
+         class="text-center text-muted mt-4">
+        No posts found.
+      </p>
+
+    </mat-card-content>
+  </mat-card>
+
 </div>
 
-<!-- 📄 Modal for Post Details -->
+<!-- ========= View‑Post Modal ======================================= -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-content animate-slide-down" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h5>📄 Post Details</h5>
-      <button type="button" class="btn-close" (click)="closeModal()"></button>
+  <div class="modal-view" (click)="$event.stopPropagation()">
+
+    <div class="modal-view__header">
+      <h5 class="m-0 d-flex align-items-center gap-2">
+        <mat-icon>article</mat-icon>
+        Post Details
+      </h5>
+      <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
-    <div class="modal-body">
+
+    <div class="modal-view__body">
       <p><strong>Title:</strong> {{ selectedPost.title }}</p>
-      <p><strong>Content:</strong> {{ selectedPost.content || 'No content available.' }}</p>
+      <p><strong>Content:</strong> {{ selectedPost.content || 'No content.' }}</p>
       <p><strong>Category:</strong> {{ getCategoryName(selectedPost.category_id) }}</p>
-      <p><strong>Created At:</strong> {{ selectedPost.created_at | date:'medium' }}</p>
+      <p><strong>Created:</strong> {{ selectedPost.created_at | date:'medium' }}</p>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+    <div class="modal-view__footer">
+      <button mat-stroked-button color="primary" (click)="closeModal()">Close</button>
     </div>
+
   </div>
 </div>

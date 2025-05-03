@@ -1,35 +1,65 @@
-html, body {
-  height: 100%;
-  min-height: calc(100vh - 60px - 50px);
-}
-.stat-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 12px;
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-title {
-    /* font-weight: 600;
-    color: #444; */
-    font-weight: 600;
-    color: #555;
-    letter-spacing: 0.5px;
-  
-  }
-.table {
-  border-radius: 10px;
+.chart-card {
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+mat-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+mat-card-header {
+  background: linear-gradient(90deg, #2c3e50, #3498db);
+  padding: 15px;
+  color: #ffffff;
+}
+
+mat-card-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: inherit;
+}
+
+mat-card-content {
+  padding: 20px;
+}
+
+mat-progress-bar {
+  margin-top: 15px;
+  border-radius: 10px;
 }
 
 .badge {
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 10px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+  color: #ffffff;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529;
+}
+
+.bg-danger {
+  background-color: #dc3545 !important;
+  color: #ffffff;
 }
 
 .fade-in {
@@ -37,16 +67,68 @@ html, body {
 }
 
 @keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-}
-.progress {
-  background-color: #eee;
-  border-radius: 10px;
-  overflow: hidden;
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.progress-bar {
-  font-weight: bold;
-  transition: width 1s ease-in-out;
+/* Styles for the new card-based layout */
+.data-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.data-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, #3498db, #2c3e50);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.icon-wrapper .material-icons {
+  color: #fff;
+  font-size: 24px;
+}
+
+.data-content {
+  flex: 1;
+}
+
+.data-content h6 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.data-content p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.data-content p strong {
+  color: #2c3e50;
+}
+
+.data-content .date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.data-content .badge {
+  margin: 5px 0;
+  display: inline-block;
 }
