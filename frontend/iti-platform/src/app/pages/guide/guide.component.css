@@ -1,0 +1,80 @@
+  
+  .coming-container {
+    position: relative;
+    width: 100%;
+    height: 82vh;
+    /* background: #292e43; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: -64px;
+  }
+  
+  #nuotron {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    transform: rotate(45deg);
+  }
+  
+  .ellipse,
+  .dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  
+  .ellipse {
+    border: 18px solid var(--primary);
+    border-radius: 50%;
+  }
+  
+  .dot {
+    animation: dotRotate 4.8s linear infinite;
+  }
+  
+  .dot::before {
+    content: '';
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    animation: dotEffect 1.2s ease-in-out infinite;
+  }
+  
+  @keyframes dotRotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes dotEffect {
+    0%, 50%, 100% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(0.5);
+    }
+    75% {
+      transform: scale(1.5);
+    }
+    50% {
+      top: 120px;
+    }
+  }
+  
+  .coming-text {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    color: var(--primary);
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  

@@ -53,6 +53,11 @@ export const routes: Routes = [
       { path: 'support', loadComponent: () => import('./technical-support/technical-support.component').then(m => m.TechnicalSupportComponent), title: 'Support' },
       { path: 'user/:id', loadComponent: () => import('./components/public-profile/public-profile.component').then(m => m.PublicProfileComponent), title: 'User Profile' },
       { path: 'tracks', loadComponent: () => import('./pages/tracks-page/tracks-page.component').then(m => m.TracksPageComponent), title: 'Tracks' },
+      {
+        path: 'guide',
+        loadComponent: () => import('./pages/guide/guide.component').then(m => m.GuideComponent)
+      }
+
 
     ]
   },
@@ -88,5 +93,8 @@ export const routes: Routes = [
   },
 
   // 🛑 Catch All
-  { path: '**', redirectTo: '', pathMatch: 'full' }
-];
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
+  }
+  ];

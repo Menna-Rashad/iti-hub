@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+
 // use App\Models\User;
 // use App\Models\Category;
 
@@ -16,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(JobSeeder::class);
 
         $this->call(CategorySeeder::class);
-        $this->call(DummyDashboardSeeder::class);
+        // $this->call(DummyDashboardSeeder::class);
         $this->call(TracksFullSeeder::class);    
         $this->call(NewsSeeder::class);
     
