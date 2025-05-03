@@ -1,0 +1,88 @@
+<div *ngIf="ticket" class="ticket-container">
+    <div class="card iti-card">
+      <div class="card-header">
+        {{ ticket.title }}
+        <span class="status-chip">Status: {{ ticket.status }}</span>
+      </div>
+
+      <div class="card-body">
+        <p><strong>Priority:</strong> {{ ticket.priority }}</p>
+        <p><strong>Category:</strong> {{ ticket.category }}</p>
+        <p><strong>Description:</strong> {{ ticket.description }}</p>
+
+        <!-- Attachments -->
+        <div *ngIf="ticket.attachments?.length" class="attachments-preview">
+          <p><strong>Attachments:</strong></p>
+          <div class="attachments-container">
+            <div *ngFor="let img of ticket.attachments">
+              <img [src]="extractFileUrl(img)"
+                   (click)="openModalImage(extractFileUrl(img))"
+                   alt="attachment"
+                   class="attachment-img" />
+              <div class="download-link">
+                <a [href]="extractFileUrl(img)" download>Download</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn btn-outline-secondary" (click)="dialogRef.close()">Close</button>
+      </div>
+    </div>
+
+    <hr />
+
+    <h3>🗨️ Replies</h3>
+    <div *ngFor="let reply of replies" class="reply-box" 
+         [ngClass]="{'user-reply': reply.sender_type === 'user', 'admin-reply': reply.sender_type === 'admin'}">
+      <p>{{ reply.message }}</p>
+
+      <!-- Attachments for replies -->
+      <div *ngIf="reply.attachments?.length">
+        <div class="attachments-container">
+          <div *ngFor="let img of reply.attachments">
+            <img [src]="extractFileUrl(img)"
+                 (click)="openModalImage(extractFileUrl(img))"
+                 alt="reply image"
+                 class="attachment-img" />
+            <div class="download-link">
+              <a [href]="extractFileUrl(img)" download>Download</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <small class="timestamp">{{ reply.created_at | date:'short' }}</small>
+    </div>
+
+    <!-- Reply Form -->
+    <div class="reply-form">
+      <textarea [(ngModel)]="newReply" placeholder="Write your reply..." rows="5" class="form-control reply-textarea"></textarea>
+
+      <!-- Attach files -->
+      <input type="file" (change)="handleReplyFiles($event)" multiple />
+      
+      <div class="form-buttons">
+        <button class="btn btn-primary" [disabled]="loading" (click)="submitReply()">
+          {{ loading ? 'Sending...' : 'Send Reply' }}
+        </button>
+        <button class="btn btn-secondary" (click)="dialogRef.close()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for full image preview -->
+  <div *ngIf="isModalOpen" class="modal-overlay" (click)="closeModalImage()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <img [src]="selectedImage" alt="Full View" class="modal-img" />
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeModalImage()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!ticket">
+    <p>⛔ Ticket not found or failed to load.</p>
+  </div>
