@@ -7,7 +7,7 @@
       Your trusted platform to prepare for the ITI scholarship — all the materials, guidance, and community you need, in one place.
     </p>
     
-    <a routerLink="/" class="btn btn-primary btn-lg px-4 mt-3 custom-button">Start Preparing</a>
+    <a routerLink="/tracks" class="btn btn-primary btn-lg px-4 mt-3 custom-button">Start Exploring</a>
   </div>
 
   <!-- موجة SVG -->
@@ -18,40 +18,18 @@
 </div>
 </section>
 
+
 <!-- Carousel for Announcements -->
 <div class="carousel-section mt-5">
   <h2 class="mb-5 px-4 text-center">Latest Announcements</h2>
-  <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+  <div *ngIf="newsItems.length > 0; else noNews" id="announcementCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
     <div class="carousel-inner">
-      <div class="carousel-item active">
+      <div class="carousel-item" [ngClass]="{'active': i === 0}" *ngFor="let news of newsItems; let i = index">
         <div class="container">
           <div class="card mx-auto" style="max-width: 500px;">
             <div class="card-body">
-              <h5 class="card-title">New AI Workshop</h5>
-              <p class="card-text">Join our exclusive AI workshop this weekend. Learn about machine learning from industry experts!</p>
-              <a href="#" class="btn btn-primary custom-button">Register Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="container">
-          <div class="card mx-auto" style="max-width: 500px;">
-            <div class="card-body">
-              <h5 class="card-title">Hackathon Alert</h5>
-              <p class="card-text">Participate in our annual ITIHub Hackathon. Form teams and build innovative solutions!</p>
-              <a href="#" class="btn btn-primary custom-button">Join Hackathon</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="container">
-          <div class="card mx-auto" style="max-width: 500px;">
-            <div class="card-body">
-              <h5 class="card-title">Free Resources Added</h5>
-              <p class="card-text">Explore new free tutorials on cloud computing and DevOps in our resource library.</p>
-              <a href="#" class="btn btn-primary custom-button">Check Resources</a>
+              <h5 class="card-title text-danger">{{ news.title }}</h5>
+              <p class="card-text">{{ news.content }}</p>
             </div>
           </div>
         </div>
@@ -66,11 +44,21 @@
       <span class="visually-hidden">Next</span>
     </button>
     <div class="carousel-indicators">
-      <button type="button" data-bs-target="#announcementCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#announcementCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#announcementCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      <button *ngFor="let news of newsItems; let i = index" 
+              type="button" 
+              data-bs-target="#announcementCarousel" 
+              [attr.data-bs-slide-to]="i" 
+              [ngClass]="{'active': i === 0}" 
+              [attr.aria-current]="i === 0 ? 'true' : 'false'" 
+              [attr.aria-label]="'Slide ' + (i + 1)"></button>
     </div>
   </div>
+
+  <ng-template #noNews>
+    <div class="text-center text-muted mt-4">
+      <p>No announcements available at the moment.</p>
+    </div>
+  </ng-template>
 </div>
 
 
