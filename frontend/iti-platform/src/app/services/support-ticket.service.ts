@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 
@@ -7,17 +8,11 @@ import axios from 'axios';
 export class SupportTicketService {
   private baseUrl = 'http://127.0.0.1:8000/api'; 
 
-  constructor() {
+  constructor(private http: HttpClient) {
     axios.defaults.withCredentials = true;
-
-    // ✅ التعديل هنا: استخدام auth_token بدلاً من token
     const token = localStorage.getItem('auth_token');
-
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log("✅ Token set in axios headers");
-    } else {
-      console.warn("🚫 No token found in localStorage");
     }
   }
 
@@ -33,8 +28,12 @@ export class SupportTicketService {
     return response.data;
   }
 
-  async createTicket(data: any) {
-    const response = await axios.post(`${this.baseUrl}/support-tickets`, data);
+  async createTicket(formData: FormData) {
+    const response = await axios.post(`${this.baseUrl}/support-tickets`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   }
 
@@ -61,4 +60,12 @@ export class SupportTicketService {
     const response = await axios.delete(`${this.baseUrl}/support-ticket-replies/${id}`);
     return response.data;
   }
+  getReplies(ticketId: number) {
+    return this.http.get<{ replies: any[] }>(`http://localhost:8000/api/tickets/${ticketId}/replies`);
+  }
+  
+  replyToSupportTicket(id: number, data: FormData) {
+    return this.http.post(`/api/support-tickets/${id}/reply`, data);
+  }
+  
 }
