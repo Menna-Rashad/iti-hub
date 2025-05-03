@@ -56,7 +56,7 @@ export const routes: Routes = [
       {
         path: 'support/tickets/:id',
         loadComponent: () => import('./support-ticket/ticket-detail.component').then(m => m.TicketDetailComponent)
-      }
+      },
             
 
       { path: 'tracks', loadComponent: () => import('./pages/tracks-page/tracks-page.component').then(m => m.TracksPageComponent), title: 'Tracks' },
