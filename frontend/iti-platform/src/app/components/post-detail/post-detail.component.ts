@@ -252,7 +252,7 @@ export class PostDetailComponent implements OnInit {
 
   deletePost() {
     this.api.deletePost(this.post.id).subscribe({
-      next: () => this.router.navigate(['/main-content']),
+      next: () => this.router.navigate(['/community']),
       error: (err) => console.error('Error deleting post:', err)
     });
   }
