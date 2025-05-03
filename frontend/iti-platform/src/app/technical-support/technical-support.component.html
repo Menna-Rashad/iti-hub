@@ -1,29 +1,30 @@
-<!-- customer-support.component.html -->
 <div class="customer-support-container" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
-    <!-- Support Header -->
-    <div class="support-header" style="background-color: #901B20; color: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin: 0; font-size: 24px;">
-          <i class="fas fa-headset" style="margin-right: 10px;"></i> ITI Customer Support Portal
-        </h1>
-        <div>
-          <span style="background-color: white; color: #901B20; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
-            <i class="fas fa-user" style="margin-right: 5px;"></i> Customer ID: {{customerId}}
-          </span>
-        </div>
+  <!-- Support Header -->
+  <div class="support-header" style="background-color: #901B20; color: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="margin: 0; font-size: 24px;">
+        <i class="fas fa-headset" style="margin-right: 10px;"></i> ITI Customer Support Portal
+      </h1>
+      <div>
+        <span style="background-color: white; color: #901B20; padding: 8px 12px; border-radius: 20px; font-size: 14px;">
+          <i class="fas fa-user" style="margin-right: 5px;"></i> Customer ID: {{customerId}}
+        </span>
       </div>
-      <p style="margin-top: 10px; margin-bottom: 0; font-size: 16px;">We're here to help you with any technical issues</p>
     </div>
-  
-    <!-- Main Content -->
-    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
-      <!-- New Ticket Form -->
-      <div style="flex: 1; min-width: 300px;">
-        <div style="background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 20px;">
+    <p style="margin-top: 10px; margin-bottom: 0; font-size: 16px;">We're here to help you with any technical issues</p>
+  </div>
+
+  <!-- Main Content with Equal Height Columns -->
+  <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+    <div style="display: flex; gap: 20px; width: 100%; min-height: 200px;">
+      
+      <!-- Left Column -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <div style="flex-grow: 1; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 20px;">
           <h2 style="margin-top: 0; margin-bottom: 20px; color: #1F2A44;">
-            <i class="fas fa-plus-circle" style="margin-right: 8px; color: #901B20;"></i> Create New Support Ticket
+            <i class="fas fa-plus-circle" style="margin-right: 8px; color: #901B20;"></i> Submit Student Inquiry
           </h2>
-  
+
           <form (ngSubmit)="submitTicket()">
             <div style="margin-bottom: 15px;">
               <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #1F2A44;">Subject</label>
@@ -31,7 +32,7 @@
                      style="width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 4px;"
                      placeholder="Briefly describe your issue" required>
             </div>
-  
+
             <div style="margin-bottom: 15px;">
               <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #1F2A44;">Category</label>
               <select [(ngModel)]="newTicket.category" name="category"
@@ -44,8 +45,8 @@
                 <option value="other">Other</option>
               </select>
             </div>
-  
-            <div style="margin-bottom: 15px;">
+
+            <!-- <div style="margin-bottom: 15px;">
               <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #1F2A44;">Priority</label>
               <div style="display: flex; gap: 10px;">
                 <label style="display: flex; align-items: center;">
@@ -61,68 +62,83 @@
                   <span>High</span>
                 </label>
               </div>
-            </div>
-  
+            </div> -->
+
             <div style="margin-bottom: 20px;">
               <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #1F2A44;">Description</label>
               <textarea [(ngModel)]="newTicket.description" name="description"
                         style="width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 4px; min-height: 120px;"
                         placeholder="Please describe your issue in detail" required></textarea>
             </div>
-  
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #1F2A44;">Attachments</label>
+              <input type="file" #fileUpload multiple (change)="handleFileSelection($event)">
+            </div>
+            
             <button type="submit"
                     style="background-color: #901B20; color: white; border: none; padding: 12px 20px; border-radius: 4px; width: 100%; font-size: 16px;">
-              Submit Ticket
+                    Submit Inquiry
             </button>
           </form>
         </div>
       </div>
-  
-      <!-- My Tickets -->
-      <div style="flex: 1; min-width: 300px;">
-        <div style="background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+
+      <!-- Right Column -->
+      <div style="flex: 1; display: flex; flex-direction: column;">
+        <div style="flex-grow: 1; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column;">
           <div style="background-color: #F3F4F6; color: #1F2A44; padding: 15px; border-radius: 8px 8px 0 0;">
             <h2 style="margin: 0; font-size: 18px;">
-              <i class="fas fa-ticket-alt" style="margin-right: 8px;"></i> My Support Tickets
+              <i class="fas fa-ticket-alt" style="margin-right: 8px;"></i> My Student Inquiries
             </h2>
           </div>
-  
-          <div style="padding: 15px;">
-            <div *ngIf="customerTickets.length === 0" style="text-align: center; padding: 20px; color: #6B7280;">
+
+          <div style="padding: 15px; overflow-y: auto; flex-grow: 1;">
+            <div *ngIf="customerTickets && customerTickets.length === 0" style="text-align: center; padding: 20px; color: #6B7280;">
               <i class="fas fa-inbox" style="font-size: 24px; margin-bottom: 10px;"></i>
               <p>You haven't submitted any tickets yet</p>
             </div>
-  
+
             <div *ngFor="let ticket of customerTickets"
-                 style="border-bottom: 1px solid #E5E7EB; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">
-              <div>
+            style="border-bottom: 1px solid #E5E7EB; padding: 15px 0; display: flex; align-items: flex-start; gap: 10px;">
+              <div style="flex: 1;">
                 <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                  <strong style="margin-right: 10px;">#{{ticket.id}}</strong>
+                  <h3 style="margin: 0 10px 0 0; font-size: 16px;">{{ ticket.title }}</h3>
                   <span [style.backgroundColor]="getStatusColor(ticket.status)"
                         style="color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
-                    {{ticket.status}}
+                    {{ ticket.status }}
                   </span>
                 </div>
-                <h3 style="margin: 0 0 5px 0; font-size: 16px;">{{ticket.subject}}</h3>
-                <p style="margin: 0; color: #6B7280; font-size: 14px;">
+
+                <p style="margin: 0 0 5px 0; color: #6B7280; font-size: 14px;">
+                  {{ ticket.description | slice:0:80 }}...
+                </p>
+
+                <img *ngIf="ticket.attachments?.length"
+                     [src]="'http://127.0.0.1:8000/storage/' + ticket.attachments[0]"
+                     alt="attachment"
+                     style="max-width: 100px; max-height: 80px; border-radius: 4px; border: 1px solid #ccc;" />
+
+                <p style="margin: 5px 0 0 0; color: #999;">
                   <i class="far fa-clock" style="margin-right: 5px;"></i>
-                  {{ticket.date | date:'mediumDate'}}
+                  {{ ticket.created_at | date:'short' }}
                 </p>
               </div>
+
               <button (click)="viewTicket(ticket.id)"
-                      style="background: none; border: 1px solid #901B20; color: #901B20; padding: 5px 10px; border-radius: 4px;">
+                      style="background: none; border: 1px solid #901B20; color: #901B20; padding: 5px 10px; border-radius: 4px; align-self: start;">
                 View
               </button>
             </div>
-  
-            <div *ngIf="customerTickets.length > 0" style="margin-top: 15px; text-align: center;">
+
+            <!-- <div *ngIf="customerTickets.length > 0" style="margin-top: 15px; text-align: center;">
               <button style="background-color: #F3F4F6; border: none; padding: 8px 15px; border-radius: 4px; color: #1F2A44;">
                 View All Tickets
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
+
     </div>
   </div>
-  
+</div>
