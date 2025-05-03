@@ -2,9 +2,13 @@
   display: flex;
   min-height: 100vh;
 }
+.mat-toolbar.sidebar-header {
+  background-color: #F3f4f6; 
+  color: #333; 
+}
 
 .sidebar {
-  background: linear-gradient(180deg, #1e2a44, #2d4066);
+  background-color:#F3f4f6 ;
   width: 250px;
   color: #d3d8e0;
   display: flex;
@@ -15,6 +19,7 @@
 }
 
 .sidebar-title {
+  background-color:#F3f4f6 ;
   text-align: center;
   font-weight: 600;
   margin-bottom: 20px;
