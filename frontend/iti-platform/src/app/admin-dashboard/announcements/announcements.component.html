@@ -1,0 +1,116 @@
+<div class="container mt-4 dashboard-wrapper">
+
+    <mat-card class="shadow-lg">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="me-2">campaign</mat-icon>
+          Manage Announcements
+        </mat-card-title>
+        <!-- New Announcement button -->
+        <button mat-icon-button color="primary"
+                aria-label="New Announcement"
+                (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-header>
+  
+      <mat-card-content>
+  
+        <!-- search pill -->
+        <div class="d-flex flex-column flex-lg-row gap-3 mb-4">
+          <mat-form-field appearance="fill" class="search-field flex-grow-1">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Search…" [(ngModel)]="searchTerm"
+                   (input)="filterNews()">
+            <button mat-icon-button matSuffix *ngIf="searchTerm"
+                    aria-label="Clear" (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <button mat-icon-button color="primary"
+                  class="reset-btn align-self-lg-center"
+                  aria-label="Reset" (click)="clearSearch()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+  
+        <!-- announcement cards -->
+        <div class="row g-4">
+          <div class="col-sm-6 col-lg-4" *ngFor="let n of filteredNews">
+            <div class="data-card fade-in">
+  
+              <div class="icon-wrapper">
+                <mat-icon>article</mat-icon>
+              </div>
+  
+              <div class="data-content d-flex flex-column">
+                <h6 class="mb-1">{{ n.title }}</h6>
+                <p class="date mb-2">{{ n.created_at | date:'mediumDate' }}</p>
+  
+                <div class="d-flex gap-2 mt-auto">
+                  <button mat-icon-button color="primary"
+                          aria-label="View"
+                          (click)="openModal(n)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+  
+                  <button mat-icon-button color="accent"
+                          aria-label="Edit"
+                          (click)="openEditDialog(n)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+  
+                  <button mat-icon-button color="warn" class="btn-action"
+                          aria-label="Delete"
+                          (click)="deleteNews(n.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+  
+        <p *ngIf="!filteredNews.length"
+           class="text-center text-muted mt-4">
+          No announcements found.
+        </p>
+  
+      </mat-card-content>
+    </mat-card>
+  
+  </div>
+  
+  <!-- view-modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-view" (click)="$event.stopPropagation()">
+  
+      <div class="modal-view__header">
+        <h5 class="m-0 d-flex align-items-center gap-2">
+          <mat-icon>article</mat-icon> Announcement
+        </h5>
+        <button mat-icon-button (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <div class="modal-view__body">
+        <h4>{{ selectedNews?.title }}</h4>
+        <p class="mb-3 text-muted">{{ selectedNews?.created_at | date:'medium' }}</p>
+  
+        <ng-container *ngIf="selectedNews?.image as src">
+          <img [src]="imageUrl(src)"
+               class="img-fluid rounded mb-3" />
+        </ng-container>
+  
+        <p style="white-space:pre-wrap">{{ selectedNews?.content }}</p>
+      </div>
+  
+      <div class="modal-view__footer">
+        <button mat-stroked-button color="primary" (click)="closeModal()">Close</button>
+      </div>
+  
+    </div>
+  </div>
+  

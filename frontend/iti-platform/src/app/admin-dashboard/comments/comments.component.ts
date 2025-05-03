@@ -1,25 +1,27 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { CommonModule }              from '@angular/common';
+import { FormsModule }               from '@angular/forms';
+import { RouterModule }              from '@angular/router';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
-  MatDialog, MatDialogRef, MatDialogModule, MAT_DIALOG_DATA
+  MatDialog,
+  MatDialogRef,
+  MatDialogModule,
+  MAT_DIALOG_DATA
 } from '@angular/material/dialog';
-
-import { MatCardModule }   from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule }   from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule }  from '@angular/material/input';
+import { MatCardModule }       from '@angular/material/card';
+import { MatButtonModule }     from '@angular/material/button';
+import { MatIconModule }       from '@angular/material/icon';
+import { MatFormFieldModule }  from '@angular/material/form-field';
+import { MatInputModule }      from '@angular/material/input';
 
 import { AdminService } from '../../services/admin.service';
 
 /* ---------- tiny confirm dialog ---------- */
 @Component({
   standalone: true,
-  imports:[MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
   template: `
     <h2 mat-dialog-title class="d-flex align-items-center gap-2">
       <mat-icon color="warn">warning</mat-icon>
@@ -41,6 +43,20 @@ export class ConfirmDialogComponent {
   ) {}
 }
 
+/* ---------- API shapes ---------- */
+interface AppPost {
+  id: number;
+  title: string;
+}
+
+interface AppComment {
+  id: number;
+  content: string;
+  user: { name: string };
+  post_id: number;
+  created_at: string;
+}
+
 /* ---------- main Comments component ---------- */
 @Component({
   selector: 'app-comments',
@@ -59,31 +75,15 @@ export class ConfirmDialogComponent {
     ConfirmDialogComponent
   ],
   templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.css'],
+  styleUrls: ['./comments.component.css']
 })
 export class CommentsComponent implements OnInit {
-
-  /* ---------------- Dummy data ---------------- */
-  posts = [
-    { id: 101, title: 'Welcome to the Forum' },
-    { id: 102, title: 'How to Get Started' },
-    { id: 103, title: 'Community Guidelines' },
-  ];
-
-  comments = [
-    { id: 5, content:'Great post! Really helped me understand the basics of the platform.',
-      user:{name:'John Doe'}, post_id:101, created_at:'2025-04-03T10:15:00Z' },
-    { id: 6, content:'Appreciate the insights—super useful for beginners like me.',
-      user:{name:'Jane Smith'}, post_id:102, created_at:'2025-04-04T09:20:00Z' },
-    { id: 7, content:'Thanks for the community guidelines—very clear and helpful!',
-      user:{name:'Ali Fahmy'}, post_id:103, created_at:'2025-04-05T14:30:00Z' }
-  ];
-
-  filteredComments = [...this.comments];
+  posts: AppPost[] = [];
+  comments: AppComment[] = [];
+  filteredComments: AppComment[] = [];
   searchTerm = '';
 
-  /* modal state */
-  selectedComment: any = null;
+  selectedComment: AppComment | null = null;
   showModal = false;
 
   constructor(
@@ -93,56 +93,96 @@ export class CommentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    /* production: this.loadPosts(); this.loadComments(); */
+    this.loadPosts();
+    this.loadComments();
   }
 
-  /* --------- API placeholders (kept) --------- */
-  loadPosts(){ /* ... */ }
-  loadComments(){ /* ... */ }
+  /** Load all posts for title lookup */
+  private loadPosts(): void {
+    this.admin.getAllPosts().subscribe({
+      next: posts => this.posts = posts,
+      error: () => this.toast('❌ Failed loading posts')
+    });
+  }
 
-  /* --------- Helpers & actions --------- */
-  getPostTitle(id:number){ return this.posts.find(p=>p.id===id)?.title || 'Unknown Post'; }
+  /** Load comments list */
+  private loadComments(): void {
+    this.admin.getAllComments().subscribe({
+      next: comments => {
+        this.comments = comments;
+        this.filteredComments = [...comments];
+      },
+      error: () => this.toast('❌ Failed loading comments')
+    });
+  }
 
-  filterComments(){
-    const t=this.searchTerm.toLowerCase();
-    this.filteredComments=this.comments.filter(c=>
-      c.content?.toLowerCase().includes(t) || c.user?.name?.toLowerCase().includes(t)
+  /** Get post title by ID */
+  getPostTitle(id: number): string {
+    return this.posts.find(p => p.id === id)?.title || 'Unknown Post';
+  }
+
+  /** Filter comments by content or author */
+  filterComments(): void {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredComments = this.comments.filter(c =>
+      c.content.toLowerCase().includes(term) ||
+      c.user.name.toLowerCase().includes(term)
     );
   }
-  clearSearch(){ this.searchTerm=''; this.filteredComments=[...this.comments]; }
 
-  openModal(c:any){ this.selectedComment=c; this.showModal=true; }
-  closeModal(){ this.selectedComment=null; this.showModal=false; }
+  /** Reset the search */
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredComments = [...this.comments];
+  }
 
-  /** Delete with Cancel / Delete dialog **/
-  deleteComment(id:number){
-    this.openConfirm(`Delete comment #${id}?`, 'Delete').then(ok=>{
-      if(!ok) return;
+  /** Show comment detail modal */
+  openModal(c: AppComment): void {
+    this.selectedComment = c;
+    this.showModal = true;
+  }
 
-      /* --- production call ---
+  /** Close detail modal */
+  closeModal(): void {
+    this.selectedComment = null;
+    this.showModal = false;
+  }
+
+  /** Delete a comment */
+  deleteComment(id: number): void {
+    this.openConfirm(`Delete comment #${id}?`, 'Delete').then(ok => {
+      if (!ok) return;
       this.admin.deleteComment(id).subscribe({
-        next:()=>{ this.loadComments(); this.toast('Comment deleted ✅'); }
+        next: () => {
+          this.toast('Comment deleted ✅');
+          this.loadComments();
+        },
+        error: () => this.toast('❌ Delete failed')
       });
-      --------------------------------*/
-      this.comments=this.comments.filter(c=>c.id!==id);
-      this.filteredComments=[...this.comments];
-      this.toast('Comment deleted ✅');
     });
   }
 
-  toast(msg:string){
-    this.snack.open(msg,'Close',{
-      duration:3000,
-      verticalPosition:'top',
-      panelClass:['custom-snackbar']
+  /** Show a MatSnackBar */
+  private toast(msg: string): void {
+    this.snack.open(msg, 'Close', {
+      duration: 3000,
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
     });
   }
 
-  /* -------- confirm dialog wrapper -------- */
-  private openConfirm(message:string, okText:string):Promise<boolean>{
-    return this.dialog.open(ConfirmDialogComponent,{
-      width:'360px',
-      data:{message, okText}
-    }).afterClosed().toPromise();
+  /** Confirmation wrapper */
+  private openConfirm(message: string, okText: string): Promise<boolean> {
+    return this.dialog.open(ConfirmDialogComponent, {
+      width: '360px',
+      data: { message, okText }
+    })
+    .afterClosed()
+    .toPromise();
+  }
+
+  /** trackBy for performance */
+  trackComment(_: number, c: AppComment): number {
+    return c.id;
   }
 }

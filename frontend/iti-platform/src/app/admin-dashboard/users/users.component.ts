@@ -1,36 +1,30 @@
-/* ---------- users.component.ts (fixed) ----------------------------- */
+// src/app/dashboard/users/users.component.ts
+
 import { Component, OnInit, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { CommonModule }              from '@angular/common';
+import { RouterModule }              from '@angular/router';
+import { FormsModule }               from '@angular/forms';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
-  MatDialog, MatDialogRef, MatDialogModule, MAT_DIALOG_DATA
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA
 } from '@angular/material/dialog';
-
-import { MatCardModule }   from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule }   from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule }  from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule }       from '@angular/material/card';
+import { MatButtonModule }     from '@angular/material/button';
+import { MatIconModule }       from '@angular/material/icon';
+import { MatFormFieldModule }  from '@angular/material/form-field';
+import { MatInputModule }      from '@angular/material/input';
+import { MatSelectModule }     from '@angular/material/select';
 
 import { AdminService } from '../../services/admin.service';
-
-/* ---------- helper interface ---------- */
-interface AppUser {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  created_at: string;
-}
 
 /* ---------- confirmation dialog ---------- */
 @Component({
   standalone: true,
-  imports:[MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, CommonModule],
   template: `
     <h2 mat-dialog-title class="d-flex align-items-center gap-2">
       <mat-icon color="warn">warning</mat-icon>
@@ -54,10 +48,19 @@ export class ConfirmDialogComponent {
   ) {}
 }
 
+/* ---------- shape returned by your API ---------- */
+export interface AppUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+}
+
 /* ---------- main Users component ---------- */
 @Component({
-  selector: 'app-users',
   standalone: true,
+  selector: 'app-users',
   imports: [
     CommonModule,
     RouterModule,
@@ -76,10 +79,9 @@ export class ConfirmDialogComponent {
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-
   users: AppUser[] = [];
   filteredUsers: AppUser[] = [];
-  roles: string[] = ['user', 'admin'];
+  roles     = ['user', 'admin'];
   searchTerm = '';
 
   constructor(
@@ -89,68 +91,89 @@ export class UsersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.users = [
-      { id: 1, name:'John Doe',  email:'john@example.com',  role:'admin', created_at:'2025-04-01T10:00:00Z' },
-      { id: 2, name:'Jane Smith',email:'jane@example.com', role:'user',  created_at:'2025-04-02T12:00:00Z' },
-      { id: 3, name:'Ali Fahmy', email:'ali@example.com', role:'user',  created_at:'2025-04-03T14:00:00Z' }
-    ];
-    this.filteredUsers = [...this.users];
-    // production: this.loadUsers();
+    this.loadUsers();
   }
 
-  /* ---------------- data loaders ---------------- */
-  loadUsers() {
+  private loadUsers(): void {
     this.adminService.getAllUsers().subscribe({
-      next: d => { this.users = d; this.filteredUsers = d; },
-      error: e => console.error('Error loading users:', e)
+      next: (data) => {
+        this.users = data;
+        this.filteredUsers = [...data];
+      },
+      error: () => this.toast('❌ Failed to load users')
     });
   }
 
-  /* ---------------- deletion -------------------- */
-  deleteUser(id: number) {
-    this.openConfirm(`Delete user #${id}?`, 'Delete').then(ok => {
-      if (!ok) return;
-      this.filteredUsers = this.filteredUsers.filter(u => u.id !== id);
-      this.toast('User deleted ✅');
-    });
+  deleteUser(id: number): void {
+    this.openConfirm(`Delete user #${id}?`, 'Delete')
+      .then(ok => {
+        if (!ok) throw 'cancel';
+        return this.adminService.deleteUser(id).toPromise();
+      })
+      .then(() => {
+        this.toast('User deleted ✅');
+        this.loadUsers();
+      })
+      .catch(() => {
+        /* cancelled or error */
+      });
   }
 
-  /* ---------------- role change ---------------- */
-  updateRole(userId: number, newRole: string) {
-    this.openConfirm(`Change role to ${newRole}?`, 'Update').then(ok => {
-      if (!ok) return;
-      this.filteredUsers = this.filteredUsers.map(u =>
-        u.id === userId ? { ...u, role: newRole } : u
-      );
-      this.toast('Role updated ✅');
-    });
+  updateRole(userId: number, newRole: string): void {
+    this.openConfirm(`Change role to ${newRole}?`, 'Update')
+      .then(ok => {
+        if (!ok) throw 'cancel';
+        return this.adminService.updateUserRole(userId, newRole).toPromise();
+      })
+      .then(() => {
+        this.toast('Role updated ✅');
+        this.loadUsers();
+      })
+      .catch(() => {
+        /* cancelled or error */
+      });
   }
 
-  /* ---------------- search / filter ------------- */
-  filterUsers() {
-    const t = this.searchTerm.toLowerCase();
+  filterUsers(): void {
+    const term = this.searchTerm.toLowerCase();
     this.filteredUsers = this.users.filter(u =>
-      u.name?.toLowerCase().includes(t) || u.email?.toLowerCase().includes(t)
+      u.name.toLowerCase().includes(term) ||
+      u.email.toLowerCase().includes(term)
     );
   }
-  clearSearch() { this.searchTerm=''; this.filteredUsers=[...this.users]; }
 
-  /* ---------------- helpers --------------------- */
-  toast(msg: string) {
-    this.snack.open(msg,'Close',{
-      duration:3000,
-      verticalPosition:'top',
-      panelClass:['custom-snackbar']
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredUsers = [...this.users];
+  }
+
+  /** Returns the Bootstrap badge color for a given role */
+  getRoleColor(role: string): 'primary' | 'danger' {
+    return role === 'admin' ? 'danger' : 'primary';
+  }
+
+  /** trackBy for ngFor */
+  trackUser(_: number, user: AppUser): number {
+    return user.id;
+  }
+
+  /** show a snackbar message */
+  private toast(msg: string): void {
+    this.snack.open(msg, 'Close', {
+      duration: 3000,
+      verticalPosition: 'top',
+      panelClass: ['custom-snackbar']
     });
   }
-  getRoleColor(role:string){ return role==='admin' ? 'danger' : 'primary'; }
-  trackUser(_:number,u:AppUser){ return u.id; }
 
-  /* ------------ open confirm dialog ------------ */
-  private openConfirm(message:string, okText:string):Promise<boolean>{
-    return this.dialog.open(ConfirmDialogComponent,{
-      width:'360px',
-      data:{message, okText}
-    }).afterClosed().toPromise();
+  /** confirmation dialog helper */
+  private openConfirm(message: string, okText: string): Promise<boolean> {
+    return this.dialog
+      .open(ConfirmDialogComponent, {
+        width: '360px',
+        data: { message, okText }
+      })
+      .afterClosed()
+      .toPromise();
   }
 }

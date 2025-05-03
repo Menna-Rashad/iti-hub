@@ -76,6 +76,7 @@
               </span>
 
               <div class="d-flex gap-2 mt-auto">
+                <!-- delete -->
                 <button
                   mat-icon-button
                   color="warn"
@@ -83,14 +84,15 @@
                   [attr.aria-label]="'Delete ' + user.name"
                   (click)="deleteUser(user.id)"
                 >
-                  <mat-icon fontIcon="delete"></mat-icon>
+                  <mat-icon>delete</mat-icon>
                 </button>
 
+                <!-- change role -->
                 <mat-form-field appearance="outline" class="flex-fill m-0">
                   <mat-select
-                    placeholder="Change Role"
+                    [(ngModel)]="user.role"
+                    (ngModelChange)="updateRole(user.id, $event)"
                     [attr.aria-label]="'Change role for ' + user.name"
-                    (selectionChange)="updateRole(user.id, $event.value)"
                   >
                     <mat-option
                       *ngFor="let role of roles"
