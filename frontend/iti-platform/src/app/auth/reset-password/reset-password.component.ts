@@ -46,11 +46,11 @@ export class ResetPasswordComponent {
 
     this.http.post('http://localhost:8000/api/forgot-password', { email }).subscribe({
       next: () => {
-        this.showNotification('✅ Reset link sent to your email!', 'success');
+        this.showNotification('Reset link sent to your email!', 'success');
         this.resetForm.reset();
       },
       error: () => {
-        this.showNotification('❌ Email not found or server error.', 'error');
+        this.showNotification('Email not found or server error.', 'error');
       },
       complete: () => this.isLoading = false
     });

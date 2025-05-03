@@ -66,7 +66,7 @@ export class EditPostComponent implements OnInit {
   }
   updatePost(): void {
     const formValue = this.postForm.value;
-    console.log('✅ form value:', formValue);
+    console.log('form value:', formValue);
   
     const formData = new FormData();
   
@@ -90,10 +90,10 @@ export class EditPostComponent implements OnInit {
     // Call the update
     this.forumService.updatePost(this.postId, formData).subscribe({
       next: () => {
-        alert('✔️ Post updated successfully');
+        alert('Post updated successfully');
         this.router.navigate(['/posts', this.postId]);
       },
-      error: err => console.error('❌ Update failed:', err)
+      error: err => console.error('Update failed:', err)
     });
   }
   
