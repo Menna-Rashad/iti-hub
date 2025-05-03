@@ -35,7 +35,7 @@ export class FeedbackDialogComponent {
 
   submit(): void {
     if (!this.content.trim()) {
-      alert('من فضلك اكتب محتوى مناسب.');
+      alert('Please write a suitable content.');
       return;
     }
 

@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { AnnouncementsComponent } from './admin-dashboard/announcements/announcements.component';
 import { AdminDashboardNewComponent } from './admin-dashboard-new/admin-dashboard-new.component';
 
 // Auth Pages
@@ -82,7 +83,9 @@ export const routes: Routes = [
       { path: 'posts', loadComponent: () => import('./admin-dashboard/posts/posts.component').then(m => m.PostsComponent) },
       { path: 'comments', loadComponent: () => import('./admin-dashboard/comments/comments.component').then(m => m.CommentsComponent) },
       { path: 'tickets', loadComponent: () => import('./admin-dashboard/tickets/tickets.component').then(m => m.TicketsComponent) },
-      { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) }
+      { path: 'logs', loadComponent: () => import('./admin-dashboard/logs/logs.component').then(m => m.LogsComponent) },
+      { path: 'announcements', loadComponent: () => import('./admin-dashboard/announcements/announcements.component').then(m => m.AnnouncementsComponent) },
+      
     ]
   }
   ,

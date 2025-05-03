@@ -29,12 +29,12 @@ export class TopContributorsComponent implements OnInit {
             score: contributor.points || 0 // التأكد من وجود النقاط أو تعيينها كـ 0 إذا لم تكن موجودة
           }));
         } else {
-          this.toastr.error('فشل في تحميل البيانات');
+          this.toastr.error('Failed to load data');
         }
       },
       error: (err: any) => {
         console.error('Error fetching top contributors:', err);
-        this.toastr.error('حدث خطأ أثناء تحميل قائمة المساهمين');
+        this.toastr.error('An error occurred while loading the contributors list');
       }
     });
   }

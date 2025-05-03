@@ -20,6 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CopyButtonComponent } from '../../shared/components/copy-button/copy-button.component';
 import { FollowService } from '../../services/follow.service';
 import { FollowStateService } from '../../services/follow-state.service';
+import { ToastrService } from 'ngx-toastr'; 
 
 @Component({
   selector: 'app-post-detail',
@@ -67,7 +68,8 @@ export class PostDetailComponent implements OnInit {
     private forumService: ForumService,
     private clipboard: Clipboard,
     private followService: FollowService,
-    private followState: FollowStateService
+    private followState: FollowStateService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -134,7 +136,7 @@ export class PostDetailComponent implements OnInit {
 
   toggleFollow() {
     const userId = this.post.user.id;
-
+  
     const action = this.isFollowing
       ? this.followService.unfollow(userId)
       : this.followService.follow(userId);
@@ -143,9 +145,10 @@ export class PostDetailComponent implements OnInit {
       next: () => {
         const newStatus = !this.isFollowing;
         this.followState.set(userId, newStatus);
+        this.toastr.success(newStatus ? 'Followed' : 'Unfollowed'); // استبدال alert برسالة toastr
       },
       error: () => {
-        alert('❌ Failed to update follow status.');
+        this.toastr.error(' Failed to update follow status.'); // استبدال alert برسالة toastr
       }
     });
   }
@@ -179,7 +182,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   showMoreComments() {
-    this.visibleComments = [...this.post.comments]; // اعرض كل الكومنتات
+    this.visibleComments = [...this.post.comments]; 
   }
 
   addComment() {
@@ -194,18 +197,19 @@ export class PostDetailComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error adding comment:', err);
+          this.toastr.error('Error adding comment.'); 
           this.isAddingComment = false;
         }
       });
   }
   editComment(comment: any): void {
-    const newContent = prompt('✏️ Edit your comment:', comment.content);
+    const newContent = prompt('Edit your comment:', comment.content);
     if (newContent && newContent.trim()) {
       this.commentService.updateComment(comment.id, { content: newContent.trim() })
       .subscribe({
         next: () => {
-          comment.content = newContent.trim(); // ✅ تحديث محتوى الكومنت محليًا
-          this.cdr.detectChanges(); // 🔄 عشان Angular يعرف إن حصل تغيير
+          comment.content = newContent.trim(); 
+          this.cdr.detectChanges(); 
         },
         error: (err) => console.error(err),
       });
@@ -214,10 +218,13 @@ export class PostDetailComponent implements OnInit {
   }
   
   deleteComment(commentId: number): void {
-    if (confirm('🗑 Are you sure you want to delete this comment?')) {
+    if (confirm(' Are you sure you want to delete this comment?')) {
       this.commentService.deleteComment(commentId).subscribe({
         next: () => this.loadPost(this.post.id),
-        error: (err) => console.error(err),
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Error deleting comment.'); 
+        },
       });
     }
   }
@@ -241,6 +248,7 @@ export class PostDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error updating vote:', err);
+        this.toastr.error('Error updating vote.'); 
         this.isVoting = false;
       }
     });
@@ -252,8 +260,11 @@ export class PostDetailComponent implements OnInit {
 
   deletePost() {
     this.api.deletePost(this.post.id).subscribe({
-      next: () => this.router.navigate(['/main-content']),
-      error: (err) => console.error('Error deleting post:', err)
+      next: () => this.router.navigate(['/community']),
+      error: (err) => {
+        this.toastr.error('Error deleting post:', err); 
+      }
+
     });
   }
 
@@ -276,6 +287,7 @@ export class PostDetailComponent implements OnInit {
   copyPost(post: any) {
     const postUrl = `${window.location.origin}/posts/${post.id}`;
     this.clipboard.copy(postUrl);
-    alert('Post link copied to clipboard!');
+    this.toastr.success('Post link copied to clipboard!');
   }
+  
 }

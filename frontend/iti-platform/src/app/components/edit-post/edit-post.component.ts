@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-post',
@@ -35,7 +36,8 @@ export class EditPostComponent implements OnInit {
     private route: ActivatedRoute,
     private forumService: ForumService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -66,36 +68,34 @@ export class EditPostComponent implements OnInit {
   }
   updatePost(): void {
     const formValue = this.postForm.value;
-    console.log('✅ form value:', formValue);
+    console.log('form value:', formValue);
   
     const formData = new FormData();
   
-    // ✅ تأكدي من وجود الـ form fields فعليًا
     formData.append('title', formValue['title']);
     formData.append('content', formValue['content']);
     formData.append('tags', formValue['tags']);
     formData.append('category_id', formValue['category_id'].toString());
   
-    // ✅ تأكدي من إرسال existing media بشكل JSON String
     formData.append('existing_media', JSON.stringify(this.existingMedia || []));
   
-    // ✅ ملفات جديدة
     this.newMediaFiles.forEach(file => {
       formData.append('media[]', file);
     });
   
-    // ✅ أهم حاجة: إرسال `_method: PUT` عشان Laravel يفهم إن دي PUT
     formData.append('_method', 'PUT');
   
-    // Call the update
     this.forumService.updatePost(this.postId, formData).subscribe({
       next: () => {
-        alert('✔️ Post updated successfully');
+        this.toastr.success(' Post updated successfully'); 
         this.router.navigate(['/posts', this.postId]);
       },
-      error: err => console.error('❌ Update failed:', err)
+      error: err => {
+        console.error('Update failed:', err);
+        this.toastr.error(' Update failed. Please try again.'); 
+      }
+
     });
   }
-  
-  
+
 }

@@ -3,8 +3,10 @@
   <mat-card class="shadow-lg">
     <mat-card-header>
       <mat-card-title>
-        <span class="me-2 material-icons-outlined">support_agent</span>
-        Manage Support Tickets
+        <span class="me-2 material-icons-outlined">
+          <!-- support_agent -->
+        </span>
+        Manage Support 
       </mat-card-title>
     </mat-card-header>
 
@@ -15,7 +17,7 @@
 
         <mat-form-field appearance="fill" class="search-field flex-grow-1">
           <mat-icon matPrefix>search</mat-icon>
-          <input matInput placeholder="Search tickets…"
+          <input matInput placeholder="Search inquiries…"
                  [(ngModel)]="searchTerm" (input)="filterTickets()">
           <button mat-icon-button matSuffix *ngIf="searchTerm"
                   (click)="searchTerm=''; filterTickets()">
@@ -70,7 +72,7 @@
 
               <div class="d-flex gap-2 mt-auto">
                 <button mat-icon-button color="primary"
-                        aria-label="View ticket"
+                        aria-label="View inquiry"
                         (click)="openModal(t)">
                   <mat-icon>visibility</mat-icon>
                 </button>
@@ -85,7 +87,7 @@
                 </mat-form-field>
 
                 <button mat-icon-button color="warn" class="btn-action"
-                        aria-label="Delete ticket"
+                        aria-label="Delete inquiry"
                         (click)="deleteTicket(t.id)">
                   <mat-icon fontIcon="delete"></mat-icon>
                 </button>
@@ -97,7 +99,7 @@
       </div>
 
       <p *ngIf="!filteredTickets.length"
-         class="text-center text-muted mt-4">No tickets found.</p>
+         class="text-center text-muted mt-4"> No inquiries found.</p>
 
     </mat-card-content>
   </mat-card>
@@ -109,7 +111,7 @@
 
     <div class="modal-view__header">
       <h5 class="m-0 d-flex align-items-center gap-2">
-        <mat-icon>support</mat-icon> Ticket Details
+        <mat-icon>support</mat-icon> Inquiry Details
       </h5>
       <button mat-icon-button (click)="closeModal()">
         <mat-icon>close</mat-icon>
