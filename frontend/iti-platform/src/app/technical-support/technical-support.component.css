@@ -1,0 +1,7 @@
+::ng-deep .custom-snackbar {
+    background-color: #10B981;
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
+  }
+  
