@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     const reset = this.route.snapshot.queryParamMap.get('reset');
     if (reset === '1') {
-      this.showNotification('✅ Password changed successfully. Please log in.', 'success');
+      this.showNotification('Password changed successfully. Please log in.', 'success');
     }
 
     // Google Identity Services Init
@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.formSubmitted = true;
     this.disableValidation = false; // التأكد من تفعيل الـ validation قبل الـ submit
     if (!this.email || !this.password) {
-      this.showNotification('⚠️ Please enter your email and password!', 'error');
+      this.showNotification('Please enter your email and password!', 'error');
       return;
     }
 
@@ -95,13 +95,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         console.log(`API Request took ${timeTaken} ms`);
 
         if (timeTaken > 2000) {
-          console.warn(`⚠️ The request took too long: ${timeTaken} ms`);
+          console.warn(`The request took too long: ${timeTaken} ms`);
         }
 
-        console.log('🚀 Full API Response:', response);
+        console.log('Full API Response:', response);
 
         if (response.token && response.user) {
-          console.log('🔑 Received Token:', response.token);
+          console.log('Received Token:', response.token);
 
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
@@ -113,7 +113,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (response.user?.id) localStorage.setItem('user_id', response.user.id);
           if (response.user?.role) localStorage.setItem('role', response.user.role);
 
-          this.showNotification('🎉 Login successful! Redirecting...', 'success');
+          this.showNotification('Login successful! Redirecting...', 'success');
 
           this.disableValidation = true; // تعطيل الـ validation قبل مسح الحقول
           this.email = ''; // Clear fields
@@ -126,16 +126,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           setTimeout(() => this.router.navigate([redirect]), 1000);
         } else {
-          this.showNotification('⚠️ Failed to log in. Please try again.', 'error');
+          this.showNotification('Failed to log in. Please try again.', 'error');
         }
 
         this.isLoading = false;
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('❌ Login error:', error);
+        console.error('Login error:', error);
         this.showNotification(
-          error.status === 401 ? '❌ Invalid email or password!' : '⚠️ An error occurred.',
+          error.status === 401 ? 'Invalid email or password!' : 'An error occurred.',
           'error'
         );
       }
@@ -152,7 +152,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         localStorage.setItem('role', res.user.role);
         this.authState.setLoggedIn(true);
 
-        this.showNotification('🎉 Google login successful!', 'success');
+        this.showNotification('Google login successful!', 'success');
 
         const role = res.user.role;
         let redirect = '/';
@@ -162,8 +162,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         setTimeout(() => this.router.navigate([redirect]), 1000);
       },
       error: (err: any) => {
-        console.error('❌ Google login failed:', err);
-        this.showNotification('❌ Google login failed. Try again.', 'error');
+        console.error('Google login failed:', err);
+        this.showNotification('Google login failed. Try again.', 'error');
       }
     });
   }

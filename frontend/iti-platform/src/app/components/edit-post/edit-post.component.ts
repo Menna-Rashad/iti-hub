@@ -94,6 +94,7 @@ export class EditPostComponent implements OnInit {
         console.error('Update failed:', err);
         this.toastr.error(' Update failed. Please try again.'); 
       }
+
     });
   }
 
