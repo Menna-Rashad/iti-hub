@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketReplyController extends Controller
 {
+    
     public function store(Request $request, $ticketId)
     {
         $ticket = SupportTicket::findOrFail($ticketId);
@@ -35,4 +36,19 @@ class TicketReplyController extends Controller
             'reply' => $reply
         ], 201);
     }
+    public function getReplies($ticketId)
+{
+    $ticket = SupportTicket::findOrFail($ticketId);
+
+    if ($ticket->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $replies = TicketReply::where('support_ticket_id', $ticketId)
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    return response()->json(['replies' => $replies]);
+}
+
 }
