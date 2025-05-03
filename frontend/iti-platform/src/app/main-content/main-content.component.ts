@@ -2,11 +2,11 @@ import {
   Component,
   OnInit,
   ElementRef,
-  ViewChildren,
-  QueryList,
+  ViewChild,
+  AfterViewInit,
+  HostListener,
 } from '@angular/core';
 import { ForumService } from '../services/forum.service';
-// Removed duplicate import of MatDialog
 import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -46,12 +46,12 @@ import { PublicProfileComponent } from '../components/public-profile/public-prof
     SidebarComponent,
     TopContributorsComponent,
     CopyButtonComponent,
-    VoteButtonsComponent
+    VoteButtonsComponent,
   ],
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.css'],
 })
-export class MainContentComponent implements OnInit {
+export class MainContentComponent implements OnInit, AfterViewInit {
   posts: any[] = [];
   filteredPosts: any[] = [];
   loadingVotes: { [key: number]: boolean } = {};
@@ -65,18 +65,27 @@ export class MainContentComponent implements OnInit {
   selectedCategory: string = '';
   categoryColors: string[] = [];
   hoveredUser: any = null;
-
-  isFollowing: { [key: number]: boolean } = {}; 
-
+  isFollowing: { [key: number]: boolean } = {};
   editingPostId: number | null = null;
   editPostTitle = '';
   editPostContent = '';
   topContributors: any[] = [];
-
   defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=random';
+  categoryStyles: string[] = [
+    'general',
+    'angular',
+    'feedback',
+    'laravel',
+    'web-development',
+    'mobile-development',
+    'data-science',
+    'devops',
+    'ui-ux-design',
+  ];
 
-  @ViewChildren('lastVisibleComment', { read: ElementRef })
-  lastCommentElements!: QueryList<ElementRef>;
+  @ViewChild('categoriesContainer') categoriesContainer!: ElementRef;
+  canScrollLeft = false;
+  canScrollRight = true;
 
   constructor(
     private forumService: ForumService,
@@ -85,38 +94,44 @@ export class MainContentComponent implements OnInit {
     private followService: FollowService,
     private followState: FollowStateService,
     private commentService: CommentService,
-    
   ) {}
 
   ngOnInit(): void {
     this.getCurrentUser();
     this.loadPosts();
-    this.getCurrentUser();
-    this.getTopContributors();
+
     this.loadCategories();
+  }
+
+  ngAfterViewInit() {
+    this.checkScroll();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScroll();
   }
 
   getCurrentUser(): void {
     this.forumService.getCurrentUser().subscribe({
       next: (res) => {
         this.currentUser = res.user ?? res;
-  
-        // بعد ما نجيب اليوزر نعيد تحميل البوستات (عشان نقدر نقارن user_id مع الكومنتات)
-        this.loadPosts(); // 🔄 مهم جدًا!
+        this.loadPosts();
       },
       error: (err) => console.error(err),
     });
   }
+
   openUserPopup(userId: number, event: MouseEvent): void {
     event.preventDefault();
     this.dialog.open(PublicProfileComponent, {
       height: '500px',
       width: '450px',
       data: { userId },
-      panelClass: 'user-profile-dialog'
+      panelClass: 'user-profile-dialog',
     });
   }
-  
+
   loadPosts(): void {
     const userId = Number(localStorage.getItem('user_id'));
 
@@ -126,16 +141,22 @@ export class MainContentComponent implements OnInit {
           post.user.profile_picture = post.user?.profile_picture
             ? `http://127.0.0.1:8000/profile_pictures/${post.user.profile_picture}`
             : this.defaultAvatar;
-
           post.isOwner = post.user?.id === userId;
-
-          // ✅ مراقبة حالة المتابعة بشكل مباشر
+          // تحويل media من string إلى Array
+          if (post.media && typeof post.media === 'string') {
+            try {
+              post.media = JSON.parse(post.media);
+            } catch (e) {
+              console.error('Error parsing media for post:', post.id, e);
+              post.media = [];
+            }
+          } else if (!Array.isArray(post.media)) {
+            post.media = [];
+          }
           if (!post.isOwner) {
-            this.followState.getObservable(post.user.id).subscribe(status => {
+            this.followState.getObservable(post.user.id).subscribe((status) => {
               this.isFollowing[post.id] = status;
             });
-
-            // ✅ تحميل الحالة من الـ backend مرة واحدة
             if (!this.followState.getObservable(post.user.id).value) {
               this.followService.checkStatus(post.user.id).subscribe({
                 next: (res) => {
@@ -144,16 +165,13 @@ export class MainContentComponent implements OnInit {
                 },
                 error: () => {
                   this.followState.set(post.user.id, false);
-                }
+                },
               });
             }
           }
-
           return post;
         });
-
         this.filteredPosts = this.posts;
-
         this.posts.forEach((post: any) => {
           this.loadComments(post.id);
         });
@@ -165,20 +183,18 @@ export class MainContentComponent implements OnInit {
   toggleFollow(post: any): void {
     const postId = post.id;
     const userId = post.user?.id;
-
     const action = this.isFollowing[postId]
       ? this.followService.unfollow(userId)
       : this.followService.follow(userId);
-
     action.subscribe({
       next: () => {
         const newStatus = !this.isFollowing[postId];
         this.followState.set(userId, newStatus);
-        this.toastr.success(newStatus ? 'Followed ✅' : 'Unfollowed ❌');
+        this.toastr.success(newStatus ? 'Followed' : 'Unfollowed');
       },
       error: () => {
-        this.toastr.error('❌ Failed to update follow status');
-      }
+        this.toastr.error('Failed to update follow status');
+      },
     });
   }
 
@@ -188,7 +204,7 @@ export class MainContentComponent implements OnInit {
     newCounts: { upvotes: number; downvotes: number };
     action: 'added' | 'removed';
   }) {
-    const updatedPost = this.filteredPosts.find(p => p.id === event.targetId);
+    const updatedPost = this.filteredPosts.find((p) => p.id === event.targetId);
     if (updatedPost) {
       updatedPost.upvotes = event.newCounts.upvotes;
       updatedPost.downvotes = event.newCounts.downvotes;
@@ -198,7 +214,9 @@ export class MainContentComponent implements OnInit {
   applyFilter(event: any): void {
     const selectedFilter = event.target.value;
     if (selectedFilter === 'newest') {
-      this.filteredPosts = this.posts.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      this.filteredPosts = this.posts.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     } else if (selectedFilter === 'top-votes') {
       this.filteredPosts = this.posts.sort((a, b) => b.upvotes - a.upvotes);
     }
@@ -215,8 +233,8 @@ export class MainContentComponent implements OnInit {
       error: (err) => {
         this.loadingComments[postId] = false;
         console.error(err);
-      }
-    });    
+      },
+    });
   }
 
   addComment(postId: number): void {
@@ -232,14 +250,12 @@ export class MainContentComponent implements OnInit {
   }
 
   editComment(postId: number, comment: any): void {
-    const newContent = prompt('✏️ Edit your comment:', comment.content);
+    const newContent = prompt('Edit your comment:', comment.content);
     if (newContent && newContent.trim()) {
-      this.forumService
-        .updateComment(comment.id, { content: newContent.trim() })
-        .subscribe({
-          next: () => this.loadComments(postId),
-          error: (err) => console.error(err),
-        });
+      this.forumService.updateComment(comment.id, { content: newContent.trim() }).subscribe({
+        next: () => this.loadComments(postId),
+        error: (err) => console.error(err),
+      });
     }
   }
 
@@ -278,7 +294,6 @@ export class MainContentComponent implements OnInit {
     const dialogRef = this.dialog.open(FeedbackDialogComponent, {
       width: '400px',
     });
-
     dialogRef.afterClosed().subscribe(() => this.loadPosts());
   }
 
@@ -286,8 +301,12 @@ export class MainContentComponent implements OnInit {
     const link = `${window.location.origin}/posts/${postId}`;
     navigator.clipboard
       .writeText(link)
-      .then(() => this.toastr.success('Link copied to clipboard ✅'))
-      .catch(() => this.toastr.error('Failed to copy link ❌'));
+      .then(() => {
+        this.toastr.success('Link copied to clipboard');
+      })
+      .catch(() => {
+        this.toastr.error('Failed to copy link');
+      });
   }
 
   onSearch(): void {
@@ -296,7 +315,6 @@ export class MainContentComponent implements OnInit {
       this.filteredPosts = this.posts;
       return;
     }
-
     this.filteredPosts = this.posts.filter(
       (post) =>
         post.title?.toLowerCase().includes(query) ||
@@ -311,55 +329,45 @@ export class MainContentComponent implements OnInit {
   }
 
   editPost(post: any): void {
-    const newTitle = prompt('📝 Edit post title:', post.title);
-    const newContent = prompt('📝 Edit post content:', post.content);
-
+    const newTitle = prompt('Edit post title:', post.title);
+    const newContent = prompt('Edit post content:', post.content);
     if (newTitle?.trim() && newContent?.trim()) {
       const formData = new FormData();
-
       formData.append('title', newTitle.trim());
       formData.append('content', newContent.trim());
       formData.append('category_id', post.category_id?.toString() || '');
       formData.append('tags', post.tags || '');
       formData.append('existing_media', JSON.stringify(post.media || []));
       formData.append('_method', 'PUT');
-
       this.forumService.updatePost(post.id, formData).subscribe({
         next: () => {
           this.loadPosts();
-          this.toastr.success('✔️ Post updated successfully.');
+          this.toastr.success('Post updated successfully.');
         },
-        error: () => this.toastr.error('❌ Failed to update post.'),
+        error: () => this.toastr.error('Failed to update post.')
       });
     }
   }
 
   deletePost(postId: number): void {
-    if (confirm('🗑 Are you sure you want to delete this post?')) {
+    if (confirm('Are you sure you want to delete this post?')) {
       this.forumService.deletePost(postId).subscribe({
         next: () => {
           this.loadPosts();
           this.toastr.success('Post deleted successfully.');
         },
-        error: () => this.toastr.error('Failed to delete post.'),
+        error: () => this.toastr.error('Failed to delete post.')
       });
     }
   }
 
-  getTopContributors(): void {
-    this.forumService.getTopContributors().subscribe(
-      (response: any) => {
-        this.topContributors = response.users_with_scores;
-      },
-      (error: any) => {
-        console.error('Error fetching top contributors:', error);
-      }
-    );
-  }
 
   loadCategories(): void {
     this.forumService.getCategories().subscribe((response) => {
-      this.categories = response;
+      this.categories = response.map((cat: any, index: number) => ({
+        ...cat,
+        postCount: cat.post_count,
+      }));
       this.categoryColors = this.generateRandomColors(this.categories.length);
     });
   }
@@ -367,17 +375,16 @@ export class MainContentComponent implements OnInit {
   generateRandomColors(count: number): string[] {
     const colors: string[] = [];
     for (let i = 0; i < count; i++) {
-      const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+      const randomColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
       colors.push(randomColor);
     }
     return colors;
   }
 
   filterPosts(category: any): void {
+    this.selectedCategory = category ? category.name : '';
     if (category) {
-      this.filteredPosts = this.posts.filter(
-        (post) => post.category_id === category.id
-      );
+      this.filteredPosts = this.posts.filter((post) => post.category_id === category.id);
     } else {
       this.filteredPosts = this.posts;
     }
@@ -398,4 +405,23 @@ export class MainContentComponent implements OnInit {
   isDocument(file: string): boolean {
     return /\.(pdf|doc|docx|ppt|pptx|zip)$/i.test(file);
   }
+
+  scrollLeft() {
+    const container = this.categoriesContainer.nativeElement;
+    container.scrollLeft -= 300;
+    this.checkScroll();
+  }
+
+  scrollRight() {
+    const container = this.categoriesContainer.nativeElement;
+    container.scrollLeft += 300;
+    this.checkScroll();
+  }
+
+  checkScroll() {
+    const container = this.categoriesContainer.nativeElement;
+    this.canScrollLeft = container.scrollLeft > 0;
+    this.canScrollRight = container.scrollLeft < container.scrollWidth - container.clientWidth;
+  }
+  
 }
