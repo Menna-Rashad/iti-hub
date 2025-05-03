@@ -120,7 +120,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.password = '';
 
           const role = response.user.role;
-          let redirect = '/main-content';
+          let redirect = '/';
           if (role === 'admin') redirect = '/admin/dashboard';
           else if (role === 'mentor') redirect = '/mentor/dashboard';
 
@@ -155,7 +155,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.showNotification('🎉 Google login successful!', 'success');
 
         const role = res.user.role;
-        let redirect = '/main-content';
+        let redirect = '/';
         if (role === 'admin') redirect = '/admin/dashboard';
         else if (role === 'mentor') redirect = '/mentor/dashboard';
 
