@@ -125,31 +125,25 @@ extractFileUrl(filePath: string): string {
         formData.append('attachments[]', file);
       });
   
-      const replyMessage = this.adminReplyMessage;  
-      const replyAttachments = this.adminReplyAttachments.map(file => file.name);
-  
       this.adminService.replyToSupportTicket(this.selectedTicket.id, formData).subscribe({
-        next: () => {
+        next: (response: any) => {
           this.showToast('Reply sent successfully ✅', true);
           this.adminReplyMessage = '';
           this.adminReplyAttachments = [];
           this.showReplyBox = false;
-  
-          this.ticketReplies.push({
-            sender_type: 'admin',
-            message: replyMessage,
-            attachments: replyAttachments,
-            created_at: new Date()
-          });
+      
+          // 🟢 استخدم الرد الجاهز من الـ backend
+          this.ticketReplies.push(response.reply);
         },
         error: (err) => {
           console.error('Error sending reply:', err);
           this.showToast('❌ Failed to send reply.', false);
         }
       });
+      
     }
   }
-  
+
   
   deleteTicket(id: number) {
     if (confirm('Are you sure you want to delete this ticket?')) {
